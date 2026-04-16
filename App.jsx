@@ -998,7 +998,7 @@ const res = await fetch("/api/chat", {
   const ELEVEN_VOICE_ID = "pMsXgVXv3BLzUgSXRplE"; // Paola — latina, emotiva
 
   const apiKey = !/iPhone|iPad|iPod/i.test(navigator.userAgent);
-   const apiKey = true;
+   
 
     // -- Intentar ElevenLabs --
     if (apiKey) {
