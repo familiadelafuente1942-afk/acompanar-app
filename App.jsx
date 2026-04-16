@@ -932,7 +932,7 @@ function PanelNorma({ contactos, meds, turnos, perfil, themeConfig }) {
     const sys = buildSystemPrompt(contactos, meds, turnos, perfil);
     let reply = "";
     try {
-      const res = await fetch("/api/claude", {
+      const res = await fetch("/api/api/chat", ...
         method:"POST", headers:{"Content-Type":"application/json"},
         body: JSON.stringify({ model:"claude-sonnet-4-20250514", max_tokens:200, system:sys, messages:[{role:"user",content:text}] })
       });
