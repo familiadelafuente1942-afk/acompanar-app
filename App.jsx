@@ -996,7 +996,7 @@ const res = await fetch("/api/chat", {
   // "pMsXgVXv3BLzUgSXRplE" → Paola    (latina, emotiva) ← ACTIVA
   // Para voz 100% argentina: clonar en elevenlabs.io con 1 min de audio
   const ELEVEN_VOICE_ID = "pMsXgVXv3BLzUgSXRplE"; // Paola — latina, emotiva
-
+async function speak(text, onDone) {
   const apiKey = !/iPhone|iPad|iPod/i.test(navigator.userAgent);
    
 
