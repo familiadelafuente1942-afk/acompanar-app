@@ -1003,9 +1003,8 @@ const res = await fetch("/api/chat", {
     // -- Intentar ElevenLabs --
     if (apiKey) {
       try {
-        const res = await fetch(
-          `/api/speak`    
-          {
+        const res = await fetch(`/api/speak`, {
+        
             method: "POST",
             headers: {
               
