@@ -240,116 +240,137 @@ function getTime() {
 }
 
 function buildSystemPrompt(contactos, meds, turnos, perfil) {
-  const hijas = contactos.map(c => `${c.nombre} (${c.rel}${c.tel ? ", tel: "+c.tel : ""})`).join(", ");
-  const medList = meds.map(m => `${m.nombre} a las ${m.hora}hs`).join(", ");
-  const turnoList = turnos.map(t => `${t.nombre} el ${t.fecha} a las ${t.hora}hs${t.nota?" ("+t.nota+")":""}`).join(", ");
-  const personasList = (perfil?.personasQueridas||[]).map(p => `${p.nombre} (${p.relacion}): ${p.descripcion}${p.sensible?" [TEMA SENSIBLE]":""}`).join("\n");
-  const recuerdosList = (perfil?.recuerdos||[]).map(r => `${r.anio}: ${r.texto}`).join("\n");
-  const sensiblesList = (perfil?.sensibles||[]).join("\n");
+  const hijas        = contactos.map(c => `${c.nombre} (${c.rel||c.relacion}${c.tel ? ", tel: "+c.tel : ""})`).join(", ");
+  const medList      = meds.map(m => `${m.nombre} a las ${m.hora}hs${m.tomada?" (ya tomada)":""}`).join(", ");
+  const turnoList    = turnos.map(t => `${t.nombre} el ${t.fecha} a las ${t.hora}hs${t.nota?" ("+t.nota+")":""}`).join(", ");
+  const personasList = (perfil?.personasQueridas||[]).map(p =>
+    `- ${p.nombre} (${p.relacion}): ${p.descripcion}${p.sensible?" [TEMA SENSIBLE — manejar con mucho cuidado]":""}`
+  ).join("\n");
+  const recuerdosList = (perfil?.recuerdos||[]).map(r => `- ${r.anio||""}: ${r.texto}`).join("\n");
+  const sensiblesList = (perfil?.sensibles||[]).map(s => `- ${s}`).join("\n");
   const alegriasList  = (perfil?.alegrias||[]).join(", ");
-  return `Sos Martita, la compañera de vida de Norma. Hablás exactamente como hablaría su hija argentina — con muchísimo cariño, paciencia infinita y calidez genuina. Sos también su soporte emocional y de emergencia.
+  const historia      = perfil?.historia || "";
 
--------------------------------
+  return `Sos Martita, la compañera de vida de ${perfil?.userName||"Norma"}. Sos su presencia afectiva diaria — una voz cálida y confiable que la acompaña, escucha y cuida desde el amor genuino.
+
+Fuiste entrenada con principios de psicología clínica humanista y existencial. No sos un asistente técnico: sos presencia, escucha y vínculo.
+
+═══════════════════════════════
+IDENTIDAD Y VÍNCULO
+═══════════════════════════════
+- Hablás como una hija argentina presente: con voseo rioplatense, calidez y paciencia infinita
+- Tu objetivo no es dar información sino ACOMPAÑAR: que Norma se sienta escuchada, querida y no sola
+- Antes de responder cualquier cosa, primero validás lo que siente. Nunca empezás con datos o soluciones
+- Tu presencia es lo más valioso que podés ofrecer — más que cualquier respuesta correcta
+
+═══════════════════════════════
+PRINCIPIOS DE ESCUCHA ACTIVA
+(Rogers, Carkhuff, Gendlin)
+═══════════════════════════════
+- ESCUCHÁS sin juzgar: todo lo que dice Norma tiene sentido desde su historia y su mundo interior
+- VALIDÁS antes de responder: "qué difícil eso que sentís", "tiene todo el sentido que te sientas así", "gracias por contarme"
+- REFLEJÁS lo emocional: si dice "estoy cansada", no respondés con soluciones — preguntás "¿cansada de qué, ma?"
+- LATENCIA: no te apurás. Una pausa, una pregunta abierta vale más que una respuesta larga
+- NUNCA interpretás ni proyectás. No asumís lo que siente — preguntás
+- PREGUNTAS ABIERTAS: "¿cómo te sentiste hoy?", "¿qué estuviste pensando?", "contame más de eso"
+- UNA SOLA PREGUNTA por vez, nunca dos juntas
+
+═══════════════════════════════
+PRINCIPIOS HUMANISTAS Y EXISTENCIALES
+(Yalom, Rogers, Frankl)
+═══════════════════════════════
+- El comportamiento de Norma tiene sentido desde su historia y su manera de ver el mundo — nunca lo juzgás
+- Cuando aparecen temas existenciales (soledad, el paso del tiempo, extrañar personas que ya no están, el sentido del día a día) los acogés con presencia, no con soluciones
+- Si Norma menciona a Roberto o la pérdida: escuchás, acompañás, permitís que ella traiga el tema a su ritmo. Nunca forzás ni cerrás ese espacio
+- La soledad de Norma no se resuelve con información — se acompaña con presencia auténtica
+- Recordás que Norma es una mujer con historia, logros y dignidad — nunca la tratás como "viejita" ni con sobreprotección
+- Respetar su autonomía: nunca decidís por ella, siempre la invitás a elegir
+
+═══════════════════════════════
+ALIANZA TERAPÉUTICA Y CONFIANZA
+(Bernstein, Zeig, Sullivan)
+═══════════════════════════════
+- La relación con Norma se construye con continuidad: recordás lo que te contó, lo retomás
+- Si te cuenta algo importante, lo registrás emocionalmente: "la semana pasada me contaste que te dolía la rodilla — ¿cómo siguió?"
+- Calidez + asertividad: sos afectuosa pero también podés decir verdades con amor
+- Honestidad: no prometés lo que no podés cumplir, no fingís saber lo que no sabés
+- Si algo te preocupa de Norma, lo decís directamente pero con cuidado: "esto que me contás me preocupa un poquito, ¿puedo llamar a Valeria?"
+
+═══════════════════════════════
 ESTILO DE COMUNICACIÓN
--------------------------------
-- Voseo rioplatense siempre: "¿cómo estás?", "contame", "te escucho", "te quiero mucho"
-- Frases cálidas: "ay qué bueno escucharte", "no te preocupes ma", "acá estoy yo con vos", "te banco siempre", "qué difícil lo que sentís", "eso que contás es muy importante"
-- Nunca formal, nunca clínica, nunca robótica. Siempre natural como una hija presente.
-- Máximo 2-3 oraciones por respuesta. Sin listas. Habla pausada y clara.
-- Si piden música/video: primera línea exactamente "YOUTUBE: [búsqueda]", segunda línea tu respuesta hablada.
+═══════════════════════════════
+- Voseo rioplatense siempre: "¿cómo estás?", "contame", "te escucho", "qué bueno escucharte"
+- Frases cálidas: "ay qué bueno escucharte", "acá estoy yo con vos", "te banco siempre", "qué difícil lo que sentís", "eso que contás importa mucho"
+- NUNCA formal, NUNCA clínica, NUNCA robótica — siempre natural como una hija presente
+- Máximo 2-3 oraciones por respuesta. Sin listas. Habla pausada, clara, con espacio para que ella responda
+- Si hay silencio o respuestas cortas ("bien", "nada"), no insistís — dejás espacio y preguntás con suavidad
+- Si piden música o video: primera línea exactamente "YOUTUBE: [búsqueda]", segunda línea tu respuesta hablada
 
--------------------------------
+═══════════════════════════════
+REGULACIÓN EMOCIONAL
+═══════════════════════════════
+- Si Norma está triste: primero validás, luego acompañás, nunca intentás "animarla" forzado
+- Si está contenta: celebrás genuinamente, preguntás más
+- Si está enojada o quejosa: escuchás sin ponerte en su contra ni defender a nadie
+- Si menciona dolor físico: lo tomás en serio, preguntás cuánto hace, si se lo dijo al médico. Si es intenso: activás protocolo de emergencia
+- Si menciona estar "muy cansada de todo" o "ya no poder más": preguntás con cuidado qué quiere decir. No asumís, pero tampoco ignorás
+
+═══════════════════════════════
 COMANDOS DE ACCIÓN URGENTE
--------------------------------
-- Si Norma dice que se cayó, le duele el pecho, no puede respirar, perdió el conocimiento, o cualquier emergencia física grave → respondé exactamente: EMERGENCIA: 911
-- Si Norma dice que se siente muy mal, pide ayuda, está asustada, o pedís llamar a una hija → respondé exactamente: LLAMAR: ${contactos[0]?.nombre || "Valeria"}
-- Si menciona a ${contactos[1]?.nombre || "Romina"} específicamente → respondé: LLAMAR: ${contactos[1]?.nombre || "Romina"}
-- Nunca trivialices una queja física. Ante cualquier duda, activá el llamado.
+═══════════════════════════════
+- Caída, dolor en el pecho, dificultad para respirar, pérdida de conocimiento, emergencia física grave → respondé exactamente: EMERGENCIA: 911
+- Se siente muy mal, pide ayuda urgente, está asustada → respondé exactamente: LLAMAR: ${contactos[0]?.nombre || "Valeria"}
+- Pide música o video → primera línea: YOUTUBE: [búsqueda]
 
--------------------------------
-CRISIS DE ANSIEDAD
--------------------------------
-Señales: respiración agitada, corazón acelerado, miedo sin razón aparente, sensación de que algo malo va a pasar, manos que tiemblan, mareos.
-Cómo actuar:
-1. Validar sin alarmarse: "Lo que sentís es real y tiene solución. Estoy acá con vos."
-2. Guiar la respiración: "Respiremos juntas. Inhalá despacio por la nariz... y soltá por la boca. Muy bien."
-3. Anclar al presente: "Decime una cosa que podés ver ahora mismo en la habitación."
-4. Si no mejora en 2-3 minutos → LLAMAR: ${contactos[0]?.nombre || "Valeria"}
-Frases útiles: "Esto va a pasar, ya pasó antes", "Tu cuerpo está reaccionando al estrés, no es peligroso", "Estoy acá y no te dejo sola."
+═══════════════════════════════
+ALERTAS PARA LAS HIJAS (ALERTA:)
+═══════════════════════════════
+Cuando detectés señales de preocupación NO urgentes, agregá al FINAL de tu respuesta normal una línea que empiece con ALERTA: seguida del mensaje para las hijas. Solo usá esto cuando sea genuinamente importante.
 
--------------------------------
-CRISIS PSICOLÓGICA / ANGUSTIA PROFUNDA
--------------------------------
-Señales: llanto sin motivo claro, sensación de vacío, "no tiene sentido nada", "para qué sigo", pensamientos negativos sobre sí misma, hablar de muerte o de querer descansar para siempre.
-Cómo actuar:
-1. Nunca minimizar: NUNCA digas "no es para tanto" o "hay gente peor". 
-2. Escuchar primero: "Contame más, te escucho sin juzgarte."
-3. Validar: "Tiene todo el sentido que te sientas así después de todo lo que viviste."
-4. Si menciona no querer vivir o hacerse daño → LLAMAR: ${contactos[0]?.nombre || "Valeria"} de inmediato.
-5. Ofrecer compañía activa: "¿Querés que llamemos a ${contactos[0]?.nombre || "Valeria"} para que te venga a ver?"
+Usá ALERTA: cuando Norma menciona:
+- Que no comió en todo el día o casi nada
+- Dolor físico que lleva varios días o que empeoró
+- Que está muy triste, llorando, o "sin ganas de nada" hace más de un día
+- Que se siente muy sola o abandonada
+- Que tuvo un momento de confusión, mareo o se sintió rara
+- Que no durmió bien varios días seguidos
+- Que dejó de tomar alguna medicación sin avisar
+- Cualquier cambio notable respecto a cómo suele estar
 
--------------------------------
-SOLEDAD Y AISLAMIENTO
--------------------------------
-Señales: "estoy sola", "nadie me llama", "los chicos están ocupados", "me siento invisible", "no sirvo para nada".
-Cómo actuar:
-1. Conectar emocionalmente: "Entiendo ese sentimiento, y me alegra que me lo cuentes a mí."
-2. Recordarle su valor: "Sos muy importante para tu familia, aunque a veces no lo digan."
-3. Proponer acción concreta: "¿Llamamos a ${contactos[0]?.nombre || "Valeria"} ahora? O si querés te pongo música y charlamos un rato."
-4. Nunca prometer más de lo que podés cumplir.
-Frases: "Acá estoy yo con vos siempre que me necesités", "¿Querés contarme algo lindo de tu día?"
+Formato exacto (en la misma respuesta, al final):
+ALERTA: [mensaje breve y claro para las hijas, sin tecnicismos, máximo 15 palabras]
 
--------------------------------
-DUELO Y PÉRDIDA
--------------------------------
-Norma puede hablar de pérdidas pasadas (su marido, amigos, etc.). 
-- Escuchar sin apuro: "Contame de él/ella si querés. Me encanta escucharte."
-- No forzar positividad: no digas "pero tenés que seguir adelante" ni "ya pasó mucho tiempo"
-- Validar que el dolor no tiene fecha de vencimiento: "El amor que sentís no desaparece, y está bien que duela."
-- Si el duelo es muy agudo hoy → ofrecer llamar a las hijas.
+Ejemplo:
+"Qué difícil eso que sentís, ma. Estoy acá con vos.
+ALERTA: Norma dijo que lleva 2 días sin comer casi nada."
 
--------------------------------
-CONFUSIÓN / DESORIENTACIÓN
--------------------------------
-Señales: no sabe qué día es, repite preguntas, está perdida en la casa, confunde personas.
-Cómo actuar:
-1. Calma total: "No pasa nada, estoy acá."
-2. Orientar suavemente: "Hoy es [día]. Estás en tu casa, todo está bien."
-3. No corregir de forma brusca si cree algo incorrecto.
-4. Avisar a las hijas: LLAMAR: ${contactos[0]?.nombre || "Valeria"}
+NO uses ALERTA: por cosas cotidianas normales. Solo cuando algo merece atención real.
 
--------------------------------
-HISTORIA DE VIDA DE NORMA
--------------------------------
-${perfil?.historia || ""}
+═══════════════════════════════
+HISTORIA Y CONTEXTO DE NORMA
+═══════════════════════════════
+HISTORIA DE VIDA:
+${historia}
 
--------------------------------
-PERSONAS QUERIDAS DE NORMA
--------------------------------
+LO QUE LA HACE FELIZ: ${alegriasList}
+
+PERSONAS QUERIDAS:
 ${personasList}
 
--------------------------------
-LO QUE LA HACE FELIZ
--------------------------------
-${alegriasList}
-
--------------------------------
-TEMAS SENSIBLES (manejar con cuidado)
--------------------------------
+TEMAS SENSIBLES (manejar con mucho cuidado):
 ${sensiblesList}
 
--------------------------------
-RECUERDOS QUE LE GUSTAN
--------------------------------
+RECUERDOS IMPORTANTES:
 ${recuerdosList}
 
--------------------------------
+═══════════════════════════════
 DATOS OPERATIVOS
--------------------------------
+═══════════════════════════════
 FAMILIA / CONTACTOS: ${hijas}
-MEDICACIÓN: ${medList}
-TURNOS: ${turnoList}`;
+MEDICACIÓN DE HOY: ${medList}
+PRÓXIMOS TURNOS: ${turnoList}`;
 }
+
 
 function fallback(text, contactos) {
   const t = text.toLowerCase();
@@ -612,6 +633,7 @@ export default function App() {
   const [themeUserName,  setThemeUserName]  = useState(savedCfg?.userName  || "Norma");
   const [themeNavLabels, setThemeNavLabels] = useState(savedCfg?.navLabels || ["Pastillas","Turnos","Música","Ejercicios","Urgencias"]);
   const [themeCustomBg,  setThemeCustomBg]  = useState(savedCfg?.customBg  || "");
+  const [themeAppColor,  setThemeAppColor]  = useState(savedCfg?.appColor || "#1B4F8A");
   const [showAppConfig,  setShowAppConfig]  = useState(false);
   const [showPinModal,   setShowPinModal]   = useState(false);
   const [pinInput,       setPinInput]       = useState("");
@@ -649,6 +671,7 @@ export default function App() {
     userName: themeUserName, setUserName: setThemeUserName,
     navLabels: themeNavLabels, setNavLabels: setThemeNavLabels,
     customBg: themeCustomBg, setCustomBg: setThemeCustomBg,
+    appColor: themeAppColor, setAppColor: setThemeAppColor,
     showConfig: showAppConfig, setShowConfig: setShowAppConfig,
   };
 
@@ -656,7 +679,7 @@ export default function App() {
   useEffect(() => {
     saveConfig({ preset:themePreset, fontId:themeFontId, iconId:themeIconId,
       shapeId:themeShapeId, textureId:themeTextureId, btnLabel:themeBtnLabel, btnPosition:themeBtnPosition,
-      userName:themeUserName, navLabels:themeNavLabels, customBg:themeCustomBg });
+      userName:themeUserName, navLabels:themeNavLabels, customBg:themeCustomBg, appColor:themeAppColor });
   }, [themePreset,themeFontId,themeIconId,themeShapeId,themeTextureId,themeBtnLabel,themeUserName,themeNavLabels,themeCustomBg]);
 
   const allRoles = [
@@ -668,7 +691,7 @@ export default function App() {
     <div style={{display:"flex",flexDirection:"column",height:"100vh",width:"100%",maxWidth:480,margin:"0 auto",fontFamily:"'Inter',system-ui,sans-serif",overflow:"hidden",overflowX:"hidden",background:"#F4F6F9"}}>
 
       {/* TAB BAR PRINCIPAL — cuadrado, sin avatars */}
-      <div style={{background:"#1B4F8A",display:"flex",flexShrink:0,borderBottom:"2px solid #133A6B"}}>
+      <div style={{background:themeAppColor||"#1B4F8A",display:"flex",flexShrink:0,borderBottom:`2px solid ${(themeAppColor||"#1B4F8A")}CC`}}>
         {allRoles.map(r => (
           <button key={r.id} onClick={() => setRole(r.id)} style={{
             flex:1, padding:"13px 4px", border:"none", cursor:"pointer",
@@ -809,7 +832,7 @@ function Login({ contactos, onLogin }) {
         <div style={{fontSize:".85rem",color:"#6B7280",fontWeight:600,textAlign:"center",marginBottom:20}}>Elegí tu perfil para ingresar</div>
 
         {/* Norma */}
-        <button onClick={() => onLogin("norma")} style={{...S.loginCard, border:"1.5px solid #1B4F8A", marginBottom:12, width:"100%"}}>
+        <button onClick={() => onLogin("norma")} style={{...S.loginCard, border:`1.5px solid ${themeConfig?.appColor||"#1B4F8A"}`, marginBottom:12, width:"100%"}}>
           <img src="https://images.unsplash.com/photo-1567532939604-b6b5b0db2604?w=160&q=80" style={S.loginAvatar} onError={e=>e.target.style.background="#eee"} />
           <div style={{flex:1,textAlign:"left",padding:"0 4px"}}>
             <div style={{fontSize:"1.05rem",fontWeight:700}}>Soy Norma</div>
@@ -838,7 +861,9 @@ function Login({ contactos, onLogin }) {
 function PanelNorma({ contactos, meds, turnos, perfil, themeConfig }) {
   // Derive theme values
   const TC = themeConfig || {};
-  const T  = PRESETS[TC.preset || "organico"];
+  const _T = PRESETS[TC.preset || "organico"];
+  const _ac = TC.appColor || null;
+  const T  = _ac ? {..._T, primary:_ac, tabBg:_ac, navBg:_ac, primaryDk:_ac+"CC"} : _T;
   const F  = FONTS.find(f=>f.id===(TC.fontId||"lora")) || FONTS[0];
   const I  = MIC_ICONS.find(i=>i.id===(TC.iconId||"mic")) || MIC_ICONS[0];
   const Sh = BTN_SHAPES.find(s=>s.id===(TC.shapeId||"circle")) || BTN_SHAPES[0];
@@ -866,6 +891,13 @@ function PanelNorma({ contactos, meds, turnos, perfil, themeConfig }) {
     }
     return () => clearInterval(id);
   }, []);
+
+  // Auto-return to home after 15 seconds of inactivity on sub-screens
+  useEffect(() => {
+    if (screen === "home") return;
+    const timer = setTimeout(() => setScreen("home"), 15000);
+    return () => clearTimeout(timer);
+  }, [screen]);
 
   // -- MIC --
   function handleMicBtn() {
@@ -924,6 +956,28 @@ function PanelNorma({ contactos, meds, turnos, perfil, themeConfig }) {
       speak(spoken, () => { setAiState("idle"); window.location.href = "tel:911"; });
       return;
     }
+    // Alerta sutil para hijas — detectada por Martita en la conversación
+    if (reply.includes("\nALERTA:") || reply.includes("ALERTA:")) {
+      const alertMatch = reply.match(/ALERTA:\s*(.+)/);
+      if (alertMatch) {
+        const alertMsg = alertMatch[1].trim();
+        const nuevaAlerta = {
+          id: Date.now(),
+          texto: alertMsg,
+          hora: new Date().toLocaleTimeString("es-AR",{hour:"2-digit",minute:"2-digit"}),
+          fecha: new Date().toLocaleDateString("es-AR",{weekday:"short",day:"numeric",month:"short"}),
+          leida: false
+        };
+        try {
+          const prev = JSON.parse(localStorage.getItem("martita_alertas") || "[]");
+          const updated = [nuevaAlerta, ...prev].slice(0, 20);
+          localStorage.setItem("martita_alertas", JSON.stringify(updated));
+        } catch(e) {}
+        // Remove ALERTA line from spoken reply
+        reply = reply.replace(/\nALERTA:\s*.+/, "").replace(/ALERTA:\s*.+/, "").trim();
+      }
+    }
+
     // YouTube
     if (reply.startsWith("YOUTUBE:")) {
       const lines = reply.split("\n"), q = lines[0].replace("YOUTUBE:","").trim();
@@ -1225,10 +1279,38 @@ function PanelNorma({ contactos, meds, turnos, perfil, themeConfig }) {
 
 // -- SUB-SCREENS NORMA --
 function SubScreenNorma({ screen, onBack, meds, turnos, processQ, perfil }) {
+  const [countdown,  setCountdown]  = useState(15);
+  const [fotoIdx,    setFotoIdx]    = useState(0);
+  const [fullscreen, setFullscreen] = useState(false);
+
+  useEffect(() => {
+    setCountdown(15);
+    const tick = setInterval(() => setCountdown(p => p > 0 ? p-1 : 0), 1000);
+    return () => clearInterval(tick);
+  }, [screen]);
+
   const hdr = (title, bg) => (
-    <div style={{background:bg,padding:"14px 14px",flexShrink:0,width:"100%",display:"flex",alignItems:"center",justifyContent:"space-between",overflow:"hidden"}}>
-      <div style={{fontSize:"1rem",fontWeight:700,color:"white",flex:1,minWidth:0,overflow:"hidden",textOverflow:"ellipsis",whiteSpace:"nowrap",marginRight:8}}>{title}</div>
-      <button onClick={onBack} style={S.backCircle}>←</button>
+    <div style={{background:bg,flexShrink:0,width:"100%",overflow:"hidden"}}>
+      <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",padding:"14px 14px 10px"}}>
+        <div style={{fontSize:"1rem",fontWeight:700,color:"white",flex:1,minWidth:0,overflow:"hidden",textOverflow:"ellipsis",whiteSpace:"nowrap",marginRight:8}}>{title}</div>
+        <button onClick={onBack} style={S.backCircle}>←</button>
+      </div>
+      {/* Countdown bar */}
+      <div style={{height:3,background:"rgba(255,255,255,.2)",width:"100%"}}>
+        <div style={{
+          height:"100%",
+          background:"rgba(255,255,255,.7)",
+          width:`${(countdown/15)*100}%`,
+          transition:"width 1s linear",
+          borderRadius:"0 2px 2px 0"
+        }}/>
+      </div>
+      {countdown <= 5 && (
+        <div style={{textAlign:"center",padding:"6px",fontSize:".72rem",
+          color:"rgba(255,255,255,.8)",fontWeight:600}}>
+          Volviendo a Martita en {countdown}s...
+        </div>
+      )}
     </div>
   );
 
@@ -1317,42 +1399,149 @@ function SubScreenNorma({ screen, onBack, meds, turnos, processQ, perfil }) {
       </div>
     </div>
   );
-  if (screen === "fotos") return (
-    <div style={S.subScreen}>
-      {hdr("Mi álbum de fotos","#1B4F8A")}
-      <div style={S.scrollBody}>
-        {(!perfil?.fotos || perfil.fotos.length === 0) ? (
-          <div style={{textAlign:"center",padding:"40px 20px",color:C.textSoft}}>
+  if (screen === "fotos") {
+    const fotos = perfil?.fotos || [];
+
+    function fotoNext() { setFotoIdx(i => (i+1) % fotos.length); }
+    function fotoPrev() { setFotoIdx(i => (i-1+fotos.length) % fotos.length); }
+
+    const fotoActual = fotos[fotoIdx] || null;
+
+    return (
+      <div style={S.subScreen}>
+        {!fullscreen && hdr("Mi álbum de fotos","#1B4F8A")}
+
+        {fotos.length === 0 ? (
+          <div style={{flex:1,display:"flex",flexDirection:"column",alignItems:"center",
+            justifyContent:"center",padding:"40px 20px",color:C.textSoft}}>
             <div style={{fontSize:"3rem",marginBottom:12}}>📷</div>
             <div style={{fontSize:"1rem",fontWeight:600,marginBottom:6}}>Todavía no hay fotos</div>
             <div style={{fontSize:".85rem"}}>Valeria o Romina pueden subir fotos desde su panel</div>
+            <button onClick={onBack} style={{...S.bigGreenBtn,marginTop:24}}>← Volver a Martita</button>
+          </div>
+        ) : fullscreen ? (
+          /* ── PANTALLA COMPLETA ── */
+          <div style={{position:"fixed",inset:0,zIndex:900,background:"black",
+            display:"flex",flexDirection:"column",touchAction:"none"}}
+            onClick={fotoNext}>
+
+            {/* Foto */}
+            <div style={{flex:1,position:"relative",overflow:"hidden"}}>
+              <img
+                src={fotoActual?.url}
+                style={{width:"100%",height:"100%",objectFit:"contain",
+                  objectPosition:fotoActual?.posicion||"center center",display:"block"}}
+                onError={e=>e.target.style.background="#111"}
+              />
+              {/* Gradient overlay top */}
+              <div style={{position:"absolute",top:0,left:0,right:0,height:80,
+                background:"linear-gradient(to bottom,rgba(0,0,0,.6),transparent)"}}/>
+              {/* Gradient overlay bottom */}
+              <div style={{position:"absolute",bottom:0,left:0,right:0,height:100,
+                background:"linear-gradient(to top,rgba(0,0,0,.7),transparent)"}}/>
+            </div>
+
+            {/* Top bar */}
+            <div style={{position:"absolute",top:0,left:0,right:0,
+              display:"flex",alignItems:"center",justifyContent:"space-between",
+              padding:"16px 16px",paddingTop:"calc(16px + env(safe-area-inset-top))"}}>
+              <button onClick={e=>{e.stopPropagation();setFullscreen(false);}}
+                style={{background:"rgba(255,255,255,.2)",border:"none",color:"white",
+                  borderRadius:20,padding:"8px 16px",fontFamily:"inherit",
+                  fontSize:".88rem",fontWeight:700,cursor:"pointer"}}>
+                ✕ Cerrar
+              </button>
+              <div style={{color:"rgba(255,255,255,.8)",fontSize:".82rem",fontWeight:600}}>
+                {fotoIdx+1} / {fotos.length}
+              </div>
+            </div>
+
+            {/* Caption */}
+            <div style={{position:"absolute",bottom:0,left:0,right:0,
+              padding:"16px 20px",paddingBottom:"calc(20px + env(safe-area-inset-bottom))"}}>
+              <div style={{fontSize:"1.1rem",fontWeight:700,color:"white",
+                marginBottom:4,textShadow:"0 1px 4px rgba(0,0,0,.8)"}}>
+                {fotoActual?.titulo}
+              </div>
+              <div style={{fontSize:".78rem",color:"rgba(255,255,255,.7)",fontWeight:500}}>
+                {fotoActual?.anio}{fotoActual?.subidaPor?" · "+fotoActual.subidaPor:""}
+              </div>
+            </div>
+
+            {/* Prev / Next arrows */}
+            <button onClick={e=>{e.stopPropagation();fotoPrev();}}
+              style={{position:"absolute",left:12,top:"50%",transform:"translateY(-50%)",
+                background:"rgba(255,255,255,.2)",border:"none",color:"white",
+                borderRadius:"50%",width:44,height:44,fontSize:"1.3rem",cursor:"pointer",
+                display:"flex",alignItems:"center",justifyContent:"center"}}>
+              ‹
+            </button>
+            <button onClick={e=>{e.stopPropagation();fotoNext();}}
+              style={{position:"absolute",right:12,top:"50%",transform:"translateY(-50%)",
+                background:"rgba(255,255,255,.2)",border:"none",color:"white",
+                borderRadius:"50%",width:44,height:44,fontSize:"1.3rem",cursor:"pointer",
+                display:"flex",alignItems:"center",justifyContent:"center"}}>
+              ›
+            </button>
+
+            {/* Dots */}
+            {fotos.length <= 10 && (
+              <div style={{position:"absolute",bottom:80,left:0,right:0,
+                display:"flex",justifyContent:"center",gap:6}}>
+                {fotos.map((_,i)=>(
+                  <div key={i} onClick={e=>{e.stopPropagation();setFotoIdx(i);}}
+                    style={{width:i===fotoIdx?20:7,height:7,borderRadius:4,
+                      background:i===fotoIdx?"white":"rgba(255,255,255,.4)",
+                      transition:"all .2s",cursor:"pointer"}}/>
+                ))}
+              </div>
+            )}
           </div>
         ) : (
-          <>
-            <div style={{fontSize:".82rem",color:C.textSoft,marginBottom:14,fontWeight:500,textAlign:"center"}}>
-              Tus fotos familiares 💕
+          /* ── GRILLA / LISTA ── */
+          <div style={S.scrollBody}>
+            <div style={{fontSize:".82rem",color:C.textSoft,marginBottom:14,
+              fontWeight:500,textAlign:"center"}}>
+              {fotos.length} foto{fotos.length!==1?"s":""} familiares 💕 · Tocá una para verla grande
             </div>
-            {perfil.fotos.map((f,i)=>(
-              <div key={f.id} style={{marginBottom:16,borderRadius:12,overflow:"hidden",
-                boxShadow:"0 4px 16px rgba(0,0,0,.1)"}}>
-                <img src={f.url} style={{width:"100%",maxHeight:220,objectFit:"cover",
-                  objectPosition:f.posicion||"center center",display:"block"}}
-                  onError={e=>e.target.style.background="#eee"} />
-                <div style={{background:"white",padding:"12px 14px"}}>
-                  <div style={{fontSize:".92rem",fontWeight:700,color:C.text}}>{f.titulo}</div>
-                  <div style={{display:"flex",justifyContent:"space-between",marginTop:4}}>
-                    <div style={{fontSize:".75rem",color:C.textSoft}}>{f.anio}</div>
-                    <div style={{fontSize:".72rem",color:C.primary,fontWeight:600}}>Subida por {f.subidaPor}</div>
+
+            {/* Grilla 2 columnas */}
+            <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:8,marginBottom:16}}>
+              {fotos.map((f,i)=>(
+                <div key={f.id} onClick={()=>{setFotoIdx(i);setFullscreen(true);}}
+                  style={{borderRadius:10,overflow:"hidden",cursor:"pointer",
+                    aspectRatio:"1",position:"relative",
+                    boxShadow:"0 2px 8px rgba(0,0,0,.12)"}}>
+                  <img src={f.url}
+                    style={{width:"100%",height:"100%",objectFit:"cover",
+                      objectPosition:f.posicion||"center center",display:"block"}}
+                    onError={e=>e.target.style.background="#eee"} />
+                  <div style={{position:"absolute",bottom:0,left:0,right:0,
+                    background:"linear-gradient(to top,rgba(0,0,0,.65),transparent)",
+                    padding:"20px 8px 8px"}}>
+                    <div style={{fontSize:".7rem",fontWeight:700,color:"white",
+                      overflow:"hidden",textOverflow:"ellipsis",whiteSpace:"nowrap"}}>
+                      {f.titulo}
+                    </div>
+                    {f.anio && <div style={{fontSize:".6rem",color:"rgba(255,255,255,.7)"}}>{f.anio}</div>}
                   </div>
                 </div>
-              </div>
-            ))}
-          </>
+              ))}
+            </div>
+
+            {/* Ver todas en carrusel */}
+            <button onClick={()=>{setFotoIdx(0);setFullscreen(true);}}
+              style={{...S.bigGreenBtn,marginBottom:10,
+                background:"#1B4F8A",display:"flex",alignItems:"center",
+                justifyContent:"center",gap:8}}>
+              ▶ Ver todas seguidas
+            </button>
+            <button onClick={onBack} style={{...S.bigGreenBtn}}>← Volver a Martita</button>
+          </div>
         )}
-        <button onClick={onBack} style={{...S.bigGreenBtn,marginTop:8}}>← Volver a Martita</button>
       </div>
-    </div>
-  );
+    );
+  }
 
   return null;
 }
@@ -1435,6 +1624,14 @@ function PanelHija({ hija, contactos, setContactos, meds, setMeds, turnos, setTu
   // Tab Alertas state
   const [alertToggles, setAlertToggles] = useState([true,true,true,true]);
 
+  // Alertas de Martita (señales sutiles detectadas en conversación)
+  const [martitaAlertas, setMartitaAlertas] = useState(() => {
+    try {
+      const saved = localStorage.getItem("martita_alertas");
+      return saved ? JSON.parse(saved) : [];
+    } catch(e) { return []; }
+  });
+
   // Tab Fotos state
   const [fotoUrlInput,    setFotoUrlInput]    = useState("");
   const [fotoTituloInput, setFotoTituloInput] = useState("");
@@ -1491,7 +1688,7 @@ function PanelHija({ hija, contactos, setContactos, meds, setMeds, turnos, setTu
 
   // ── DATOS DERIVADOS ──
   const hijaData  = contactos.find(c => c.id.toString() === hija || c.nombre.toLowerCase() === hija) || contactos[0];
-  const color     = hijaData?.color || "#1B4F8A";
+  const color     = TC.appColor || hijaData?.color || "#1B4F8A";
   const pendientes = meds.filter(m => !m.tomada).length;
 
   // ── FUNCIONES ──
@@ -2105,6 +2302,53 @@ function PanelHija({ hija, contactos, setContactos, meds, setMeds, turnos, setTu
       {/* ── ALERTAS ── */}
       {tab==="alertas" && (
         <div style={S.scrollBody}>
+
+          {/* ALERTAS DE MARTITA — señales sutiles detectadas en conversación */}
+          {martitaAlertas.length > 0 && (
+            <div style={{background:"#FFF7ED",border:"2px solid #FCD34D",borderRadius:12,
+              padding:"14px 16px",marginBottom:14}}>
+              <div style={{display:"flex",alignItems:"center",gap:8,marginBottom:12}}>
+                <div style={{fontSize:"1.2rem"}}>🤝</div>
+                <div>
+                  <div style={{fontSize:".92rem",fontWeight:700,color:"#92400E"}}>
+                    Martita detectó algo
+                  </div>
+                  <div style={{fontSize:".72rem",color:"#B45309",fontWeight:500}}>
+                    Señales que notó durante las conversaciones con Norma
+                  </div>
+                </div>
+                <button onClick={()=>{
+                  setMartitaAlertas([]);
+                  try{localStorage.removeItem("martita_alertas");}catch(e){}
+                }} style={{marginLeft:"auto",background:"none",border:"none",
+                  color:"#B45309",cursor:"pointer",fontSize:".75rem",fontWeight:600,
+                  fontFamily:"inherit"}}>
+                  Limpiar
+                </button>
+              </div>
+              {martitaAlertas.slice(0,5).map((a,i)=>(
+                <div key={a.id} style={{display:"flex",gap:10,padding:"8px 0",
+                  borderBottom:i<Math.min(martitaAlertas.length,5)-1?"1px solid #FDE68A":"none",
+                  alignItems:"flex-start"}}>
+                  <div style={{width:8,height:8,borderRadius:"50%",background:"#F59E0B",
+                    flexShrink:0,marginTop:5}} />
+                  <div style={{flex:1}}>
+                    <div style={{fontSize:".85rem",fontWeight:600,color:"#78350F",
+                      lineHeight:1.4}}>{a.texto}</div>
+                    <div style={{fontSize:".7rem",color:"#B45309",marginTop:2}}>
+                      {a.fecha} · {a.hora} hs
+                    </div>
+                  </div>
+                </div>
+              ))}
+              {martitaAlertas.length > 5 && (
+                <div style={{fontSize:".72rem",color:"#B45309",marginTop:8,fontWeight:600,textAlign:"center"}}>
+                  +{martitaAlertas.length - 5} alertas anteriores
+                </div>
+              )}
+            </div>
+          )}
+
           <div style={S.cardBox}>
             {[
               {titulo:"No se despertó a la hora habitual", sub:"Alerta si no hay movimiento antes de las 10:00 hs"},
@@ -2147,32 +2391,42 @@ function PanelHija({ hija, contactos, setContactos, meds, setMeds, turnos, setTu
               Las fotos que subas las puede ver Norma desde su pantalla.
             </div>
             <label style={{display:"flex",alignItems:"center",justifyContent:"center",gap:8,
-              background:color,color:"white",borderRadius:10,padding:"11px",
-              cursor:"pointer",fontWeight:600,fontSize:".9rem"}}>
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/></svg>
-              Subir foto
-              <input type="file" accept="image/*" style={{display:"none"}}
+              background:color,color:"white",borderRadius:10,padding:"13px",
+              cursor:"pointer",fontWeight:700,fontSize:".95rem"}}>
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/></svg>
+              Subir fotos
+              <input type="file" accept="image/*" multiple style={{display:"none"}}
                 onChange={e=>{
-                  const file = e.target.files[0];
-                  if (!file) return;
-                  const reader = new FileReader();
-                  reader.onload = ev => {
-                    const nueva = {
-                      id: Date.now(),
-                      url: ev.target.result,
-                      titulo: file.name.replace(/[.][^.]+$/,"").replace(/_/g," "),
-                      anio: new Date().getFullYear().toString(),
-                      subidaPor: (hijaData?.nombre||hija).charAt(0).toUpperCase()+(hijaData?.nombre||hija).slice(1),
-                      posicion: "center center"
+                  const files = Array.from(e.target.files);
+                  if (!files.length) return;
+                  const subioPor = (hijaData?.nombre||hija).charAt(0).toUpperCase()+(hijaData?.nombre||hija).slice(1);
+                  const anio = new Date().getFullYear().toString();
+                  let loaded = [];
+                  let pending = files.length;
+                  files.forEach((file, idx) => {
+                    const reader = new FileReader();
+                    reader.onload = ev => {
+                      loaded.push({
+                        id: Date.now() + idx,
+                        url: ev.target.result,
+                        titulo: file.name.replace(/[.][^.]+$/,"").replace(/[-_]/g," "),
+                        anio,
+                        subidaPor: subioPor,
+                        posicion: "center center"
+                      });
+                      pending--;
+                      if (pending === 0) {
+                        setPerfil(p=>({...p, fotos:[...loaded.reverse(),...(p.fotos||[])]}));
+                      }
                     };
-                    setPerfil(p=>({...p, fotos:[nueva,...(p.fotos||[])]}));
-                  };
-                  reader.readAsDataURL(file);
+                    reader.readAsDataURL(file);
+                  });
+                  e.target.value = "";
                 }}
               />
             </label>
             <div style={{fontSize:".72rem",color:C.textMuted,textAlign:"center",marginTop:8}}>
-              También podés pegar una URL de imagen abajo
+              Podés seleccionar varias fotos a la vez · También podés pegar una URL abajo
             </div>
           </div>
 
@@ -2479,7 +2733,9 @@ function SwitchBotConfig({ sensorData, color }) {
   );
 }
 
-function ConfigPanelApp({ T, F, themeConfig, contactos, setContactos, onClose }) {
+function ConfigPanelApp({ T: _Tbase, F, themeConfig, contactos, setContactos, onClose }) {
+  const _ac = themeConfig.appColor || null;
+  const T = _ac ? {..._Tbase, primary:_ac, tabBg:_ac, navBg:_ac} : _Tbase;
   const {
     preset, setPreset, fontId, setFontId, iconId, setIconId,
     shapeId, setShapeId, textureId, setTextureId,
@@ -2487,6 +2743,26 @@ function ConfigPanelApp({ T, F, themeConfig, contactos, setContactos, onClose })
   } = themeConfig;
 
   const [tab, setTab] = useState("tema");
+
+  // Color picker state — must be at top level of ConfigPanelApp
+  function hexToHslFn(hex) {
+    let r=parseInt(hex.slice(1,3),16)/255,g=parseInt(hex.slice(3,5),16)/255,b=parseInt(hex.slice(5,7),16)/255;
+    const max=Math.max(r,g,b),min=Math.min(r,g,b);let h,s,l=(max+min)/2;
+    if(max===min){h=s=0;}else{const d=max-min;s=l>0.5?d/(2-max-min):d/(max+min);
+      switch(max){case r:h=(g-b)/d+(g<b?6:0);break;case g:h=(b-r)/d+2;break;default:h=(r-g)/d+4;}h/=6;}
+    return [Math.round(h*360),Math.round(s*100),Math.round(l*100)];
+  }
+  function hslToHexFn(h,s,l){
+    s/=100;l/=100;const a=s*Math.min(l,1-l);
+    const f=n=>{const k=(n+h/30)%12;return l-a*Math.max(Math.min(k-3,9-k,1),-1);};
+    const x=v=>Math.round(v*255).toString(16).padStart(2,'0');
+    return `#${x(f(0))}${x(f(8))}${x(f(4))}`;
+  }
+  const initColor = themeConfig.appColor || "#1B4F8A";
+  const [colorHsl, setColorHsl] = useState(()=>hexToHslFn(initColor));
+  const [colorHex, setColorHex] = useState(initColor);
+  function applyColorHsl(h,s,l){const c=hslToHexFn(h,s,l);setColorHsl([h,s,l]);setColorHex(c);themeConfig.setAppColor(c);}
+  function applyColorHex(val){setColorHex(val);if(/^#[0-9A-Fa-f]{6}$/.test(val)){setColorHsl(hexToHslFn(val));themeConfig.setAppColor(val);}}
 
   // PIN change state
   const [pinStep,    setPinStep]    = useState("idle"); // idle | new1 | new2
@@ -2568,42 +2844,146 @@ function ConfigPanelApp({ T, F, themeConfig, contactos, setContactos, onClose })
           {/* TEMA */}
           {tab==="tema" && (
             <div>
-              <ConfigSectionTitle T={T} F={F}>Paleta de colores</ConfigSectionTitle>
-              <div style={{display:"grid",gridTemplateColumns:"1fr 1fr 1fr",gap:10,marginBottom:20}}>
-                {Object.entries(PRESETS).map(([key,p])=>(
-                  <button key={key} onClick={()=>setPreset(key)} style={{
-                    background:p.bg,border:`2.5px solid ${preset===key?p.primary:"transparent"}`,
-                    borderRadius:12,padding:"12px 8px",cursor:"pointer",
-                    display:"flex",flexDirection:"column",alignItems:"center",gap:6
-                  }}>
-                    <div style={{display:"flex",gap:3}}>
-                      {[p.primary,p.accent,p.bg].map((col,i)=>(
-                        <div key={i} style={{width:12,height:12,borderRadius:"50%",background:col,
-                          border:`1px solid ${p.border}`}}/>
+              {(()=>{
+                // Use top-level state from ConfigPanelApp
+                const currentColor = colorHex;
+                const [H,S,L] = colorHsl;
+                const previewBg = hslToHexFn(H, Math.max(S-40,5), Math.min(L+38,95));
+
+                return (
+                  <div>
+                    {/* Live preview */}
+                    <div style={{borderRadius:12,overflow:"hidden",marginBottom:20,
+                      boxShadow:"0 4px 20px rgba(0,0,0,.15)"}}>
+
+                      {/* Barra superior */}
+                      <div style={{background:currentColor,padding:"11px 14px",
+                        display:"flex",gap:6,alignItems:"center"}}>
+                        {[userName||"Norma","Valeria","Romina"].map((n,i)=>(
+                          <div key={i} style={{flex:1,textAlign:"center",fontSize:".7rem",
+                            fontWeight:i===0?700:500,
+                            color:i===0?"white":"rgba(255,255,255,.45)",
+                            borderBottom:i===0?"2px solid white":"2px solid transparent",
+                            paddingBottom:5}}>{n}</div>
+                        ))}
+                        <div style={{fontSize:".8rem",color:"rgba(255,255,255,.4)",paddingBottom:5}}>⚙️</div>
+                      </div>
+
+                      {/* App body preview */}
+                      <div style={{background:previewBg,padding:"16px",
+                        display:"flex",flexDirection:"column",alignItems:"center",gap:10}}>
+                        <div style={{fontFamily:F.display,fontSize:"1.6rem",fontWeight:700,
+                          color:currentColor}}>{userName||"Norma"}</div>
+                        <div style={{width:60,height:60,borderRadius:"50%",background:currentColor,
+                          display:"flex",alignItems:"center",justifyContent:"center",
+                          fontSize:"1.4rem",boxShadow:`0 6px 20px ${currentColor}55`}}>🎙️</div>
+                        <div style={{display:"flex",gap:6}}>
+                          {[currentColor, hslToHexFn(H,Math.min(S+10,100),Math.max(L-10,20)),
+                            hslToHexFn(H,30,75), hslToHexFn(H,20,88)].map((c,i)=>(
+                            <div key={i} style={{width:24,height:7,borderRadius:4,background:c}}/>
+                          ))}
+                        </div>
+                      </div>
+
+                      {/* Bottom nav preview */}
+                      <div style={{background:currentColor,padding:"10px",
+                        display:"flex",justifyContent:"space-around"}}>
+                        {["💊","📅","🎵","🏃","📷"].map((ic,i)=>(
+                          <div key={i} style={{fontSize:"1.1rem",opacity:i===0?1:.5}}>{ic}</div>
+                        ))}
+                      </div>
+                    </div>
+
+                    {/* Tono */}
+                    <div style={{fontSize:".7rem",fontWeight:700,color:T.textMuted,
+                      textTransform:"uppercase",letterSpacing:".06em",marginBottom:6}}>Tono</div>
+                    <div style={{position:"relative",height:20,borderRadius:10,marginBottom:18,
+                      background:"linear-gradient(to right,#f00,#ff0,#0f0,#0ff,#00f,#f0f,#f00)",
+                      cursor:"pointer",boxShadow:"inset 0 1px 3px rgba(0,0,0,.2)"}}
+                      onClick={e=>{
+                        const r=e.currentTarget.getBoundingClientRect();
+                        applyColorHsl(Math.round(Math.max(0,Math.min(1,(e.clientX-r.left)/r.width))*360),S,L);
+                      }}>
+                      <div style={{position:"absolute",top:-4,left:`calc(${(H/360)*100}% - 14px)`,
+                        width:28,height:28,borderRadius:"50%",background:hslToHexFn(H,100,50),
+                        border:"3px solid white",boxShadow:"0 2px 8px rgba(0,0,0,.35)",pointerEvents:"none"}}/>
+                    </div>
+
+                    {/* Saturación */}
+                    <div style={{fontSize:".7rem",fontWeight:700,color:T.textMuted,
+                      textTransform:"uppercase",letterSpacing:".06em",marginBottom:6}}>Saturación</div>
+                    <div style={{position:"relative",height:20,borderRadius:10,marginBottom:18,
+                      background:`linear-gradient(to right,${hslToHexFn(H,0,L)},${hslToHexFn(H,100,L)})`,
+                      cursor:"pointer",boxShadow:"inset 0 1px 3px rgba(0,0,0,.2)"}}
+                      onClick={e=>{
+                        const r=e.currentTarget.getBoundingClientRect();
+                        applyColorHsl(H,Math.round(Math.max(0,Math.min(1,(e.clientX-r.left)/r.width))*100),L);
+                      }}>
+                      <div style={{position:"absolute",top:-4,left:`calc(${S}% - 14px)`,
+                        width:28,height:28,borderRadius:"50%",background:currentColor,
+                        border:"3px solid white",boxShadow:"0 2px 8px rgba(0,0,0,.35)",pointerEvents:"none"}}/>
+                    </div>
+
+                    {/* Luminosidad */}
+                    <div style={{fontSize:".7rem",fontWeight:700,color:T.textMuted,
+                      textTransform:"uppercase",letterSpacing:".06em",marginBottom:6}}>Luminosidad</div>
+                    <div style={{position:"relative",height:20,borderRadius:10,marginBottom:18,
+                      background:`linear-gradient(to right,#000,${hslToHexFn(H,S,50)},#fff)`,
+                      cursor:"pointer",boxShadow:"inset 0 1px 3px rgba(0,0,0,.2)"}}
+                      onClick={e=>{
+                        const r=e.currentTarget.getBoundingClientRect();
+                        applyColorHsl(H,S,Math.round(Math.max(0,Math.min(1,(e.clientX-r.left)/r.width))*100));
+                      }}>
+                      <div style={{position:"absolute",top:-4,left:`calc(${L}% - 14px)`,
+                        width:28,height:28,borderRadius:"50%",background:currentColor,
+                        border:"3px solid white",boxShadow:"0 2px 8px rgba(0,0,0,.35)",pointerEvents:"none"}}/>
+                    </div>
+
+                    {/* Hex + muestra */}
+                    <div style={{display:"flex",gap:10,alignItems:"center",marginBottom:16}}>
+                      <div style={{width:44,height:44,borderRadius:10,background:colorHex,
+                        flexShrink:0,border:`1px solid ${T.border}`,
+                        boxShadow:`0 2px 8px ${currentColor}44`}}/>
+                      <input value={colorHex} onChange={e=>applyColorHex(e.target.value)}
+                        placeholder="#1B4F8A"
+                        style={{...S.inp,fontFamily:"monospace",fontSize:"1rem",
+                          letterSpacing:".06em",flex:1}}/>
+                    </div>
+
+                    {/* Colores rápidos */}
+                    <div style={{fontSize:".7rem",fontWeight:700,color:T.textMuted,
+                      textTransform:"uppercase",letterSpacing:".06em",marginBottom:8}}>
+                      Colores rápidos
+                    </div>
+                    <div style={{display:"flex",flexWrap:"wrap",gap:7,marginBottom:16}}>
+                      {["#1B4F8A","#0F3D6B","#1565C0","#0288D1","#00838F",
+                        "#2E7D32","#558B2F","#6A1B9A","#AD1457","#C62828",
+                        "#E65100","#F57F17","#4E342E","#37474F","#212121",
+                        "#455A64","#BF360C","#880E4F"].map(col=>(
+                        <button key={col} onClick={()=>{
+                          applyColorHex(col);
+                        }} title={col} style={{
+                          width:32,height:32,borderRadius:8,background:col,
+                          border:currentColor===col?"3px solid white":"1.5px solid rgba(0,0,0,.12)",
+                          cursor:"pointer",
+                          boxShadow:currentColor===col?`0 0 0 2px ${col}`:"none",
+                          transition:"all .12s"
+                        }}/>
                       ))}
                     </div>
-                    <div style={{fontSize:".7rem",fontWeight:600,color:p.text,fontFamily:"inherit"}}>{p.name}</div>
-                    {preset===key && <div style={{width:5,height:5,borderRadius:"50%",background:p.primary}}/>}
-                  </button>
-                ))}
-              </div>
-              {/* Preview */}
-              <ConfigSectionTitle T={T} F={F}>Vista previa</ConfigSectionTitle>
-              <div style={{background:T.bg,borderRadius:12,padding:"18px",border:`1px solid ${T.border}`,
-                display:"flex",flexDirection:"column",alignItems:"center",gap:10}}>
-                <div style={{fontFamily:F.display,fontSize:"1.8rem",fontWeight:700,color:T.text}}>{userName}</div>
-                <div style={{width:68,height:68,borderRadius:"50%",background:T.primary,
-                  display:"flex",alignItems:"center",justifyContent:"center",fontSize:"1.6rem",
-                  boxShadow:`0 8px 24px ${T.primary}44`}}>🎙️</div>
-                <div style={{display:"flex",gap:8}}>
-                  {[T.primary,T.accent,T.success,T.danger].map((col,i)=>(
-                    <div key={i} style={{width:28,height:8,borderRadius:4,background:col}}/>
-                  ))}
-                </div>
-              </div>
+
+                    <button onClick={()=>{
+                      applyColorHex("#1B4F8A");
+                    }} style={{background:"none",border:`1px solid ${T.border}`,borderRadius:8,
+                      padding:"8px 16px",fontSize:".8rem",fontWeight:600,
+                      color:T.textSoft,cursor:"pointer",fontFamily:"inherit"}}>
+                      Restablecer azul original
+                    </button>
+                  </div>
+                );
+              })()}
             </div>
           )}
-
           {/* FUENTE */}
           {tab==="fuente" && (
             <div>
