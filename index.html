@@ -1,62 +1,12 @@
 <!DOCTYPE html>
-<html lang="es-AR">
+<html lang="es">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=no" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Acompañar</title>
-  <meta name="description" content="Asistente personal para adultos mayores con Martita IA" />
-
-  <!-- PWA Android -->
-  <meta name="theme-color" content="#1B4F8A" />
-  <meta name="mobile-web-app-capable" content="yes" />
-  <link rel="manifest" href="/manifest.webmanifest" />
-
-  <!-- PWA iOS -->
-  <meta name="apple-mobile-web-app-capable" content="yes" />
-  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
-  <meta name="apple-mobile-web-app-title" content="Acompañar" />
-  <link rel="apple-touch-icon" sizes="192x192" href="/icons/icon-192.png" />
-  <link rel="apple-touch-icon" sizes="152x152" href="/icons/icon-152.png" />
-  <link rel="apple-touch-icon" href="/icons/icon-192.png" />
-
-  <!-- Splash iOS -->
-  <link rel="apple-touch-startup-image" media="screen and (device-width:393px) and (device-height:852px) and (-webkit-device-pixel-ratio:3)" href="/icons/splash-1179x2556.png"/>
-  <link rel="apple-touch-startup-image" media="screen and (device-width:390px) and (device-height:844px) and (-webkit-device-pixel-ratio:3)" href="/icons/splash-1170x2532.png"/>
-  <link rel="apple-touch-startup-image" media="screen and (device-width:375px) and (device-height:812px) and (-webkit-device-pixel-ratio:3)" href="/icons/splash-1125x2436.png"/>
-
-  <link rel="icon" type="image/png" sizes="96x96" href="/icons/icon-96.png" />
-
-  <style>
-    *{box-sizing:border-box;margin:0;padding:0}
-    html,body,#root{height:100%;width:100%;overflow:hidden;background:#1B4F8A;
-      padding-top:env(safe-area-inset-top);
-      padding-bottom:env(safe-area-inset-bottom)}
-    #splash{position:fixed;inset:0;background:#1B4F8A;display:flex;flex-direction:column;
-      align-items:center;justify-content:center;z-index:9999;transition:opacity .4s}
-    #splash.hidden{opacity:0;pointer-events:none}
-    #splash-icon{width:80px;height:80px;background:rgba(255,255,255,.15);border-radius:20px;
-      display:flex;align-items:center;justify-content:center;font-size:2.5rem}
-    #splash-title{font-family:system-ui,sans-serif;font-size:2rem;font-weight:700;
-      color:white;margin-top:16px;letter-spacing:-.02em}
-    #splash-sub{font-family:system-ui,sans-serif;font-size:.9rem;
-      color:rgba(255,255,255,.6);margin-top:6px}
-  </style>
 </head>
 <body>
-  <div id="splash">
-    <div id="splash-icon">🤝</div>
-    <div id="splash-title">acompañar</div>
-    <div id="splash-sub">Cargando Martita…</div>
-  </div>
   <div id="root"></div>
-  <script type="module" src="/main.jsx"
-  <script>
-    window.addEventListener('load',()=>{
-      setTimeout(()=>{
-        const s=document.getElementById('splash');
-        if(s){s.classList.add('hidden');setTimeout(()=>s.remove(),400);}
-      },800);
-    });
-  </script>
+  <script type="module" src="/main.jsx"></script>
 </body>
 </html>
