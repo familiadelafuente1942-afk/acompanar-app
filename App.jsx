@@ -1012,7 +1012,7 @@ const res = await fetch("/api/chat", {
               "Accept": "audio/mpeg",
             },
             body: JSON.stringify({
-              text,
+              text,voice_id: "pMsXgVXv3BLzUgSXRplE",
               model_id: "eleven_multilingual_v2",
               voice_settings: {
                 stability: 0.25,          // Muy bajo = máxima variación emocional
