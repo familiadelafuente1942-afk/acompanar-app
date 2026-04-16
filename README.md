@@ -1,5 +1,6 @@
 # Acompañar v2.0 — Guía de deploy
 
+
 ## Deploy en Vercel (10 minutos)
 
 ### 1. Instalar Node.js
