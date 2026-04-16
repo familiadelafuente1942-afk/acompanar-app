@@ -998,17 +998,17 @@ const res = await fetch("/api/chat", {
   const ELEVEN_VOICE_ID = "pMsXgVXv3BLzUgSXRplE"; // Paola — latina, emotiva
 
   async function speak(text, onDone) {
-    const apiKey = localStorage.getItem("eleven_api_key") || "";
+   const apiKey = true;
 
     // -- Intentar ElevenLabs --
     if (apiKey) {
       try {
         const res = await fetch(
-          `https://api.elevenlabs.io/v1/text-to-speech/${ELEVEN_VOICE_ID}/stream`,
+          `/api/speak`    
           {
             method: "POST",
             headers: {
-              "xi-api-key": apiKey,
+              
               "Content-Type": "application/json",
               "Accept": "audio/mpeg",
             },
