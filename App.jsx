@@ -987,7 +987,7 @@ const res = await fetch("/api/chat", {
       setYtData({ query:q, url:`https://www.youtube.com/results?search_query=${encodeURIComponent(q)}` });
     }
     setAiMsg(reply); setAiState("speaking");
-    speak(reply, () => startMic());
+    speak(reply, () => setAiState("idle"));
   }
 
   // -- ElevenLabs VOICES --
@@ -1054,7 +1054,7 @@ async function speak(text, onDone) {
     let best = null;
     for (const n of pref) { best = vs.find(v => v.lang.startsWith("es") && v.name.includes(n)); if (best) break; }
     if (!best) best = vs.find(v => v.lang.startsWith("es"));
-    if (best) u.voice = best;
+    u.onend = () => { setTimeout(startMic, 500); }; u.onerror = onDone;
     u.onend = onDone; u.onerror = onDone;
 setTimeout(onDone, (text.length * 80) + 2000);
    window.speechSynthesis.speak(u);
