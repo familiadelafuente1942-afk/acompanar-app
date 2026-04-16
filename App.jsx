@@ -1047,10 +1047,10 @@ async function speak(text, onDone) {
     window.speechSynthesis.cancel();
     const u = new SpeechSynthesisUtterance(text);
     u.lang  = "es-AR";
-    u.rate  = 0.82;
+    u.rate  = 0.75;
     u.pitch = 1.15;
     const vs   = window.speechSynthesis.getVoices();
-    const pref = ["Paulina","Monica","Valeria","Laura","Luciana","Camila","Isabella"];
+    const pref = ["Siri","Paulina","Monica","Valeria","Laura","Luciana","Camila","Isabella"];
     let best = null;
     for (const n of pref) { best = vs.find(v => v.lang.startsWith("es") && v.name.includes(n)); if (best) break; }
     if (!best) best = vs.find(v => v.lang.startsWith("es"));
