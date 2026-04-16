@@ -1030,7 +1030,7 @@ const res = await fetch("/api/chat", {
           audio.playbackRate = 0.88; // Más lenta = más cálida
           audio.onended = () => { URL.revokeObjectURL(url); onDone(); };
           audio.onerror = () => { URL.revokeObjectURL(url); webSpeak(text, onDone); };
-          audio.load(); audio.play();
+          audio.play().catch(() => webSpeak(text, onDone));
           return;
         }
       } catch (e) {}
