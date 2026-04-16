@@ -932,8 +932,8 @@ function PanelNorma({ contactos, meds, turnos, perfil, themeConfig }) {
     const sys = buildSystemPrompt(contactos, meds, turnos, perfil);
     let reply = "";
     try {
-      const res = await fetch("https://api.anthropic.com/v1/messages", {
-        method:"POST", headers:{"Content-Type":"application/json","x-api-key":import.meta.env.VITE_ANTHROPIC_KEY||"","anthropic-version":"2023-06-01","anthropic-dangerous-direct-browser-access":"true"},
+      const res = await fetch("/api/chat", {
+        method:"POST", headers:{"Content-Type":"application/json","anthropic-version":"2023-06-01"},
         body: JSON.stringify({ model:"claude-sonnet-4-20250514", max_tokens:200, system:sys, messages:[{role:"user",content:text}] })
       });
       const d = await res.json();
