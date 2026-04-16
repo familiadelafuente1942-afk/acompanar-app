@@ -932,7 +932,7 @@ function PanelNorma({ contactos, meds, turnos, perfil, themeConfig }) {
     const sys = buildSystemPrompt(contactos, meds, turnos, perfil);
     let reply = "";
     try {
-      const res = await fetch("https://api.anthropic.com/v1/messages", {
+      const res = await fetch("/api/claude", {
         method:"POST", headers:{"Content-Type":"application/json"},
         body: JSON.stringify({ model:"claude-sonnet-4-20250514", max_tokens:200, system:sys, messages:[{role:"user",content:text}] })
       });
@@ -1656,7 +1656,7 @@ function PanelHija({ hija, contactos, setContactos, meds, setMeds, turnos, setTu
     const sys = buildSystemPrompt(contactos, meds, turnos, perfil);
     const hijaName = (hijaData?.nombre || hija).charAt(0).toUpperCase() + (hijaData?.nombre || hija).slice(1);
     const prompt = `${hijaName} esta por llamar a Norma. Escribi un briefing breve y calido — un parrafo de 3-4 oraciones — sobre como estuvo Norma hoy: su estado emocional, algo fisico relevante si lo hay, y UNA sugerencia concreta de que preguntarle para que la conversacion sea real y cercana. Habla directamente a ${hijaName}, como si fueras la asistente que cuida a su mama. Tono calido, honesto, sin drama.`;
-    fetch("https://api.anthropic.com/v1/messages", {
+    fetch("/api/claude", {
       method:"POST",
       headers:{"Content-Type":"application/json"},
       body:JSON.stringify({ model:"claude-sonnet-4-20250514", max_tokens:220,
