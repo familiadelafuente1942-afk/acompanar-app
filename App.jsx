@@ -987,7 +987,7 @@ const res = await fetch("/api/chat", {
       setYtData({ query:q, url:`https://www.youtube.com/results?search_query=${encodeURIComponent(q)}` });
     }
     setAiMsg(reply); setAiState("speaking");
-    speak(reply, () => setAiState("idle"));
+    speak(reply, () => startMic());
   }
 
   // -- ElevenLabs VOICES --
