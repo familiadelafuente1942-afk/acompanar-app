@@ -900,7 +900,9 @@ function PanelNorma({ contactos, meds, turnos, perfil, themeConfig }) {
   }, [screen]);
 
   // -- MIC --
-  function handleMicBtn() {
+  function handleMicBtn() {window.speechSynthesis.cancel();
+const u = new SpeechSynthesisUtterance('');
+window.speechSynthesis.speak(u);
     if (aiState === "idle") startMic();
     else if (aiState === "listening") { recogRef.current?.stop(); setAiState("idle"); }
     else if (aiState === "speaking")  { window.speechSynthesis?.cancel(); setAiState("idle"); }
