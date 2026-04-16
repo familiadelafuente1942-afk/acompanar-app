@@ -1054,8 +1054,8 @@ async function speak(text, onDone) {
     let best = null;
     for (const n of pref) { best = vs.find(v => v.lang.startsWith("es") && v.name.includes(n)); if (best) break; }
     if (!best) best = vs.find(v => v.lang.startsWith("es"));
-    u.onend = () => { setTimeout(startMic, 500); }; u.onerror = onDone;
-    u.onend = onDone; u.onerror = onDone;
+  u.onend = () => { setTimeout(startMic, 800); }; u.onerror = () => { setTimeout(startMic, 800); };
+
 setTimeout(onDone, (text.length * 80) + 2000);
    window.speechSynthesis.speak(u);
 1060  }
