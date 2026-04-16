@@ -1055,8 +1055,9 @@ const res = await fetch("/api/chat", {
     if (!best) best = vs.find(v => v.lang.startsWith("es"));
     if (best) u.voice = best;
     u.onend = onDone; u.onerror = onDone;
-    window.speechSynthesis.speak(u);
-  }
+setTimeout(onDone, (text.length * 80) + 2000);
+   window.speechSynthesis.speak(u);
+1060  }
 
   const btnBg   = aiState==="listening" ? T.primaryDk : aiState==="speaking" ? T.primaryDk : aiState==="thinking" ? "#374151" : T.primary;
   const btnIcon = aiState==="thinking" ? "💭" : aiState==="speaking" ? "🔊" : aiState==="listening" ? "🛑" : I.idle;
