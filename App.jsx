@@ -1,5 +1,181 @@
 import { useState, useEffect, useRef } from "react";
 
+// =========================================================================
+// FIREBASE + CLOUDINARY
+// =========================================================================
+// Carga Firebase desde CDN al arrancar la app (sin necesidad de npm install).
+// Todas las familias del planeta podrían usar esta app apuntando a distintos
+// proyectos de Firebase. En este build está conectado al proyecto familiar.
+// =========================================================================
+
+const FIREBASE_CONFIG = {
+    apiKey: "AIzaSyAdaOr2mUl2MpdIWRoD6QF6RnmkaWh8N8A",
+    authDomain: "acompanar-app.firebaseapp.com",
+    projectId: "acompanar-app",
+    storageBucket: "acompanar-app.firebasestorage.app",
+    messagingSenderId: "472516147812",
+    appId: "1:472516147812:web:2bcd442807990e07e8bd71",
+};
+
+const CLOUDINARY_CLOUD = "dqmynxx9h";
+const CLOUDINARY_PRESET = "acompanar_fotos";
+const FAMILY_ID = "delafuente"; // ID único de esta familia en la base de datos
+const ADMIN_PASSWORD = "familia2024"; // Contraseña para modo administrador
+
+// Estado global de Firebase — se hidrata al arrancar
+let _fb = { db: null, ready: false, error: null, unsubs: {} };
+const _fbListeners = [];
+function _notifyFb() { for (const fn of _fbListeners) try { fn(); } catch (e) { } }
+
+// Cargar SDK de Firebase desde CDN (solo una vez)
+async function _loadFirebase() {
+    if (_fb.ready || _fb.error) return;
+    try {
+        // Cargar módulos de Firebase v10 (ESM desde CDN)
+        const appMod = await import("https://www.gstatic.com/firebasejs/10.13.0/firebase-app.js");
+        const fsMod = await import("https://www.gstatic.com/firebasejs/10.13.0/firebase-firestore.js");
+
+        const app = appMod.initializeApp(FIREBASE_CONFIG);
+        const db = fsMod.getFirestore(app);
+
+        _fb.db = db;
+        _fb.fs = fsMod;
+        _fb.ready = true;
+        _notifyFb();
+    } catch (e) {
+        console.error("[Firebase] No se pudo cargar:", e);
+        _fb.error = e;
+        _notifyFb();
+    }
+}
+
+// Arrancar carga de Firebase inmediatamente
+if (typeof window !== "undefined") _loadFirebase();
+
+// Helper: leer un documento (con fallback a cache local si Firebase no está listo)
+async function fbGet(collectionName) {
+    if (!_fb.ready) return null;
+    try {
+        const ref = _fb.fs.doc(_fb.db, "families", FAMILY_ID, "data", collectionName);
+        const snap = await _fb.fs.getDoc(ref);
+        return snap.exists() ? snap.data() : null;
+    } catch (e) {
+        console.error("[Firebase] Error leyendo", collectionName, e);
+        return null;
+    }
+}
+
+// Helper: escribir un documento
+async function fbSet(collectionName, data) {
+    if (!_fb.ready) return false;
+    try {
+        const ref = _fb.fs.doc(_fb.db, "families", FAMILY_ID, "data", collectionName);
+        await _fb.fs.setDoc(ref, { value: data, updatedAt: Date.now() });
+        return true;
+    } catch (e) {
+        console.error("[Firebase] Error escribiendo", collectionName, e);
+        return false;
+    }
+}
+
+// Helper: escuchar cambios en tiempo real
+function fbSubscribe(collectionName, callback) {
+    if (!_fb.ready) return () => { };
+    try {
+        const ref = _fb.fs.doc(_fb.db, "families", FAMILY_ID, "data", collectionName);
+        return _fb.fs.onSnapshot(ref, (snap) => {
+            if (snap.exists()) {
+                const data = snap.data();
+                callback(data?.value ?? null);
+            }
+        });
+    } catch (e) {
+        console.error("[Firebase] Error subscribiendo a", collectionName, e);
+        return () => { };
+    }
+}
+
+// Hook de React para usar datos sincronizados con Firebase
+// Devuelve [value, setValue] similar a useState, pero guarda en Firestore
+function useFirebaseState(collectionName, defaultValue) {
+    const [value, setValue] = useState(defaultValue);
+    const [loaded, setLoaded] = useState(false);
+    const skipNextSave = useRef(true);
+
+    useEffect(() => {
+        let cancelled = false;
+        // Carga inicial + suscripción
+        const init = async () => {
+            // Esperar a que Firebase esté listo
+            let waited = 0;
+            while (!_fb.ready && !_fb.error && waited < 5000) {
+                await new Promise(r => setTimeout(r, 100));
+                waited += 100;
+            }
+            if (cancelled) return;
+            if (_fb.error || !_fb.ready) { setLoaded(true); return; }
+
+            // Primera carga
+            const remote = await fbGet(collectionName);
+            if (cancelled) return;
+            if (remote && remote.value !== undefined) {
+                skipNextSave.current = true;
+                setValue(remote.value);
+            }
+            setLoaded(true);
+
+            // Suscripción a cambios en tiempo real
+            const unsub = fbSubscribe(collectionName, (v) => {
+                if (v !== undefined && v !== null) {
+                    skipNextSave.current = true;
+                    setValue(v);
+                }
+            });
+            _fb.unsubs[collectionName] = unsub;
+        };
+        init();
+        return () => {
+            cancelled = true;
+            if (_fb.unsubs[collectionName]) {
+                _fb.unsubs[collectionName]();
+                delete _fb.unsubs[collectionName];
+            }
+        };
+    }, [collectionName]);
+
+    // Guardar en Firestore cuando cambia el valor (excepto cuando vino de Firestore)
+    useEffect(() => {
+        if (!loaded) return;
+        if (skipNextSave.current) { skipNextSave.current = false; return; }
+        fbSet(collectionName, value);
+    }, [value, loaded, collectionName]);
+
+    return [value, setValue, loaded];
+}
+
+// Subir foto a Cloudinary — devuelve URL pública
+async function uploadToCloudinary(file) {
+    const formData = new FormData();
+    formData.append("file", file);
+    formData.append("upload_preset", CLOUDINARY_PRESET);
+    try {
+        const res = await fetch(`https://api.cloudinary.com/v1_1/${CLOUDINARY_CLOUD}/image/upload`, {
+            method: "POST",
+            body: formData,
+        });
+        const data = await res.json();
+        if (data.secure_url) return data.secure_url;
+        throw new Error(data.error?.message || "Error al subir foto");
+    } catch (e) {
+        console.error("[Cloudinary] Error:", e);
+        throw e;
+    }
+}
+
+// =========================================================================
+
+
+
 const css = document.createElement("style");
 css.textContent = `
   @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
@@ -616,10 +792,18 @@ function Toggle({ on, onChange, color }) {
 
 // -- APP --
 export default function App() {
-    const [contactos, setContactos] = useState(INIT_CONTACTOS);
-    const [meds, setMeds] = useState(INIT_MEDS);
-    const [turnos, setTurnos] = useState(INIT_TURNOS);
-    const [perfil, setPerfil] = useState(INIT_PERFIL);
+    const [contactos, setContactos] = useFirebaseState("contactos", INIT_CONTACTOS);
+    const [meds, setMeds] = useFirebaseState("meds", INIT_MEDS);
+    const [turnos, setTurnos] = useFirebaseState("turnos", INIT_TURNOS);
+    const [perfil, setPerfil] = useFirebaseState("perfil", INIT_PERFIL);
+    // Modo administrador (hijas) — se guarda solo en el aparato, NO se comparte
+    const [isAdmin, setIsAdmin] = useState(() => {
+        try { return _readRaw("acompanar_is_admin") === "1"; } catch (e) { return false; }
+    });
+    useEffect(() => {
+        if (isAdmin) _writeRaw("acompanar_is_admin", "1");
+        else _removeRaw("acompanar_is_admin");
+    }, [isAdmin]);
     const [role, setRole] = useState("norma");
 
     // -- SENSOR SWITCHBOT --
@@ -669,19 +853,45 @@ export default function App() {
         return () => clearInterval(id);
     }, []);
 
-    // -- TEMA PERSONALIZABLE --
-    const savedCfg = loadConfig();
-    const [themePreset, setThemePreset] = useState(savedCfg?.preset || "organico");
-    const [themeFontId, setThemeFontId] = useState(savedCfg?.fontId || "lora");
-    const [themeIconId, setThemeIconId] = useState(savedCfg?.iconId || "mic");
-    const [themeShapeId, setThemeShapeId] = useState(savedCfg?.shapeId || "circle");
-    const [themeTextureId, setThemeTextureId] = useState(savedCfg?.textureId || "paper");
-    const [themeBtnLabel, setThemeBtnLabel] = useState(savedCfg?.btnLabel || "Hablar con Martita");
-    const [themeBtnPosition, setThemeBtnPosition] = useState(savedCfg?.btnPosition ?? 50); // 0=top 50=center 100=bottom
-    const [themeUserName, setThemeUserName] = useState(savedCfg?.userName || "Norma");
-    const [themeNavLabels, setThemeNavLabels] = useState(savedCfg?.navLabels || ["Pastillas", "Turnos", "Música", "Ejercicios", "Urgencias"]);
-    const [themeCustomBg, setThemeCustomBg] = useState(savedCfg?.customBg || "");
-    const [themeAppColor, setThemeAppColor] = useState(savedCfg?.appColor || "#1B4F8A");
+    // -- TEMA PERSONALIZABLE (sincronizado con Firebase) --
+    const [themeData, setThemeData, themeLoaded] = useFirebaseState("theme", {
+        preset: "organico",
+        fontId: "lora",
+        iconId: "mic",
+        shapeId: "circle",
+        textureId: "paper",
+        btnLabel: "Hablar con Martita",
+        btnPosition: 50,
+        userName: "Norma",
+        navLabels: ["Pastillas", "Turnos", "Música", "Ejercicios", "Urgencias"],
+        customBg: "",
+        appColor: "#1B4F8A",
+    });
+    // Helpers para setear un campo individual manteniendo el resto
+    const patchTheme = (patch) => setThemeData(prev => ({ ...(prev || {}), ...patch }));
+    const themePreset = themeData?.preset || "organico";
+    const setThemePreset = (v) => patchTheme({ preset: typeof v === "function" ? v(themePreset) : v });
+    const themeFontId = themeData?.fontId || "lora";
+    const setThemeFontId = (v) => patchTheme({ fontId: typeof v === "function" ? v(themeFontId) : v });
+    const themeIconId = themeData?.iconId || "mic";
+    const setThemeIconId = (v) => patchTheme({ iconId: typeof v === "function" ? v(themeIconId) : v });
+    const themeShapeId = themeData?.shapeId || "circle";
+    const setThemeShapeId = (v) => patchTheme({ shapeId: typeof v === "function" ? v(themeShapeId) : v });
+    const themeTextureId = themeData?.textureId || "paper";
+    const setThemeTextureId = (v) => patchTheme({ textureId: typeof v === "function" ? v(themeTextureId) : v });
+    const themeBtnLabel = themeData?.btnLabel || "Hablar con Martita";
+    const setThemeBtnLabel = (v) => patchTheme({ btnLabel: typeof v === "function" ? v(themeBtnLabel) : v });
+    const themeBtnPosition = themeData?.btnPosition ?? 50;
+    const setThemeBtnPosition = (v) => patchTheme({ btnPosition: typeof v === "function" ? v(themeBtnPosition) : v });
+    const themeUserName = themeData?.userName || "Norma";
+    const setThemeUserName = (v) => patchTheme({ userName: typeof v === "function" ? v(themeUserName) : v });
+    const themeNavLabels = themeData?.navLabels || ["Pastillas", "Turnos", "Música", "Ejercicios", "Urgencias"];
+    const setThemeNavLabels = (v) => patchTheme({ navLabels: typeof v === "function" ? v(themeNavLabels) : v });
+    const themeCustomBg = themeData?.customBg || "";
+    const setThemeCustomBg = (v) => patchTheme({ customBg: typeof v === "function" ? v(themeCustomBg) : v });
+    const themeAppColor = themeData?.appColor || "#1B4F8A";
+    const setThemeAppColor = (v) => patchTheme({ appColor: typeof v === "function" ? v(themeAppColor) : v });
+
     const [showAppConfig, setShowAppConfig] = useState(false);
     const [showPinModal, setShowPinModal] = useState(false);
     const [pinInput, setPinInput] = useState("");
@@ -705,6 +915,8 @@ export default function App() {
     }
 
     function openConfig() {
+        // Solo los administradores (hijas) pueden abrir la configuración
+        if (!isAdmin) { setShowAdminModal(true); return; }
         setPinInput(""); setPinError(false); setShowPinModal(true);
     }
 
@@ -723,26 +935,42 @@ export default function App() {
         showConfig: showAppConfig, setShowConfig: setShowAppConfig,
     };
 
-    // Auto-save theme on change
+    // Modal de login de administrador
+    const [showAdminModal, setShowAdminModal] = useState(false);
+    const [adminPwdInput, setAdminPwdInput] = useState("");
+    const [adminPwdError, setAdminPwdError] = useState(false);
+
+    function tryAdminLogin() {
+        if (adminPwdInput === ADMIN_PASSWORD) {
+            setIsAdmin(true);
+            setShowAdminModal(false);
+            setAdminPwdInput("");
+            setAdminPwdError(false);
+        } else {
+            setAdminPwdError(true);
+            setTimeout(() => setAdminPwdError(false), 2000);
+        }
+    }
+
+    // Si no es admin, forzar modo Norma (las hijas solo pueden verse unas a otras en admin)
     useEffect(() => {
-        saveConfig({
-            preset: themePreset, fontId: themeFontId, iconId: themeIconId,
-            shapeId: themeShapeId, textureId: themeTextureId, btnLabel: themeBtnLabel, btnPosition: themeBtnPosition,
-            userName: themeUserName, navLabels: themeNavLabels, customBg: themeCustomBg, appColor: themeAppColor
-        });
-    }, [themePreset, themeFontId, themeIconId, themeShapeId, themeTextureId, themeBtnLabel, themeUserName, themeNavLabels, themeCustomBg]);
+        if (!isAdmin && role !== "norma") setRole("norma");
+    }, [isAdmin, role]);
 
     const allRoles = [
         { id: "norma", label: themeUserName || "Norma", color: "#1B4F8A", img: "https://images.unsplash.com/photo-1567532939604-b6b5b0db2604?w=80&q=70" },
         ...contactos.map(c => ({ id: c.id.toString(), label: c.nombre, color: c.color, img: c.avatar })),
     ];
 
+    // Filtrar roles visibles: si no es admin, solo se ve Norma
+    const visibleRoles = isAdmin ? allRoles : allRoles.filter(r => r.id === "norma");
+
     return (
         <div style={{ display: "flex", flexDirection: "column", height: "100vh", width: "100%", maxWidth: 480, margin: "0 auto", fontFamily: "'Inter',system-ui,sans-serif", overflow: "hidden", overflowX: "hidden", background: "#F4F6F9" }}>
 
             {/* TAB BAR PRINCIPAL — cuadrado, sin avatars */}
             <div style={{ background: themeAppColor || "#1B4F8A", display: "flex", flexShrink: 0, borderBottom: `2px solid ${(themeAppColor || "#1B4F8A")}CC` }}>
-                {allRoles.map(r => (
+                {visibleRoles.map(r => (
                     <button key={r.id} onClick={() => setRole(r.id)} style={{
                         flex: 1, padding: "13px 4px", border: "none", cursor: "pointer",
                         fontFamily: "inherit", fontSize: ".78rem", fontWeight: role === r.id ? 700 : 500,
@@ -754,14 +982,92 @@ export default function App() {
                         {r.label}
                     </button>
                 ))}
-                {/* Botón personalizar */}
-                <button onClick={openConfig} style={{
-                    padding: "10px 14px", border: "none", background: "none", cursor: "pointer",
-                    color: "rgba(255,255,255,.45)", fontSize: ".95rem", flexShrink: 0
-                }}>⚙️</button>
+                {/* Botón modo admin / logout admin */}
+                {isAdmin ? (
+                    <button onClick={() => { setIsAdmin(false); setRole("norma"); }} style={{
+                        padding: "10px 12px", border: "none", background: "rgba(255,255,255,.12)", cursor: "pointer",
+                        color: "white", fontSize: ".72rem", fontWeight: 600, flexShrink: 0,
+                        fontFamily: "inherit"
+                    }} title="Salir del modo administrador">
+                        Salir
+                    </button>
+                ) : (
+                    <button onClick={() => setShowAdminModal(true)} style={{
+                        padding: "10px 12px", border: "none", background: "none", cursor: "pointer",
+                        color: "rgba(255,255,255,.45)", fontSize: ".95rem", flexShrink: 0
+                    }} title="Modo administrador (familia)">
+                        👨‍👩‍👧
+                    </button>
+                )}
+                {/* Botón personalizar — solo admin */}
+                {isAdmin && (
+                    <button onClick={openConfig} style={{
+                        padding: "10px 14px", border: "none", background: "none", cursor: "pointer",
+                        color: "rgba(255,255,255,.45)", fontSize: ".95rem", flexShrink: 0
+                    }}>⚙️</button>
+                )}
             </div>
 
             {/* PIN MODAL */}
+            {/* ADMIN LOGIN MODAL — para hijas que quieren editar */}
+            {showAdminModal && (
+                <div style={{
+                    position: "fixed", inset: 0, zIndex: 600, background: "rgba(0,0,0,.6)",
+                    display: "flex", alignItems: "center", justifyContent: "center", padding: 20
+                }}
+                    onClick={() => { setShowAdminModal(false); setAdminPwdInput(""); setAdminPwdError(false); }}>
+                    <div style={{
+                        background: "white", borderRadius: 20, padding: "28px 24px 28px",
+                        width: "100%", maxWidth: 340, textAlign: "center"
+                    }}
+                        onClick={e => e.stopPropagation()}>
+                        <div style={{ fontSize: "1.8rem", marginBottom: 6 }}>👨‍👩‍👧</div>
+                        <div style={{ fontSize: "1.15rem", fontWeight: 700, color: "#1B4F8A", marginBottom: 6 }}>
+                            Modo Administrador
+                        </div>
+                        <div style={{ fontSize: ".85rem", color: "#6B7280", marginBottom: 20, lineHeight: 1.4 }}>
+                            Ingresá la contraseña familiar para editar fotos, contactos, medicación y turnos.
+                        </div>
+                        <input
+                            type="password"
+                            value={adminPwdInput}
+                            onChange={e => { setAdminPwdInput(e.target.value); setAdminPwdError(false); }}
+                            onKeyDown={e => { if (e.key === "Enter") tryAdminLogin(); }}
+                            placeholder="Contraseña familiar"
+                            autoFocus
+                            style={{
+                                width: "100%", padding: "12px 14px", borderRadius: 10,
+                                border: `2px solid ${adminPwdError ? "#DC2626" : "#E5E7EB"}`,
+                                fontSize: "1rem", marginBottom: 14, outline: "none",
+                                fontFamily: "inherit"
+                            }}
+                        />
+                        {adminPwdError && (
+                            <div style={{ fontSize: ".8rem", color: "#DC2626", fontWeight: 600, marginBottom: 10 }}>
+                                Contraseña incorrecta
+                            </div>
+                        )}
+                        <button onClick={tryAdminLogin}
+                            style={{
+                                width: "100%", padding: "12px", borderRadius: 10,
+                                background: "#1B4F8A", color: "white", border: "none",
+                                fontSize: "1rem", fontWeight: 600, cursor: "pointer",
+                                fontFamily: "inherit", marginBottom: 8
+                            }}>
+                            Entrar
+                        </button>
+                        <button onClick={() => { setShowAdminModal(false); setAdminPwdInput(""); setAdminPwdError(false); }}
+                            style={{
+                                width: "100%", padding: "10px", background: "none", border: "none",
+                                color: "#9CA3AF", fontSize: ".9rem", cursor: "pointer",
+                                fontFamily: "inherit"
+                            }}>
+                            Cancelar
+                        </button>
+                    </div>
+                </div>
+            )}
+
             {showPinModal && (
                 <div style={{
                     position: "fixed", inset: 0, zIndex: 600, background: "rgba(0,0,0,.6)",
@@ -941,6 +1247,29 @@ function PanelNorma({ contactos, meds, turnos, perfil, themeConfig }) {
     const [urgente, setUrgente] = useState(null);
     const recogRef = useRef(null);
     const audioRef = useRef(null);
+    // Modo conversación continua: una vez que Norma toca el botón,
+    // la app se queda escuchando + hablando hasta 1 minuto sin actividad
+    const [convoActive, setConvoActive] = useState(false);
+    const convoTimerRef = useRef(null);
+    const convoActiveRef = useRef(false);
+    useEffect(() => { convoActiveRef.current = convoActive; }, [convoActive]);
+
+    // Resetear el timer de 1 minuto cada vez que hay actividad
+    function resetConvoTimer() {
+        if (convoTimerRef.current) clearTimeout(convoTimerRef.current);
+        convoTimerRef.current = setTimeout(() => {
+            // Después de 1 minuto de inactividad, apagar todo
+            setConvoActive(false);
+            try { recogRef.current?.stop(); } catch (e) { }
+            try { window.speechSynthesis?.cancel(); } catch (e) { }
+            try { audioRef.current?.pause(); audioRef.current = null; } catch (e) { }
+            setAiState("idle");
+        }, 60000); // 60 segundos = 1 minuto
+    }
+
+    useEffect(() => {
+        return () => { if (convoTimerRef.current) clearTimeout(convoTimerRef.current); };
+    }, []);
 
     useEffect(() => {
         const id = setInterval(() => setClock(getTime()), 30000);
@@ -960,23 +1289,27 @@ function PanelNorma({ contactos, meds, turnos, perfil, themeConfig }) {
 
     // -- MIC --
     function handleMicBtn() {
-        // Cortar cualquier audio que esté sonando
+        // Si toca el botón, siempre cancelar cualquier audio que esté sonando
         try { window.speechSynthesis?.cancel(); } catch (e) { }
         try { audioRef.current?.pause(); audioRef.current = null; } catch (e) { }
 
-        if (aiState === "idle") startMic();
-        else if (aiState === "listening") {
+        if (convoActive) {
+            // Si ya había una conversación activa → apagarla
+            setConvoActive(false);
+            if (convoTimerRef.current) clearTimeout(convoTimerRef.current);
             try { recogRef.current?.stop(); } catch (e) { }
             setAiState("idle");
+        } else {
+            // Iniciar conversación continua
+            setConvoActive(true);
+            resetConvoTimer();
+            startMic();
         }
-        else if (aiState === "speaking") { setAiState("idle"); }
-        else if (aiState === "thinking") { setAiState("idle"); }
     }
 
     function startMic() {
         const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
         if (!SR) { processQ("Hola Martita, ¿cómo estás?"); return; }
-        // Evitar re-arranque si ya hay uno activo
         try { recogRef.current?.stop(); } catch (e) { }
         const r = new SR();
         r.lang = "es-AR"; r.interimResults = false; r.continuous = false; r.maxAlternatives = 1;
@@ -986,16 +1319,34 @@ function PanelNorma({ contactos, meds, turnos, perfil, themeConfig }) {
         r.onresult = e => {
             if (handled) return; handled = true;
             try { r.stop(); } catch (x) { }
+            resetConvoTimer(); // Norma habló → resetear timer de inactividad
             setAiState("idle");
             processQ(e.results[0][0].transcript);
         };
-        r.onerror = () => {
+        r.onerror = (ev) => {
             if (handled) return; handled = true;
             setAiState("idle");
+            // Si el error fue "no-speech" y el modo conversación está activo,
+            // reintentar después de un instante (silencio prolongado)
+            if (ev && ev.error === "no-speech" && convoActiveRef.current) {
+                setTimeout(() => {
+                    if (convoActiveRef.current && aiState !== "speaking" && aiState !== "thinking") {
+                        startMic();
+                    }
+                }, 500);
+            }
         };
         r.onend = () => {
             if (handled) return; handled = true;
             setAiState("idle");
+            // Si está en modo conversación y no se procesó nada, reintentar
+            if (convoActiveRef.current) {
+                setTimeout(() => {
+                    if (convoActiveRef.current && aiState === "idle") {
+                        startMic();
+                    }
+                }, 300);
+            }
         };
         try { r.start(); } catch (e) { handled = true; setAiState("idle"); }
     }
@@ -1066,7 +1417,16 @@ function PanelNorma({ contactos, meds, turnos, perfil, themeConfig }) {
             setYtData({ query: q, url: `https://www.youtube.com/results?search_query=${encodeURIComponent(q)}` });
         }
         setAiMsg(reply); setAiState("speaking");
-        speak(reply, () => setAiState("idle"));
+        speak(reply, () => {
+            setAiState("idle");
+            // Si la conversación sigue activa, reabrir micrófono para seguir hablando
+            if (convoActiveRef.current) {
+                resetConvoTimer();
+                setTimeout(() => {
+                    if (convoActiveRef.current) startMic();
+                }, 400);
+            }
+        });
     }
 
     // -- ElevenLabs VOICES --
@@ -2608,32 +2968,29 @@ function PanelHija({ hija, contactos, setContactos, meds, setMeds, turnos, setTu
                             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" /><circle cx="8.5" cy="8.5" r="1.5" /><path d="M21 15l-5-5L5 21" /></svg>
                             Subir fotos
                             <input type="file" accept="image/*" multiple style={{ display: "none" }}
-                                onChange={e => {
+                                onChange={async e => {
                                     const files = Array.from(e.target.files);
                                     if (!files.length) return;
+                                    e.target.value = "";
                                     const subioPor = (hijaData?.nombre || hija).charAt(0).toUpperCase() + (hijaData?.nombre || hija).slice(1);
                                     const anio = new Date().getFullYear().toString();
-                                    let loaded = [];
-                                    let pending = files.length;
-                                    files.forEach((file, idx) => {
-                                        const reader = new FileReader();
-                                        reader.onload = ev => {
-                                            loaded.push({
+                                    // Subir a Cloudinary en paralelo
+                                    try {
+                                        const uploads = await Promise.all(files.map(async (file, idx) => {
+                                            const url = await uploadToCloudinary(file);
+                                            return {
                                                 id: Date.now() + idx,
-                                                url: ev.target.result,
+                                                url,
                                                 titulo: file.name.replace(/[.][^.]+$/, "").replace(/[-_]/g, " "),
                                                 anio,
                                                 subidaPor: subioPor,
                                                 posicion: "center center"
-                                            });
-                                            pending--;
-                                            if (pending === 0) {
-                                                setPerfil(p => ({ ...p, fotos: [...loaded.reverse(), ...(p.fotos || [])] }));
-                                            }
-                                        };
-                                        reader.readAsDataURL(file);
-                                    });
-                                    e.target.value = "";
+                                            };
+                                        }));
+                                        setPerfil(p => ({ ...p, fotos: [...uploads.reverse(), ...(p.fotos || [])] }));
+                                    } catch (err) {
+                                        alert("No se pudieron subir las fotos. Probá de nuevo.\n\n" + (err?.message || ""));
+                                    }
                                 }}
                             />
                         </label>
@@ -3488,12 +3845,16 @@ function ConfigPanelApp({ T: _Tbase, F, themeConfig, contactos, setContactos, on
                                     }}>
                                         📷 Elegir foto del dispositivo
                                         <input type="file" accept="image/*" style={{ display: "none" }}
-                                            onChange={e => {
+                                            onChange={async e => {
                                                 const file = e.target.files[0];
                                                 if (!file) return;
-                                                const reader = new FileReader();
-                                                reader.onload = ev => themeConfig.setCustomBg(ev.target.result);
-                                                reader.readAsDataURL(file);
+                                                e.target.value = "";
+                                                try {
+                                                    const url = await uploadToCloudinary(file);
+                                                    themeConfig.setCustomBg(url);
+                                                } catch (err) {
+                                                    alert("No se pudo subir la foto. Probá de nuevo.");
+                                                }
                                             }} />
                                     </label>
                                     <div style={{ fontSize: ".72rem", color: T.textMuted, textAlign: "center", marginTop: 8 }}>
