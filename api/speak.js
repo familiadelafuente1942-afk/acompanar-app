@@ -14,7 +14,7 @@ export default async function handler(req, res) {
       {
         method: 'POST',
         headers: {
-          'xi-api-key': process.env.ELEVENLABS_API_KEY,
+          'xi-api-key': process.env.ELEVENLABS_API_KEY || "sk_ebc98bbf603b7750baa8d07e1515cfadc8a323536a763d55",
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
