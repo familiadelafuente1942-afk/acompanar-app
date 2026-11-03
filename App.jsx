@@ -832,6 +832,54 @@ function Toggle({ on, onChange, color }) {
     );
 }
 
+// -- PANTALLA DE INICIO: Abuelo/a o Hijos --
+function Bienvenida({ onAbuelo, onHijos }) {
+    const [pidePass, setPidePass] = useState(false);
+    const [pass, setPass] = useState("");
+    const [err, setErr] = useState(false);
+    function entrar() {
+        if (pass === ADMIN_PASSWORD) onHijos();
+        else { setErr(true); setTimeout(() => setErr(false), 1800); }
+    }
+    const card = { ...GLASS, width: "100%", padding: "22px 20px", display: "flex", alignItems: "center", gap: 16, cursor: "pointer", textAlign: "left", fontFamily: "inherit", color: "#1f1b14" };
+    const icono = (d) => <div style={{ ...GOLD, width: 64, height: 64, borderRadius: 20, display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}><svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">{d}</svg></div>;
+    return (
+        <div style={{ minHeight: "100vh", width: "100%", maxWidth: 480, margin: "0 auto", background: "radial-gradient(120% 55% at 15% 0%,#fff4dc 0%,#f2e9d8 40%,#e4dfd5 100%)", display: "flex", flexDirection: "column", justifyContent: "center", gap: 14, padding: "40px 24px", fontFamily: "'Inter',system-ui,sans-serif" }}>
+            <div style={{ fontSize: ".72rem", fontWeight: 700, letterSpacing: ".14em", textTransform: "uppercase", color: "#8a6420", textAlign: "center" }}>Acompañar</div>
+            <div style={{ fontFamily: SERIF, fontSize: "2.4rem", fontWeight: 600, textAlign: "center", lineHeight: 1.05, color: "#1f1b14", marginBottom: 10 }}>¿Quién sos?</div>
+
+            <button onClick={onAbuelo} style={card}>
+                {icono(<><rect x="9" y="3" width="6" height="11" rx="3" /><path d="M5 11a7 7 0 0 0 14 0M12 18v3" /></>)}
+                <div style={{ flex: 1 }}>
+                    <div style={{ fontFamily: SERIF, fontSize: "1.6rem", fontWeight: 600 }}>Abuelo / Abuela</div>
+                    <div style={{ fontSize: ".95rem", color: "#4a4235", marginTop: 3 }}>Quiero hablar con mi guía</div>
+                </div>
+            </button>
+
+            {!pidePass ? (
+                <button onClick={() => setPidePass(true)} style={card}>
+                    {icono(<><circle cx="9" cy="8" r="3.5" /><path d="M2.5 20a6.5 6.5 0 0 1 13 0M16 4.5a3.5 3.5 0 0 1 0 7M18 14a6.5 6.5 0 0 1 3.5 6" /></>)}
+                    <div style={{ flex: 1 }}>
+                        <div style={{ fontFamily: SERIF, fontSize: "1.6rem", fontWeight: 600 }}>Hijos</div>
+                        <div style={{ fontSize: ".95rem", color: "#4a4235", marginTop: 3 }}>Ver cómo está y cargar turnos</div>
+                    </div>
+                </button>
+            ) : (
+                <div style={{ ...GLASS, padding: 20, display: "flex", flexDirection: "column", gap: 12 }}>
+                    <div style={{ fontFamily: SERIF, fontSize: "1.4rem", fontWeight: 600 }}>Hijos · contraseña familiar</div>
+                    <input type="password" autoFocus value={pass} onChange={e => { setPass(e.target.value); setErr(false); }} onKeyDown={e => { if (e.key === "Enter") entrar(); }} placeholder="Contraseña"
+                        style={{ width: "100%", padding: "14px 16px", borderRadius: 14, border: `2px solid ${err ? "#DC2626" : "rgba(201,154,63,.5)"}`, fontSize: "1.05rem", outline: "none", fontFamily: "inherit", background: "rgba(255,255,255,.85)" }} />
+                    {err && <div style={{ color: "#DC2626", fontSize: ".85rem", fontWeight: 600 }}>Contraseña incorrecta</div>}
+                    <div style={{ display: "flex", gap: 10 }}>
+                        <button onClick={() => { setPidePass(false); setPass(""); }} style={{ ...GLASS, flex: 1, height: 50, borderRadius: 25, fontWeight: 700, cursor: "pointer", fontFamily: "inherit" }}>Volver</button>
+                        <button onClick={entrar} style={{ ...GOLD, flex: 1, height: 50, borderRadius: 25, fontSize: "1rem", fontFamily: "inherit" }}>Entrar</button>
+                    </div>
+                </div>
+            )}
+        </div>
+    );
+}
+
 // -- APP --
 export default function App() {
     const [contactos, setContactos] = useFirebaseState("contactos", INIT_CONTACTOS);
@@ -847,6 +895,9 @@ export default function App() {
         else _removeRaw("acompanar_is_admin");
     }, [isAdmin]);
     const [role, setRole] = useState("mayor");
+    // Quién usa este aparato: "abuelo" o "hijos" (se elige al arrancar; se puede cambiar)
+    const [quien, setQuien] = useState(() => { try { return _readRaw("acompanar_quien") || ""; } catch (e) { return ""; } });
+    function elegirQuien(q) { setQuien(q); if (q) _writeRaw("acompanar_quien", q); else _removeRaw("acompanar_quien"); }
 
     // -- SENSOR SWITCHBOT --
     const [sensorData, setSensorData] = useState({
@@ -1007,6 +1058,12 @@ export default function App() {
     // Filtrar roles visibles: si no es admin, solo se ve mamá
     const visibleRoles = isAdmin ? allRoles : allRoles.filter(r => r.id === "mayor");
 
+    if (!quien || (quien === "hijos" && !isAdmin)) {
+        return <Bienvenida
+            onAbuelo={() => { setIsAdmin(false); setRole("mayor"); elegirQuien("abuelo"); }}
+            onHijos={() => { setIsAdmin(true); elegirQuien("hijos"); }} />;
+    }
+
     return (
         <div style={{ display: "flex", flexDirection: "column", height: "100vh", width: "100%", maxWidth: 480, margin: "0 auto", fontFamily: "'Inter',system-ui,sans-serif", overflow: "hidden", overflowX: "hidden", background: "#F4F6F9" }}>
 
@@ -1026,7 +1083,7 @@ export default function App() {
                 ))}
                 {/* Botón modo admin / logout admin */}
                 {isAdmin ? (
-                    <button onClick={() => { setIsAdmin(false); setRole("mayor"); }} style={{
+                    <button onClick={() => { setIsAdmin(false); setRole("mayor"); elegirQuien(""); }} style={{
                         padding: "10px 12px", border: "none", background: "rgba(255,255,255,.12)", cursor: "pointer",
                         color: "white", fontSize: ".72rem", fontWeight: 600, flexShrink: 0,
                         fontFamily: "inherit"
@@ -1034,10 +1091,10 @@ export default function App() {
                         Salir
                     </button>
                 ) : (
-                    <button onClick={() => setShowAdminModal(true)} style={{
+                    <button onClick={() => elegirQuien("")} style={{
                         padding: "10px 12px", border: "none", background: "none", cursor: "pointer",
                         color: "rgba(255,255,255,.45)", fontSize: ".95rem", flexShrink: 0
-                    }} title="Modo administrador (familia)">
+                    }} title="Cambiar de perfil">
                         👨‍👩‍👧
                     </button>
                 )}
