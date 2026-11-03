@@ -260,6 +260,68 @@ const S = {
 const LEGACY = String.fromCharCode(78, 111, 114, 109, 97);
 const LEGACY_RE = new RegExp(LEGACY, "g");
 
+// -- ÍCONOS de línea fina (mismo estilo que Mi Asistente) --
+const ICO = {
+    phone: <path d="M5 4h4l2 5-2.5 1.5a11 11 0 0 0 5 5L15 13l5 2v4a2 2 0 0 1-2 2A16 16 0 0 1 3 6a2 2 0 0 1 2-2z" />,
+    camera: <><path d="M4 8h3l2-3h6l2 3h3a1 1 0 0 1 1 1v9a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V9a1 1 0 0 1 1-1z" /><circle cx="12" cy="13" r="3.5" /></>,
+    pill: <><path d="M10.5 20.5a5 5 0 0 1-7-7l9-9a5 5 0 0 1 7 7z" /><path d="M8.5 8.5l7 7" /></>,
+    mic: <><rect x="9" y="3" width="6" height="11" rx="3" /><path d="M5 11a7 7 0 0 0 14 0M12 18v3" /></>,
+    stop: <rect x="6" y="6" width="12" height="12" rx="2.5" />,
+    sound: <><path d="M4 9v6h4l5 4V5L8 9z" /><path d="M16 9a4 4 0 0 1 0 6M18.5 6.500a8 8 0 0 1 0 11" /></>,
+    dots: <><circle cx="6" cy="12" r="1.2" /><circle cx="12" cy="12" r="1.2" /><circle cx="18" cy="12" r="1.2" /></>,
+    play: <path d="M8 5v14l11-7z" />,
+    check: <path d="M5 12.5l4.500 4.500L19 7.500" />,
+    x: <path d="M6 6l12 12M18 6L6 18" />,
+    gear: <><circle cx="12" cy="12" r="3" /><path d="M12 2v3M12 19v3M2 12h3M19 12h3M4.900 4.900l2.100 2.100M17 17l2.100 2.100M19.100 4.900L17 7M7 17l-2.100 2.100" /></>,
+    family: <><circle cx="9" cy="8" r="3.500" /><path d="M2.500 20a6.500 6.500 0 0 1 13 0M16 4.500a3.500 3.500 0 0 1 0 7M18 14a6.500 6.500 0 0 1 3.500 6" /></>,
+    lock: <><rect x="5" y="11" width="14" height="9" rx="2.500" /><path d="M8 11V8a4 4 0 0 1 8 0v3" /></>,
+    heart: <path d="M12 21s-7-4.600-9-9.200C1.600 8 4 4.500 7.500 4.500c2 0 3.400 1 4.500 2.600 1.100-1.600 2.500-2.600 4.500-2.600C20 4.500 22.400 8 21 11.800 19 16.400 12 21 12 21z" />,
+    bulb: <><path d="M9 18h6M10 21h4" /><path d="M12 3a6 6 0 0 0-3.500 10.900c.6.5 1 1.200 1 2.100h5c0-.9.4-1.600 1-2.100A6 6 0 0 0 12 3z" /></>,
+    pin: <><path d="M12 21s-7-6.200-7-11a7 7 0 0 1 14 0c0 4.800-7 11-7 11z" /><circle cx="12" cy="10" r="2.500" /></>,
+    calendar: <><rect x="3.500" y="5" width="17" height="15" rx="3" /><path d="M8 3v4M16 3v4M3.500 10h17" /></>,
+    music: <><path d="M9 18V5l12-2v13" /><circle cx="6" cy="18" r="3" /><circle cx="18" cy="16" r="3" /></>,
+    run: <><circle cx="14" cy="5" r="2" /><path d="M11 21l2-6-3-3 2-4 4 2 3 1M7 12l3-3" /></>,
+    home: <path d="M3 11l9-8 9 8M5 10v10h14V10" />,
+    star: <path d="M12 3l2.700 5.600 6.100.9-4.400 4.300 1 6.100L12 17l-5.400 2.900 1-6.100L3.200 9.500l6.100-.9z" />,
+    leaf: <><path d="M5 19c0-8 5-14 15-14 0 10-6 15-14 15" /><path d="M5 19c3-5 6-7 10-9" /></>,
+    gift: <><rect x="4" y="9" width="16" height="11" rx="2" /><path d="M12 9v11M3 9h18M12 9c-3 0-4.500-4 -1.500-4S12 9 12 9zM12 9c3 0 4.500-4 1.500-4S12 9 12 9z" /></>,
+    user: <><circle cx="12" cy="8" r="4" /><path d="M4 21a8 8 0 0 1 16 0" /></>,
+    chat: <path d="M4 5h16v11H9l-5 4z" />,
+    sun: <><circle cx="12" cy="12" r="4" /><path d="M12 2v2.500M12 19.500V22M2 12h2.500M19.500 12H22M4.900 4.900l1.800 1.800M17.300 17.300l1.800 1.800M19.100 4.900l-1.800 1.800M6.700 17.300l-1.800 1.800" /></>,
+    moon: <path d="M20 14.500A8 8 0 1 1 9.500 4a6.500 6.500 0 0 0 10.500 10.500z" />,
+    spark: <path d="M12 3l1.800 5.200L19 10l-5.200 1.800L12 17l-1.800-5.200L5 10l5.200-1.800zM19 17l.8 2.200L22 20l-2.200.8L19 23l-.8-2.200L16 20l2.200-.8z" />,
+    warn: <><path d="M12 3l10 18H2z" /><path d="M12 10v5M12 18v.5" /></>,
+    sensor: <><circle cx="12" cy="12" r="2" /><path d="M7.500 7.500a6.400 6.400 0 0 0 0 9M16.500 7.500a6.400 6.400 0 0 1 0 9M4.500 4.500a10.600 10.600 0 0 0 0 15M19.500 4.500a10.600 10.600 0 0 1 0 15" /></>,
+    tv: <><rect x="3" y="5" width="18" height="12" rx="2" /><path d="M8 21h8M12 17v4" /></>,
+    film: <><rect x="3" y="4" width="18" height="16" rx="2" /><path d="M7 4v16M17 4v16M3 9h4M3 15h4M17 9h4M17 15h4" /></>,
+    link: <><path d="M10 14a4 4 0 0 0 5.700 0l3-3a4 4 0 0 0-5.700-5.700l-1 1" /><path d="M14 10a4 4 0 0 0-5.700 0l-3 3a4 4 0 0 0 5.700 5.700l1-1" /></>,
+    up: <path d="M12 19V5M6 11l6-6 6 6" />,
+    ring: <><circle cx="12" cy="14" r="6" /><path d="M9 4l3 3 3-3" /></>,
+    book: <><path d="M4 5a2 2 0 0 1 2-2h13v16H6a2 2 0 0 0-2 2z" /><path d="M4 19V5" /></>,
+    plane: <path d="M21 3L3 10l7 3 3 7z" />,
+    dot: <circle cx="12" cy="12" r="5" fill="currentColor" />,
+    ear: <><path d="M6 10a6 6 0 0 1 12 0c0 4-3 4-3 8a3 3 0 0 1-6 0" /></>,
+};
+const EMO = {
+    "📞": "phone", "📷": "camera", "📸": "camera", "💊": "pill", "🎙️": "mic", "🎙": "mic", "🛑": "stop", "🔊": "sound", "🗣️": "sound", "💭": "dots",
+    "▶": "play", "✓": "check", "✕": "x", "⚙️": "gear", "👨‍👩‍👧": "family", "🔒": "lock", "❤️": "heart", "🤍": "heart", "💕": "heart", "💡": "bulb", "📍": "pin",
+    "📅": "calendar", "🎵": "music", "🏃": "run", "🏠": "home", "⭐": "star", "✦": "star", "🌱": "leaf", "🌸": "leaf", "🌺": "leaf", "🌿": "leaf", "🌼": "leaf", "🎂": "gift",
+    "👤": "user", "👶": "user", "👧": "user", "👩‍🏫": "book", "💬": "chat", "☀️": "sun", "🌙": "moon", "✨": "spark", "⚠️": "warn", "📡": "sensor", "📺": "tv", "🎬": "film",
+    "🔗": "link", "⌚": "sensor", "⬆": "up", "💒": "ring", "💑": "heart", "🤝": "heart", "🏖️": "sun", "✈️": "plane", "👋": "heart", "🙌": "heart", "🤔": "dots", "😊": "heart",
+    "🟢": "dot:#16A34A", "🟡": "dot:#D97706", "🔴": "dot:#DC2626",
+};
+function Ico({ n, s = 20, c, style }) {
+    let name = n, col = c || "#c99a3f";
+    if (n && n.startsWith("dot:")) { name = "dot"; col = n.slice(4); }
+    const d = ICO[name];
+    if (!d) return null;
+    return <svg width={s} height={s} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true" style={{ verticalAlign: "-0.22em", color: col, flexShrink: 0, ...style }}>{d}</svg>;
+}
+function Em({ e, s = 20, c, style }) {
+    const n = EMO[e];
+    return n ? <Ico n={n} s={s} c={c} style={style} /> : <span>{e}</span>;
+}
+
 // -- VIDRIO (look Apple, igual al rediseño) --
 const GLASS = { background: "linear-gradient(115deg,rgba(255,255,255,.82) 0%,rgba(255,255,255,.4) 28%,rgba(255,255,255,.78) 46%,rgba(255,255,255,.38) 68%,rgba(255,255,255,.7) 100%)", WebkitBackdropFilter: "blur(22px) saturate(1.6)", backdropFilter: "blur(22px) saturate(1.6)", border: "1px solid rgba(255,255,255,.95)", boxShadow: "0 16px 34px -16px rgba(70,45,10,.42), inset 0 1px 0 #fff, inset 0 -1px 0 rgba(150,115,50,.18)", borderRadius: 26 };
 const GOLD = { background: "linear-gradient(115deg,#f6dea4 0%,#dcb056 40%,#f3d88f 52%,#c99a3f 100%)", color: "#2b1f08", border: "1px solid rgba(255,255,255,.6)", boxShadow: "0 12px 26px -10px rgba(201,154,63,.8), inset 0 1px 0 rgba(255,255,255,.8)", fontWeight: 700, cursor: "pointer" };
@@ -1095,7 +1157,7 @@ export default function App() {
                         padding: "10px 12px", border: "none", background: "none", cursor: "pointer",
                         color: "rgba(255,255,255,.45)", fontSize: ".95rem", flexShrink: 0
                     }} title="Cambiar de perfil">
-                        👨‍👩‍👧
+                        <Em e="👨‍👩‍👧" s={22} />
                     </button>
                 )}
                 {/* Botón personalizar — solo admin */}
@@ -1103,7 +1165,7 @@ export default function App() {
                     <button onClick={openConfig} style={{
                         padding: "10px 14px", border: "none", background: "none", cursor: "pointer",
                         color: "rgba(255,255,255,.45)", fontSize: ".95rem", flexShrink: 0
-                    }}>⚙️</button>
+                    }}><Em e="⚙️" s={24} /></button>
                 )}
             </div>
 
@@ -1120,7 +1182,7 @@ export default function App() {
                         width: "100%", maxWidth: 340, textAlign: "center"
                     }}
                         onClick={e => e.stopPropagation()}>
-                        <div style={{ fontSize: "1.8rem", marginBottom: 6 }}>👨‍👩‍👧</div>
+                        <div style={{ fontSize: "1.8rem", marginBottom: 6 }}><Em e="👨‍👩‍👧" s={24} /></div>
                         <div style={{ fontSize: "1.15rem", fontWeight: 700, color: "#1B4F8A", marginBottom: 6 }}>
                             Modo Administrador
                         </div>
@@ -1183,7 +1245,7 @@ export default function App() {
                         {/* CSS para shake */}
                         <style>{`@keyframes pinShake{0%,100%{transform:translateX(0)}20%,60%{transform:translateX(-8px)}40%,80%{transform:translateX(8px)}}`}</style>
 
-                        <div style={{ fontSize: "1.5rem", marginBottom: 4 }}>🔒</div>
+                        <div style={{ fontSize: "1.5rem", marginBottom: 4 }}><Em e="🔒" s={24} /></div>
                         <div style={{ fontSize: "1.1rem", fontWeight: 700, color: "#1B4F8A", marginBottom: 4 }}>
                             Configuración
                         </div>
@@ -1645,11 +1707,11 @@ function PanelMayor({ contactos, meds, turnos, perfil, themeConfig }) {
             {urgente && (
                 <div style={S.overlay}>
                     <div style={S.modal}>
-                        <div style={{ fontSize: "2.5rem", marginBottom: 8, textAlign: "center" }}>📞</div>
+                        <div style={{ fontSize: "2.5rem", marginBottom: 8, textAlign: "center" }}><Em e="📞" s={24} /></div>
                         <div style={{ fontSize: "1.2rem", fontWeight: 700, textAlign: "center", marginBottom: 4 }}>Llamando a {urgente.nombre}</div>
                         <div style={{ fontSize: ".85rem", color: "#6B7280", fontWeight: 600, textAlign: "center", marginBottom: 20 }}>{urgente.rel}</div>
                         <a href={`tel:${urgente.tel || ""}`} style={{ display: "block", background: "#1B4F8A", color: "white", borderRadius: 8, padding: 14, textAlign: "center", fontWeight: 700, fontSize: "1rem", marginBottom: 10 }}>
-                            📞 Llamar ahora
+                            <Em e="📞" s={17} /> Llamar ahora
                         </a>
                         <button onClick={() => setUrgente(null)} style={{ width: "100%", background: "#F4F6F9", color: "#6B7280", border: "none", borderRadius: 8, padding: 12, fontSize: "1rem", fontWeight: 700, cursor: "pointer" }}>Cancelar</button>
                     </div>
@@ -1667,7 +1729,7 @@ function PanelMayor({ contactos, meds, turnos, perfil, themeConfig }) {
                                 <div style={{ fontSize: "1.1rem", fontWeight: 700, color: C.text }}>Centro de Urgencias</div>
                                 <div style={{ fontSize: ".78rem", color: C.textSoft, fontWeight: 500, marginTop: 2 }}>Llamadas directas y ubicación en tiempo real</div>
                             </div>
-                            <button onClick={() => setShowCalls(false)} style={{ background: C.bg, border: `1px solid ${C.border}`, borderRadius: 8, width: 32, height: 32, cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", fontSize: ".9rem", color: C.textSoft }}>✕</button>
+                            <button onClick={() => setShowCalls(false)} style={{ background: C.bg, border: `1px solid ${C.border}`, borderRadius: 8, width: 32, height: 32, cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", fontSize: ".9rem", color: C.textSoft }}><Em e="✕" s={24} /></button>
                         </div>
 
                         {/* 911 */}
@@ -1759,7 +1821,7 @@ function PanelMayor({ contactos, meds, turnos, perfil, themeConfig }) {
                     {aiMsg && <div style={{ ...GLASS, padding: "12px 16px", borderRadius: "20px 20px 20px 6px", fontSize: "1.05rem", lineHeight: 1.35, color: "#1f1b14", fontWeight: 500 }}>{aiMsg}</div>}
                     {ytData && (
                         <div onClick={() => window.open(ytData.url, "_blank")} style={{ ...GLASS, padding: "10px 14px", display: "flex", alignItems: "center", gap: 12, cursor: "pointer" }}>
-                            <div style={{ width: 44, height: 32, borderRadius: 8, background: "#111", display: "flex", alignItems: "center", justifyContent: "center", color: "white", flexShrink: 0 }}>▶</div>
+                            <div style={{ width: 44, height: 32, borderRadius: 8, background: "#111", display: "flex", alignItems: "center", justifyContent: "center", color: "white", flexShrink: 0 }}><Em e="▶" s={24} c="currentColor" /></div>
                             <div style={{ flex: 1 }}><div style={{ fontWeight: 600, fontSize: ".92rem" }}>{ytData.query}</div><div style={{ fontSize: ".72rem", color: "#6b6354" }}>Abrir en YouTube</div></div>
                         </div>
                     )}
@@ -1906,7 +1968,7 @@ function SubScreenMayor({ screen, onBack, meds, turnos, processQ, perfil }) {
                     <div key={i} onClick={() => window.open(`https://www.youtube.com/results?search_query=${encodeURIComponent(m.q)}`, "_blank")} style={{ ...S.card, cursor: "pointer", marginBottom: 10 }}>
                         <img src={m.img} style={S.cardImg} onError={e => e.target.style.background = "#eee"} />
                         <div style={{ flex: 1 }}><div style={S.cardName}>{m.name}</div></div>
-                        <div style={{ background: "#FF0000", color: "white", borderRadius: 10, padding: "6px 12px", fontSize: ".78rem", fontWeight: 700, flexShrink: 0 }}>▶ Ver</div>
+                        <div style={{ background: "#FF0000", color: "white", borderRadius: 10, padding: "6px 12px", fontSize: ".78rem", fontWeight: 700, flexShrink: 0 }}><Em e="▶" s={17} c="currentColor" /> Ver</div>
                     </div>
                 ))}
                 <button onClick={onBack} style={{ ...S.bigGreenBtn, background: "#1B4F8A", marginTop: 0 }}>← Volver a Martita</button>
@@ -1933,7 +1995,7 @@ function SubScreenMayor({ screen, onBack, meds, turnos, processQ, perfil }) {
                     <div key={i} onClick={() => window.open(`https://www.youtube.com/results?search_query=${encodeURIComponent(e.q)}`, "_blank")} style={{ ...S.card, cursor: "pointer", marginBottom: 10 }}>
                         <img src={e.img} style={S.cardImg} onError={er => er.target.style.background = "#eee"} />
                         <div style={{ flex: 1 }}><div style={S.cardName}>{e.name}</div><div style={S.cardSub}>{e.desc}</div></div>
-                        <div style={{ background: "#1B4F8A", color: "white", borderRadius: 10, padding: "6px 12px", fontSize: ".78rem", fontWeight: 700, flexShrink: 0 }}>▶ Ver</div>
+                        <div style={{ background: "#1B4F8A", color: "white", borderRadius: 10, padding: "6px 12px", fontSize: ".78rem", fontWeight: 700, flexShrink: 0 }}><Em e="▶" s={17} c="currentColor" /> Ver</div>
                     </div>
                 ))}
                 <button onClick={onBack} style={{ ...S.bigGreenBtn, marginTop: 0 }}>← Volver a Martita</button>
@@ -1957,7 +2019,7 @@ function SubScreenMayor({ screen, onBack, meds, turnos, processQ, perfil }) {
                         flex: 1, display: "flex", flexDirection: "column", alignItems: "center",
                         justifyContent: "center", padding: "40px 20px", color: C.textSoft
                     }}>
-                        <div style={{ fontSize: "3rem", marginBottom: 12 }}>📷</div>
+                        <div style={{ fontSize: "3rem", marginBottom: 12 }}><Em e="📷" s={24} /></div>
                         <div style={{ fontSize: "1rem", fontWeight: 600, marginBottom: 6 }}>Todavía no hay fotos</div>
                         <div style={{ fontSize: ".85rem" }}>Valeria o Romina pueden subir fotos desde su panel</div>
                         <button onClick={onBack} style={{ ...S.bigGreenBtn, marginTop: 24 }}>← Volver a Martita</button>
@@ -2004,7 +2066,7 @@ function SubScreenMayor({ screen, onBack, meds, turnos, processQ, perfil }) {
                                     borderRadius: 20, padding: "8px 16px", fontFamily: "inherit",
                                     fontSize: ".88rem", fontWeight: 700, cursor: "pointer"
                                 }}>
-                                ✕ Cerrar
+                                <Em e="✕" s={17} /> Cerrar
                             </button>
                             <div style={{ color: "rgba(255,255,255,.8)", fontSize: ".82rem", fontWeight: 600 }}>
                                 {fotoIdx + 1} / {fotos.length}
@@ -2071,7 +2133,7 @@ function SubScreenMayor({ screen, onBack, meds, turnos, processQ, perfil }) {
                             fontSize: ".82rem", color: C.textSoft, marginBottom: 14,
                             fontWeight: 500, textAlign: "center"
                         }}>
-                            {fotos.length} foto{fotos.length !== 1 ? "s" : ""} familiares 💕 · Tocá una para verla grande
+                            {fotos.length} foto{fotos.length !== 1 ? "s" : ""} familiares · Tocá una para verla grande
                         </div>
 
                         {/* Grilla 2 columnas */}
@@ -2113,7 +2175,7 @@ function SubScreenMayor({ screen, onBack, meds, turnos, processQ, perfil }) {
                                 background: "#1B4F8A", display: "flex", alignItems: "center",
                                 justifyContent: "center", gap: 8
                             }}>
-                            ▶ Ver todas seguidas
+                            <Em e="▶" s={17} /> Ver todas seguidas
                         </button>
                         <button onClick={onBack} style={{ ...S.bigGreenBtn }}>← Volver a Martita</button>
                     </div>
@@ -2373,7 +2435,7 @@ function PanelHija({ hija, contactos, setContactos, meds, setMeds, turnos, setTu
                             background: "rgba(255,255,255,.18)", border: "2px solid rgba(255,255,255,.35)",
                             display: "flex", alignItems: "center", justifyContent: "center", fontSize: "1.5rem"
                         }}>
-                            🤝
+                            <Em e="🤝" s={22} />
                         </div>
                         <div>
                             <div style={{
@@ -2415,7 +2477,7 @@ function PanelHija({ hija, contactos, setContactos, meds, setMeds, turnos, setTu
                                     marginTop: 14, paddingTop: 12, borderTop: "1px solid #F3F4F6",
                                     display: "flex", alignItems: "center", gap: 10
                                 }}>
-                                    <span style={{ fontSize: "1.1rem" }}>💊</span>
+                                    <span style={{ fontSize: "1.1rem" }}><Em e="💊" s={24} /></span>
                                     <div>
                                         <div style={{ fontSize: ".78rem", fontWeight: 700, color: "#111827" }}>
                                             {meds.filter(m => m.tomada).length}/{meds.length} medicaciones tomadas
@@ -2440,7 +2502,7 @@ function PanelHija({ hija, contactos, setContactos, meds, setMeds, turnos, setTu
                             textDecoration: "none", fontWeight: 700, fontSize: "1rem", marginBottom: 10,
                             boxShadow: "0 4px 20px rgba(0,0,0,.2)"
                         }}>
-                        📞 Llamar a mamá ahora
+                        <Em e="📞" s={17} /> Llamar a mamá ahora
                     </a>
                     <button onClick={dismissBriefing}
                         style={{
@@ -2481,7 +2543,7 @@ function PanelHija({ hija, contactos, setContactos, meds, setMeds, turnos, setTu
                     {[
                         { lbl: "Movimiento", val: "Activa ✓", col: "white" },
                         { lbl: "Medicación", val: `${meds.filter(m => m.tomada).length}/${meds.length}`, col: pendientes > 0 ? "#FFD580" : "white" },
-                        { lbl: "Ánimo", val: "Bien 😊", col: "white" },
+                        { lbl: "Ánimo", val: "Bien", col: "white" },
                     ].map((s, i) => (
                         <div key={i} style={{ flex: 1, minWidth: 0, background: "rgba(255,255,255,.12)", borderRadius: 8, padding: "7px 8px" }}>
                             <div style={{ fontSize: ".55rem", fontWeight: 600, color: "rgba(255,255,255,.5)", textTransform: "uppercase", letterSpacing: ".04em", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{s.lbl}</div>
@@ -2495,7 +2557,7 @@ function PanelHija({ hija, contactos, setContactos, meds, setMeds, turnos, setTu
             <div style={{ display: "flex", background: "white", borderBottom: "1px solid #E5E7EB", flexShrink: 0, overflowX: "auto" }}>
                 {[{ id: "resumen", lbl: "Resumen" }, { id: "medicacion", lbl: "Medicación" }, { id: "turnos", lbl: "Turnos" },
                 { id: "perfil", lbl: "Perfil" }, { id: "contactos", lbl: "Contactos" }, { id: "dispositivos", lbl: "Dispositivos" }, { id: "alertas", lbl: "Alertas" },
-                { id: "fotos", lbl: "📷 Fotos" }
+                { id: "fotos", lbl: "Fotos" }
                 ].map(t => (
                     <button key={t.id} onClick={() => setTab(t.id)} style={{ flexShrink: 0, padding: "11px 12px", border: "none", background: "none", fontFamily: "inherit", fontSize: ".72rem", fontWeight: tab === t.id ? 700 : 500, color: tab === t.id ? color : C.textMuted, cursor: "pointer", borderBottom: tab === t.id ? `2px solid ${color}` : "2px solid transparent", whiteSpace: "nowrap" }}>{t.lbl}</button>
                 ))}
@@ -2568,7 +2630,7 @@ function PanelHija({ hija, contactos, setContactos, meds, setMeds, turnos, setTu
                                 background: cfg.bg, border: `2px solid ${cfg.border}`, borderRadius: 12,
                                 padding: "14px 16px", marginBottom: 14, display: "flex", alignItems: "center", gap: 12
                             }}>
-                                <div style={{ fontSize: "2rem", flexShrink: 0 }}>{cfg.icon}</div>
+                                <div style={{ fontSize: "2rem", flexShrink: 0 }}><Em e={cfg.icon} s={30} /></div>
                                 <div style={{ flex: 1 }}>
                                     <div style={{ fontSize: ".92rem", fontWeight: 700, color: cfg.color }}>{cfg.titulo}</div>
                                     <div style={{ fontSize: ".78rem", color: C.textMed, marginTop: 2, fontWeight: 500 }}>{cfg.sub}</div>
@@ -2586,9 +2648,9 @@ function PanelHija({ hija, contactos, setContactos, meds, setMeds, turnos, setTu
                     {/* PATRONES DE LA SEMANA */}
                     {(() => {
                         const patrones = [];
-                        if (pendientes > 0) patrones.push(`💊 ${pendientes} medicación${pendientes > 1 ? "es" : ""} sin tomar hoy`);
+                        if (pendientes > 0) patrones.push(`${pendientes} medicación${pendientes > 1 ? "es" : ""} sin tomar hoy`);
                         const warns = ACTIVIDAD.filter(a => a.tipo === "warn");
-                        if (warns.length > 0) patrones.push(`⚠️ ${warns.map(w => w.texto).join(", ")}`);
+                        if (warns.length > 0) patrones.push(`${warns.map(w => w.texto).join(", ")}`);
                         if (patrones.length === 0) return null;
                         return (
                             <div style={{
@@ -2611,12 +2673,12 @@ function PanelHija({ hija, contactos, setContactos, meds, setMeds, turnos, setTu
 
                     {pendientes > 0 && !alertaDismiss && (
                         <div style={{ background: "#FDECEA", border: "1.5px solid rgba(192,57,43,.2)", borderRadius: 8, padding: "14px", marginBottom: 14, display: "flex", gap: 12 }}>
-                            <div style={{ fontSize: "1.3rem", flexShrink: 0 }}>💊</div>
+                            <div style={{ fontSize: "1.3rem", flexShrink: 0 }}><Em e="💊" s={24} /></div>
                             <div style={{ flex: 1 }}>
                                 <div style={{ fontSize: ".9rem", fontWeight: 700, color: "#C0392B" }}>{pendientes} medicación{pendientes > 1 ? "es" : ""} pendiente{pendientes > 1 ? "s" : ""}</div>
                                 <div style={{ fontSize: ".78rem", color: "#6B7280", fontWeight: 600, marginTop: 3 }}>{meds.filter(m => !m.tomada).map(m => `${m.nombre} (${m.hora}hs)`).join(" · ")}</div>
                                 <div style={{ display: "flex", gap: 8, marginTop: 10, flexWrap: "wrap" }}>
-                                    <a href={`tel:${contactos[0]?.tel || ""}`} style={{ padding: "8px 14px", background: "#C0392B", color: "white", borderRadius: 10, fontSize: ".8rem", fontWeight: 700 }}>📞 Llamar a mamá</a>
+                                    <a href={`tel:${contactos[0]?.tel || ""}`} style={{ padding: "8px 14px", background: "#C0392B", color: "white", borderRadius: 10, fontSize: ".8rem", fontWeight: 700 }}><Em e="📞" s={17} c="currentColor" /> Llamar a mamá</a>
                                     <button onClick={() => setAlertaDismiss(true)} style={{ padding: "8px 14px", background: "white", color: "#C0392B", border: "1.5px solid rgba(192,57,43,.25)", borderRadius: 10, fontSize: ".8rem", fontWeight: 700, cursor: "pointer", fontFamily: "inherit" }}>Entendido</button>
                                 </div>
                             </div>
@@ -2629,7 +2691,7 @@ function PanelHija({ hija, contactos, setContactos, meds, setMeds, turnos, setTu
                                 Sensor · {sensorData?.conectado ? "En vivo" : "Simulado"}
                             </div>
                             <div style={{ fontSize: "1.2rem", fontWeight: 700, color: "white", marginTop: 3 }}>
-                                {sensorData?.activa ? "🟢" : "⚠️"} mamá {sensorData?.activa ? "está activa" : "sin movimiento reciente"}
+                                <Em e={sensorData?.activa ? "🟢" : "⚠️"} s={16} /> mamá {sensorData?.activa ? "está activa" : "sin movimiento reciente"}
                             </div>
                             <div style={{ fontSize: ".72rem", color: "rgba(255,255,255,.6)", fontWeight: 700, marginTop: 2 }}>
                                 {sensorData?.ultimoMovimiento
@@ -2656,8 +2718,8 @@ function PanelHija({ hija, contactos, setContactos, meds, setMeds, turnos, setTu
                     <div style={{ ...S.cardBox, marginTop: 0 }}>
                         <div style={{ fontWeight: 600, fontSize: ".88rem", marginBottom: 10 }}>Contactar a mamá</div>
                         <div style={{ display: "flex", gap: 8 }}>
-                            <a href={`tel:${contactos[0]?.tel || ""}`} style={{ flex: 1, background: color, color: "white", borderRadius: 8, padding: "11px", textAlign: "center", fontWeight: 600, fontSize: ".9rem", textDecoration: "none" }}>📞 Llamar</a>
-                            <a href="https://wa.me/" target="_blank" style={{ flex: 1, background: "#16A34A", color: "white", borderRadius: 8, padding: "11px", textAlign: "center", fontWeight: 600, fontSize: ".9rem", textDecoration: "none" }}>💬 WhatsApp</a>
+                            <a href={`tel:${contactos[0]?.tel || ""}`} style={{ flex: 1, background: color, color: "white", borderRadius: 8, padding: "11px", textAlign: "center", fontWeight: 600, fontSize: ".9rem", textDecoration: "none" }}><Em e="📞" s={17} c="currentColor" /> Llamar</a>
+                            <a href="https://wa.me/" target="_blank" style={{ flex: 1, background: "#16A34A", color: "white", borderRadius: 8, padding: "11px", textAlign: "center", fontWeight: 600, fontSize: ".9rem", textDecoration: "none" }}><Em e="💬" s={17} c="currentColor" /> WhatsApp</a>
                         </div>
                     </div>
                 </div>
@@ -2740,7 +2802,7 @@ function PanelHija({ hija, contactos, setContactos, meds, setMeds, turnos, setTu
                             <div key={p.id} style={{ background: "white", borderRadius: 8, border: `1px solid ${p.sensible ? "#FED7AA" : C.border}`, overflow: "hidden" }}>
                                 <div style={{ display: "flex", alignItems: "center", gap: 12, padding: "12px 14px" }}>
                                     <div style={{ width: 40, height: 40, borderRadius: "50%", background: p.sensible ? "#FFF7ED" : "#EFF6FF", display: "flex", alignItems: "center", justifyContent: "center", fontSize: "1.2rem", flexShrink: 0 }}>
-                                        {p.relacion.toLowerCase().includes("nieto") ? "👶" : p.relacion.toLowerCase().includes("hij") ? "👧" : p.relacion.toLowerCase().includes("esposo") ? "💑" : "👤"}
+                                        <Em e={p.relacion.toLowerCase().includes("nieto") ? "👶" : p.relacion.toLowerCase().includes("hij") ? "👧" : p.relacion.toLowerCase().includes("esposo") ? "💑" : "👤"} s={22} />
                                     </div>
                                     <div style={{ flex: 1, minWidth: 0 }}>
                                         <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
@@ -2807,7 +2869,7 @@ function PanelHija({ hija, contactos, setContactos, meds, setMeds, turnos, setTu
                     <div style={{ display: "flex", flexDirection: "column", gap: 8, marginBottom: 14 }}>
                         {perfil.recuerdos.map(r => (
                             <div key={r.id} style={{ background: "white", borderRadius: 8, border: `1px solid ${C.border}`, padding: "12px 14px", display: "flex", gap: 12, alignItems: "flex-start" }}>
-                                <div style={{ width: 40, height: 40, borderRadius: 8, background: "#F9FAFB", border: `1px solid ${C.border}`, display: "flex", alignItems: "center", justifyContent: "center", fontSize: "1.4rem", flexShrink: 0 }}>{r.emoji}</div>
+                                <div style={{ width: 40, height: 40, borderRadius: 8, background: "#F9FAFB", border: `1px solid ${C.border}`, display: "flex", alignItems: "center", justifyContent: "center", fontSize: "1.4rem", flexShrink: 0 }}><Em e={r.emoji} s={22} /></div>
                                 <div style={{ flex: 1 }}>
                                     {r.anio && <div style={{ fontSize: ".7rem", fontWeight: 700, color: C.primary, background: "#EFF6FF", borderRadius: 4, padding: "2px 6px", display: "inline-block", marginBottom: 4 }}>{r.anio}</div>}
                                     <div style={{ fontSize: ".85rem", fontWeight: 500, color: C.text, lineHeight: 1.5 }}>{r.texto}</div>
@@ -2821,7 +2883,7 @@ function PanelHija({ hija, contactos, setContactos, meds, setMeds, turnos, setTu
                     {showAddPersona && (
                         <div style={S.overlay} onClick={() => setShowAddPersona(false)}>
                             <div style={S.modal} onClick={e => e.stopPropagation()}>
-                                <div style={S.modalTitle}>👤 Agregar persona querida</div>
+                                <div style={S.modalTitle}><Em e="👤" s={17} /> Agregar persona querida</div>
                                 <div style={S.fg}><label style={S.lbl}>Nombre *</label><input style={S.inp} value={newPNombre} onChange={e => setNewPNombre(e.target.value)} placeholder="Ej: Roberto" /></div>
                                 <div style={S.fg}><label style={S.lbl}>Relación</label><input style={S.inp} value={newPRelacion} onChange={e => setNewPRelacion(e.target.value)} placeholder="Ej: Esposo, Nieto..." /></div>
                                 <div style={S.fg}><label style={S.lbl}>Descripción para Martita</label><textarea style={{ ...S.inp, resize: "none", minHeight: 80 }} value={newPDesc} onChange={e => setNewPDesc(e.target.value)} placeholder="Cómo es la relación..." /></div>
@@ -2839,12 +2901,12 @@ function PanelHija({ hija, contactos, setContactos, meds, setMeds, turnos, setTu
                     {showAddRecuerdo && (
                         <div style={S.overlay} onClick={() => setShowAddRecuerdo(false)}>
                             <div style={S.modal} onClick={e => e.stopPropagation()}>
-                                <div style={S.modalTitle}>⭐ Agregar recuerdo</div>
+                                <div style={S.modalTitle}><Em e="⭐" s={17} /> Agregar recuerdo</div>
                                 <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10 }}>
                                     <div style={S.fg}><label style={S.lbl}>Año</label><input style={S.inp} value={newRAnio} onChange={e => setNewRAnio(e.target.value)} placeholder="Ej: 1985" /></div>
                                     <div style={S.fg}><label style={S.lbl}>Emoji</label>
                                         <select style={{ ...S.inp, cursor: "pointer" }} value={newREmoji} onChange={e => setNewREmoji(e.target.value)}>
-                                            {["⭐", "💒", "🏖️", "👩‍🏫", "🌱", "❤️", "🎂", "🏠", "🎵", "✈️", "🌸", "📸"].map(e => <option key={e} value={e}>{e}</option>)}
+                                            {[["⭐", "Estrella"], ["💒", "Casamiento"], ["🏖️", "Viaje"], ["👩‍🏫", "Estudio"], ["🌱", "Jardín"], ["❤️", "Cariño"], ["🎂", "Cumpleaños"], ["🏠", "Casa"], ["🎵", "Música"], ["✈️", "Vuelo"], ["📸", "Foto"]].map(([e, l]) => <option key={e} value={e}>{l}</option>)}
                                         </select>
                                     </div>
                                 </div>
@@ -2861,7 +2923,7 @@ function PanelHija({ hija, contactos, setContactos, meds, setMeds, turnos, setTu
             {tab === "contactos" && (
                 <div style={S.scrollBody}>
                     <div style={{ background: "#EFF6FF", borderRadius: 8, padding: "12px 14px", marginBottom: 14, fontSize: ".82rem", color: C.primary, fontWeight: 500 }}>
-                        📞 Cargá los teléfonos para que Martita pueda llamarlos en emergencias.
+                        <Em e="📞" s={17} /> Cargá los teléfonos para que Martita pueda llamarlos en emergencias.
                     </div>
                     {contactos.map(c => (
                         <div key={c.id} style={S.cardBox}>
@@ -2885,14 +2947,14 @@ function PanelHija({ hija, contactos, setContactos, meds, setMeds, turnos, setTu
                             </div>
                             {contactVals[c.id] && (
                                 <a href={`tel:${contactVals[c.id]}`} style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: 8, background: color, color: "white", borderRadius: 8, padding: "10px", textDecoration: "none", fontWeight: 600, fontSize: ".9rem" }}>
-                                    📞 Probar llamada a {c.nombre}
+                                    <Em e="📞" s={17} /> Probar llamada a {c.nombre}
                                 </a>
                             )}
                         </div>
                     ))}
                     <div style={{ ...S.cardBox, background: C.bg, border: `1px dashed ${C.border}` }}>
                         <div style={{ fontSize: ".83rem", fontWeight: 600, color: C.textSoft, lineHeight: 1.6 }}>
-                            💡 Cuando mamá diga "me siento mal", Martita llama a {contactos[0]?.nombre || "Valeria"} automáticamente.
+                            <Em e="💡" s={17} /> Cuando mamá diga "me siento mal", Martita llama a {contactos[0]?.nombre || "Valeria"} automáticamente.
                         </div>
                     </div>
                 </div>
@@ -2919,7 +2981,7 @@ function PanelHija({ hija, contactos, setContactos, meds, setMeds, turnos, setTu
                         <div key={d.id} style={{ background: "white", borderRadius: 8, border: `1px solid ${d.estado === "conectado" ? C.border : C.border}`, marginBottom: 8, overflow: "hidden" }}>
                             <div style={{ display: "flex", alignItems: "center", gap: 12, padding: "13px 14px", cursor: "pointer" }} onClick={() => toggleDev(d.id)}>
                                 <div style={{ width: 40, height: 40, borderRadius: 8, background: d.estado === "conectado" ? "#EFF6FF" : "#F9FAFB", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0, border: `1px solid ${C.border}`, fontSize: "1.2rem" }}>
-                                    {d.id === "sensor" ? "📡" : d.id === "camara" ? "📷" : d.id === "smarttv" ? "📺" : d.id === "applewatch" ? "⌚" : d.id === "appletv" ? "🎬" : d.id === "alexa" ? "🔊" : "🏠"}
+                                    <Em e={d.id === "sensor" ? "📡" : d.id === "camara" ? "📷" : d.id === "smarttv" ? "📺" : d.id === "applewatch" ? "⌚" : d.id === "appletv" ? "🎬" : d.id === "alexa" ? "🔊" : "🏠"} s={22} />
                                 </div>
                                 <div style={{ flex: 1, minWidth: 0 }}>
                                     <div style={{ fontSize: ".9rem", fontWeight: 600, color: C.text }}>{d.nombre}</div>
@@ -2966,7 +3028,7 @@ function PanelHija({ hija, contactos, setContactos, meds, setMeds, turnos, setTu
                         </div>
                     ))}
                     <div style={{ background: C.bg, border: `1px dashed ${C.border}`, borderRadius: 8, padding: "12px 14px" }}>
-                        <div style={{ fontSize: ".8rem", color: C.textSoft, lineHeight: 1.6 }}>💡 Los datos son privados y solo visibles para la familia.</div>
+                        <div style={{ fontSize: ".8rem", color: C.textSoft, lineHeight: 1.6 }}><Em e="💡" s={17} /> Los datos son privados y solo visibles para la familia.</div>
                     </div>
                 </div>
             )}
@@ -2982,7 +3044,7 @@ function PanelHija({ hija, contactos, setContactos, meds, setMeds, turnos, setTu
                             padding: "14px 16px", marginBottom: 14
                         }}>
                             <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 12 }}>
-                                <div style={{ fontSize: "1.2rem" }}>🤝</div>
+                                <div style={{ fontSize: "1.2rem" }}><Em e="🤝" s={24} /></div>
                                 <div>
                                     <div style={{ fontSize: ".92rem", fontWeight: 700, color: "#92400E" }}>
                                         Martita detectó algo
@@ -3143,7 +3205,7 @@ function PanelHija({ hija, contactos, setContactos, meds, setMeds, turnos, setTu
                     {/* Galería */}
                     {(!perfil.fotos || perfil.fotos.length === 0) ? (
                         <div style={{ textAlign: "center", padding: "30px 20px", color: C.textSoft }}>
-                            <div style={{ fontSize: "2.5rem", marginBottom: 10 }}>📷</div>
+                            <div style={{ fontSize: "2.5rem", marginBottom: 10 }}><Em e="📷" s={24} /></div>
                             <div style={{ fontSize: ".9rem", fontWeight: 600 }}>Todavía no hay fotos</div>
                             <div style={{ fontSize: ".8rem", marginTop: 4 }}>Subí la primera foto para mamá</div>
                         </div>
@@ -3237,7 +3299,7 @@ function PanelHija({ hija, contactos, setContactos, meds, setMeds, turnos, setTu
             {showAddMed && (
                 <div style={S.overlay} onClick={() => setShowAddMed(false)}>
                     <div style={S.modal} onClick={e => e.stopPropagation()}>
-                        <div style={S.modalTitle}>💊 Agregar medicación</div>
+                        <div style={S.modalTitle}><Em e="💊" s={17} /> Agregar medicación</div>
                         <div style={S.fg}><label style={S.lbl}>Medicamento *</label><input style={S.inp} value={newMedNombre} onChange={e => setNewMedNombre(e.target.value)} placeholder="Ej: Enalapril 10mg" autoFocus /></div>
                         <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10 }}>
                             <div style={S.fg}><label style={S.lbl}>Hora</label><input style={S.inp} type="time" value={newMedHora} onChange={e => setNewMedHora(e.target.value)} /></div>
@@ -3253,7 +3315,7 @@ function PanelHija({ hija, contactos, setContactos, meds, setMeds, turnos, setTu
             {showAddTurno && (
                 <div style={S.overlay} onClick={() => setShowAddTurno(false)}>
                     <div style={S.modal} onClick={e => e.stopPropagation()}>
-                        <div style={S.modalTitle}>📅 Agregar turno</div>
+                        <div style={S.modalTitle}><Em e="📅" s={17} /> Agregar turno</div>
                         <div style={S.fg}><label style={S.lbl}>Especialidad *</label><input style={S.inp} value={newTurnoNombre} onChange={e => setNewTurnoNombre(e.target.value)} placeholder="Ej: Traumatólogo · Dra. Salinas" autoFocus /></div>
                         <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10 }}>
                             <div style={S.fg}><label style={S.lbl}>Fecha *</label><input style={S.inp} type="date" value={newTurnoFecha} onChange={e => setNewTurnoFecha(e.target.value)} /></div>
@@ -3321,7 +3383,7 @@ function SwitchBotConfig({ sensorData, color }) {
             <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 10 }}>
                 <div>
                     <div style={{ fontSize: ".88rem", fontWeight: 700, color: C.primary }}>
-                        🔗 Conectar SwitchBot
+                        <Em e="🔗" s={17} /> Conectar SwitchBot
                     </div>
                     <div style={{ fontSize: ".72rem", color: C.textSoft, marginTop: 2 }}>
                         {saved ? "✓ Configurado — datos en tiempo real" : "Sin configurar — usando datos de ejemplo"}
@@ -3341,7 +3403,7 @@ function SwitchBotConfig({ sensorData, color }) {
                     background: "white", borderRadius: 8, padding: "10px 12px", marginBottom: 10,
                     display: "flex", gap: 10, alignItems: "center"
                 }}>
-                    <div style={{ fontSize: "1.3rem" }}>{sensorData.activa ? "🟢" : "🟡"}</div>
+                    <div style={{ fontSize: "1.3rem" }}><Em e={sensorData.activa ? "🟢" : "🟡"} s={22} /></div>
                     <div>
                         <div style={{ fontSize: ".82rem", fontWeight: 700, color: C.text }}>
                             mamá {sensorData.activa ? "está activa" : "sin movimiento reciente"}
@@ -3375,7 +3437,7 @@ function SwitchBotConfig({ sensorData, color }) {
                     <div><b>3.</b> En la app → Perfil → Preferencias → Token de API → <b>Copiar Token</b></div>
                     <div><b>4.</b> En la app → tu sensor → pegá el nombre o ID del dispositivo</div>
                     <div style={{ marginTop: 8, padding: "8px", background: "#FFF7ED", borderRadius: 6, color: "#92400E", fontWeight: 500 }}>
-                        💡 El Token es una cadena larga tipo "eyJ0eXAi...". El Device ID es algo como "ABCDE12345".
+                        <Em e="💡" s={17} /> El Token es una cadena larga tipo "eyJ0eXAi...". El Device ID es algo como "ABCDE12345".
                     </div>
                 </div>
             )}
@@ -3535,7 +3597,7 @@ function ConfigPanelApp({ T: _Tbase, F, themeConfig, contactos, setContactos, on
                 }}>
                     <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 12 }}>
                         <div style={{ fontFamily: F.display, fontSize: "1.3rem", fontWeight: 700, color: T.text }}>
-                            ✦ Personalizar app
+                            <Em e="✦" s={17} /> Personalizar app
                         </div>
                         <button onClick={onClose} style={{
                             background: T.bg, border: `1px solid ${T.border}`,
@@ -3590,7 +3652,7 @@ function ConfigPanelApp({ T: _Tbase, F, themeConfig, contactos, setContactos, on
                                                         paddingBottom: 5
                                                     }}>{n}</div>
                                                 ))}
-                                                <div style={{ fontSize: ".8rem", color: "rgba(255,255,255,.4)", paddingBottom: 5 }}>⚙️</div>
+                                                <div style={{ fontSize: ".8rem", color: "rgba(255,255,255,.4)", paddingBottom: 5 }}><Em e="⚙️" s={24} /></div>
                                             </div>
 
                                             {/* App body preview */}
@@ -3606,7 +3668,7 @@ function ConfigPanelApp({ T: _Tbase, F, themeConfig, contactos, setContactos, on
                                                     width: 60, height: 60, borderRadius: "50%", background: currentColor,
                                                     display: "flex", alignItems: "center", justifyContent: "center",
                                                     fontSize: "1.4rem", boxShadow: `0 6px 20px ${currentColor}55`
-                                                }}>🎙️</div>
+                                                }}><Em e="🎙️" s={24} /></div>
                                                 <div style={{ display: "flex", gap: 6 }}>
                                                     {[currentColor, hslToHexFn(H, Math.min(S + 10, 100), Math.max(L - 10, 20)),
                                                         hslToHexFn(H, 30, 75), hslToHexFn(H, 20, 88)].map((c, i) => (
@@ -3621,7 +3683,7 @@ function ConfigPanelApp({ T: _Tbase, F, themeConfig, contactos, setContactos, on
                                                 display: "flex", justifyContent: "space-around"
                                             }}>
                                                 {["💊", "📅", "🎵", "🏃", "📷"].map((ic, i) => (
-                                                    <div key={i} style={{ fontSize: "1.1rem", opacity: i === 0 ? 1 : .5 }}>{ic}</div>
+                                                    <div key={i} style={{ fontSize: "1.1rem", opacity: i === 0 ? 1 : .5 }}><Em e={ic} s={18} /></div>
                                                 ))}
                                             </div>
                                         </div>
@@ -3774,7 +3836,7 @@ function ConfigPanelApp({ T: _Tbase, F, themeConfig, contactos, setContactos, on
                                                 width: 22, height: 22, borderRadius: "50%",
                                                 background: "rgba(255,255,255,.2)", display: "flex",
                                                 alignItems: "center", justifyContent: "center", color: "white"
-                                            }}>✓</div>
+                                            }}><Em e="✓" s={24} /></div>
                                         )}
                                     </button>
                                 ))}
@@ -3818,7 +3880,7 @@ function ConfigPanelApp({ T: _Tbase, F, themeConfig, contactos, setContactos, on
                                             background: shapeId === sh.id ? "rgba(255,255,255,.2)" : T.border,
                                             display: "flex", alignItems: "center", justifyContent: "center", fontSize: "1.1rem"
                                         }}>
-                                            {MIC_ICONS.find(i => i.id === iconId)?.idle || "🎙️"}
+                                            <Em e={MIC_ICONS.find(i => i.id === iconId)?.idle || "🎙️"} s={26} />
                                         </div>
                                         <span style={{
                                             fontSize: ".7rem", fontFamily: "inherit", fontWeight: 600,
@@ -3852,7 +3914,7 @@ function ConfigPanelApp({ T: _Tbase, F, themeConfig, contactos, setContactos, on
                                         fontSize: ".65rem", color: "white",
                                         boxShadow: `0 3px 10px ${T.primary}55`,
                                         transition: "top .15s"
-                                    }}>🎙</div>
+                                    }}><Em e="🎙" s={24} /></div>
                                     <div style={{
                                         position: "absolute", top: 3, left: 6, fontSize: ".55rem",
                                         color: T.textMuted, fontWeight: 600, textTransform: "uppercase", letterSpacing: ".05em"
@@ -3870,7 +3932,7 @@ function ConfigPanelApp({ T: _Tbase, F, themeConfig, contactos, setContactos, on
                                 />
                                 {/* Atajos rápidos */}
                                 <div style={{ display: "flex", gap: 8 }}>
-                                    {[{ lbl: "⬆ Arriba", val: 15 }, { lbl: "· Centro", val: 50 }, { lbl: "⬇ Abajo", val: 80 }].map(p => (
+                                    {[{ lbl: "Arriba", val: 15 }, { lbl: "· Centro", val: 50 }, { lbl: "⬇ Abajo", val: 80 }].map(p => (
                                         <button key={p.val} onClick={() => themeConfig.setBtnPosition(p.val)}
                                             style={{
                                                 flex: 1,
@@ -3955,7 +4017,7 @@ function ConfigPanelApp({ T: _Tbase, F, themeConfig, contactos, setContactos, on
                                         background: T.primary, color: "white", borderRadius: 10, padding: "12px",
                                         cursor: "pointer", fontWeight: 600, fontSize: ".85rem"
                                     }}>
-                                        📷 Elegir foto del dispositivo
+                                        <Em e="📷" s={17} /> Elegir foto del dispositivo
                                         <input type="file" accept="image/*" style={{ display: "none" }}
                                             onChange={async e => {
                                                 const file = e.target.files[0];
@@ -4007,7 +4069,7 @@ function ConfigPanelApp({ T: _Tbase, F, themeConfig, contactos, setContactos, on
                                             width: 32, height: 32, borderRadius: "50%", flexShrink: 0,
                                             background: T.primary + "22", display: "flex", alignItems: "center",
                                             justifyContent: "center", fontSize: "1rem"
-                                        }}>👤</div>
+                                        }}><Em e="👤" s={24} /></div>
                                         <div style={{ flex: 1, display: "flex", flexDirection: "column", gap: 4 }}>
                                             <input
                                                 value={c.nombre}
@@ -4099,7 +4161,7 @@ function ConfigPanelApp({ T: _Tbase, F, themeConfig, contactos, setContactos, on
                                 <div style={{ background: T.bg, borderRadius: 10, padding: "14px", border: `1px solid ${T.border}` }}>
                                     <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 10 }}>
                                         <div>
-                                            <div style={{ fontSize: ".88rem", fontWeight: 700, color: T.text }}>🔒 PIN actual: {"•".repeat(4)}</div>
+                                            <div style={{ fontSize: ".88rem", fontWeight: 700, color: T.text }}><Em e="🔒" s={17} /> PIN actual: {"•".repeat(4)}</div>
                                             <div style={{ fontSize: ".72rem", color: T.textSoft, marginTop: 2 }}>
                                                 {pinStep === "idle" ? "El PIN por defecto es 1234" : pinStep === "new1" ? "Ingresá el PIN nuevo" : "Repetí el PIN nuevo"}
                                             </div>
@@ -4319,7 +4381,7 @@ function ApiKeyConfig({ color }) {
 
             {testResult === "ok" && (
                 <div style={{ marginTop: 10, padding: "8px 12px", background: C.successL, borderRadius: 8, fontSize: ".8rem", color: C.success, fontWeight: 600 }}>
-                    ✓ Voz funcionando — ¡Martita ya suena como Paola!
+                    <Em e="✓" s={17} /> Voz funcionando — ¡Martita ya suena como Paola!
                 </div>
             )}
             {testResult === "error" && (
