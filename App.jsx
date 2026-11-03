@@ -178,7 +178,7 @@ async function uploadToCloudinary(file) {
 
 const css = document.createElement("style");
 css.textContent = `
-  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Playfair+Display:wght@500;600;700&display=swap');
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
   html, body { width: 100%; max-width: 100%; overflow-x: hidden; font-family: 'Inter', system-ui, sans-serif; background: #F4F6F9; }
   a { text-decoration: none; color: inherit; }
@@ -255,6 +255,41 @@ const S = {
     loginCard: { background: C.surface, borderRadius: 10, padding: 0, overflow: "hidden", display: "flex", alignItems: "center", cursor: "pointer", boxShadow: "0 1px 4px rgba(0,0,0,.08)", border: `1px solid ${C.border}`, fontFamily: "inherit" },
     loginAvatar: { width: 68, height: 68, objectFit: "cover", objectPosition: "top", flexShrink: 0 },
 };
+
+// -- VIDRIO (look Apple, igual al rediseño) --
+const GLASS = { background: "linear-gradient(115deg,rgba(255,255,255,.82) 0%,rgba(255,255,255,.4) 28%,rgba(255,255,255,.78) 46%,rgba(255,255,255,.38) 68%,rgba(255,255,255,.7) 100%)", WebkitBackdropFilter: "blur(22px) saturate(1.6)", backdropFilter: "blur(22px) saturate(1.6)", border: "1px solid rgba(255,255,255,.95)", boxShadow: "0 16px 34px -16px rgba(70,45,10,.42), inset 0 1px 0 #fff, inset 0 -1px 0 rgba(150,115,50,.18)", borderRadius: 26 };
+const GOLD = { background: "linear-gradient(115deg,#f6dea4 0%,#dcb056 40%,#f3d88f 52%,#c99a3f 100%)", color: "#2b1f08", border: "1px solid rgba(255,255,255,.6)", boxShadow: "0 12px 26px -10px rgba(201,154,63,.8), inset 0 1px 0 rgba(255,255,255,.8)", fontWeight: 700, cursor: "pointer" };
+const SERIF = "'Playfair Display', Georgia, serif";
+
+// -- TURNOS: aviso 2 días antes --
+function diasHasta(iso) {
+    if (!iso) return null;
+    const a = new Date(iso + "T00:00:00"); const n = new Date(); n.setHours(0, 0, 0, 0);
+    return Math.round((a - n) / 864e5);
+}
+function turnoCercano(turnos) {
+    return (turnos || []).filter(t => { const d = diasHasta(t.iso); return d !== null && d >= 0 && d <= 2; })
+        .sort((a, b) => diasHasta(a.iso) - diasHasta(b.iso))[0] || null;
+}
+function cuandoTxt(d) { return d === 0 ? "Hoy" : d === 1 ? "Mañana" : "Pasado mañana"; }
+
+// -- ALERTAS Y ESTADO compartidos con la familia (Firebase) --
+async function pushAlerta(texto, tipo) {
+    try {
+        const cur = await fbGet("alertas");
+        const prev = Array.isArray(cur?.value) ? cur.value : [];
+        await fbSet("alertas", [{ id: Date.now(), ts: Date.now(), texto, tipo: tipo || "ayuda" }, ...prev].slice(0, 30));
+    } catch (e) { }
+}
+async function setEstado(campo) {
+    try {
+        const cur = await fbGet("estado");
+        const prev = cur?.value && typeof cur.value === "object" ? cur.value : {};
+        await fbSet("estado", { ...prev, [campo]: Date.now() });
+    } catch (e) { }
+}
+function esHoy(ts) { return !!ts && new Date(ts).toDateString() === new Date().toDateString(); }
+function horaDe(ts) { return new Date(ts).toLocaleTimeString("es-AR", { hour: "2-digit", minute: "2-digit" }); }
 
 // -- PERSONALIZACIÓN --
 const PRESETS = {
@@ -969,14 +1004,14 @@ export default function App() {
         <div style={{ display: "flex", flexDirection: "column", height: "100vh", width: "100%", maxWidth: 480, margin: "0 auto", fontFamily: "'Inter',system-ui,sans-serif", overflow: "hidden", overflowX: "hidden", background: "#F4F6F9" }}>
 
             {/* TAB BAR PRINCIPAL — cuadrado, sin avatars */}
-            <div style={{ background: themeAppColor || "#1B4F8A", display: "flex", flexShrink: 0, borderBottom: `2px solid ${(themeAppColor || "#1B4F8A")}CC` }}>
+            <div style={{ background: "linear-gradient(160deg,#1c2130,#0d111b)", display: "flex", flexShrink: 0, borderBottom: "1px solid rgba(231,195,122,.55)" }}>
                 {visibleRoles.map(r => (
                     <button key={r.id} onClick={() => setRole(r.id)} style={{
                         flex: 1, padding: "13px 4px", border: "none", cursor: "pointer",
                         fontFamily: "inherit", fontSize: ".78rem", fontWeight: role === r.id ? 700 : 500,
                         background: "transparent",
                         color: role === r.id ? "white" : "rgba(255,255,255,.5)",
-                        borderBottom: role === r.id ? "2.5px solid white" : "2.5px solid transparent",
+                        borderBottom: role === r.id ? "2.5px solid #e7c37a" : "2.5px solid transparent",
                         transition: "all .15s", letterSpacing: ".01em",
                     }}>
                         {r.label}
@@ -1361,6 +1396,14 @@ function PanelNorma({ contactos, meds, turnos, perfil, themeConfig }) {
     // -- AI --
     async function processQ(text) {
         setAiState("thinking"); setUserMsg(text); setAiMsg(""); setYtData(null); setUrgente(null);
+        if (/me siento mal|me siento muy mal|auxilio|socorro|necesito ayuda|me ca[ií]|me duele el pecho|no puedo respirar|me mareo/i.test(text)) {
+            const hija = contactos[0];
+            pushAlerta(`${uName} pidió ayuda: “${text}”`, "ayuda");
+            const spoken = `Quedate tranquila, ${uName}. Ya le avisé a ${hija?.nombre || "tu familia"}. Si lo necesitás, llamo ahora.`;
+            setAiMsg(spoken); setAiState("speaking");
+            speak(spoken, () => { setAiState("idle"); if (hija) setUrgente(hija); });
+            return;
+        }
         const sys = buildSystemPrompt(contactos, meds, turnos, perfil);
         let reply = "";
         try {
@@ -1527,7 +1570,7 @@ function PanelNorma({ contactos, meds, turnos, perfil, themeConfig }) {
             fontFamily: F.body, overflow: "hidden", overflowX: "hidden",
             background: Tx.isPhoto && TC.customBg
                 ? `url(${TC.customBg}) center/cover no-repeat`
-                : Tx.css !== "none" ? `${Tx.css}, ${T.bg}` : T.bg,
+                : "radial-gradient(120% 55% at 15% 0%,#fff4dc 0%,#f2e9d8 40%,#e4dfd5 100%)",
             position: "relative"
         }}>
             {/* Decorative bg blobs */}
@@ -1605,145 +1648,105 @@ function PanelNorma({ contactos, meds, turnos, perfil, themeConfig }) {
             )}
 
             {/* TOP */}
-            <div style={{ textAlign: "center", padding: "22px 20px 0", flexShrink: 0 }}>
-                <div style={{ fontFamily: F.body, fontSize: ".82rem", fontStyle: "italic", color: T.textSoft, fontWeight: 400 }}>{clock.greeting}</div>
-                <div style={{ fontFamily: F.display, fontSize: "2.4rem", fontWeight: 700, color: T.text, lineHeight: .95, marginTop: 2, letterSpacing: "-.02em" }}>{uName}</div>
-                <div style={{ display: "flex", alignItems: "center", gap: 8, marginTop: 8 }}>
-                    <div style={{ height: 1, flex: 1, background: `linear-gradient(to right,${T.accent},transparent)` }} />
-                    <div style={{ fontFamily: F.body, fontSize: ".76rem", color: T.textSoft, fontWeight: 400 }}>{clock.timeStr}</div>
+            <div style={{ padding: "26px 22px 0", flexShrink: 0, position: "relative", zIndex: 1 }}>
+                <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+                    <div style={{ fontSize: ".72rem", fontWeight: 700, letterSpacing: ".14em", textTransform: "uppercase", color: "#8a6420" }}>Tu guía</div>
+                    <div style={{ ...GLASS, borderRadius: 999, padding: "6px 14px", fontSize: ".78rem", fontWeight: 700, color: "#1f1b14" }}>{clock.timeStr}</div>
                 </div>
+                <div style={{ fontFamily: SERIF, fontSize: "2.2rem", fontWeight: 600, color: "#1f1b14", lineHeight: 1.05, marginTop: 6 }}>{clock.greeting}, {uName}</div>
             </div>
 
             {/* CENTER */}
-            <div style={{
-                flex: 1, display: "flex", flexDirection: "column", alignItems: "center", gap: 16,
-                justifyContent: btnPos < 25 ? "flex-start" : btnPos > 75 ? "flex-end" : "center",
-                padding: btnPos < 25 ? "24px 24px 0" : btnPos > 75 ? "0 24px 24px" : "0 24px",
-                overflow: "hidden"
-            }}>
+            <div style={{ flex: 1, display: "flex", flexDirection: "column", alignItems: "center", gap: 12, padding: "10px 22px 120px", overflowY: "auto", position: "relative", zIndex: 1 }}>
 
-                <div style={{ fontSize: ".95rem", fontWeight: 500, color: aiState === "idle" ? "#9CA3AF" : "#1B4F8A", textAlign: "center", transition: "color .2s", letterSpacing: ".01em" }}>
-                    {aiState === "thinking" ? "Martita está pensando…" : aiState === "speaking" ? "Martita te está hablando…" : aiState === "listening" ? "Te estoy escuchando…" : "Tocá para hablar con Martita"}
-                </div>
-
-                {/* BIG BUTTON */}
-                <div style={{ position: "relative", display: "flex", alignItems: "center", justifyContent: "center" }}>
-                    {(aiState === "speaking" || aiState === "listening") && [210, 265, 320].map((s, i) => (
-                        <div key={i} style={{ position: "absolute", borderRadius: "50%", border: "1.5px solid #1B4F8A", width: s, height: s, opacity: 0, animation: "ripple 1.6s ease-out infinite", animationDelay: `${i * .3}s`, pointerEvents: "none" }} />
-                    ))}
-                    <button onClick={handleMicBtn} style={{
-                        ...Sh.style, border: "none", cursor: "pointer",
-                        background: btnBg,
-                        boxShadow: `0 12px 40px ${T.primary}55`,
-                        display: "flex", flexDirection: "column", alignItems: "center",
-                        justifyContent: "center", gap: 8, position: "relative", zIndex: 2,
-                        transition: "all .25s ease"
-                    }}>
-                        <div style={{ position: "absolute", inset: 6, borderRadius: "inherit", border: `1px solid rgba(255,255,255,.15)` }} />
-                        <div style={{ width: 68, height: 68, borderRadius: "50%", background: "rgba(255,255,255,.18)", display: "flex", alignItems: "center", justifyContent: "center" }}>
-                            <span style={{ fontSize: "3rem", lineHeight: 1 }}>{btnIcon}</span>
+                {(() => {
+                    const tc = turnoCercano(turnos);
+                    if (!tc) return null;
+                    const d = diasHasta(tc.iso);
+                    return (
+                        <div onClick={() => setScreen("turnos")} style={{ ...GLASS, width: "100%", maxWidth: 380, padding: "14px 18px", border: "1.5px solid rgba(201,154,63,.7)", cursor: "pointer" }}>
+                            <div style={{ fontSize: ".68rem", fontWeight: 700, letterSpacing: ".14em", textTransform: "uppercase", color: "#8a6420" }}>Recordatorio</div>
+                            <div style={{ fontFamily: SERIF, fontSize: "1.3rem", fontWeight: 600, lineHeight: 1.15, marginTop: 4, color: "#1f1b14" }}>{cuandoTxt(d)} tenés {tc.nombre}</div>
+                            <div style={{ fontSize: ".95rem", marginTop: 3, color: "#4a4235" }}>{tc.fecha} a las {tc.hora}{tc.nota ? ` · ${tc.nota}` : ""}</div>
                         </div>
-                        <div style={{ fontSize: ".68rem", fontWeight: 700, color: "rgba(255,255,255,.85)", letterSpacing: ".05em", textTransform: "uppercase", textAlign: "center", padding: "0 12px" }}>{btnLbl}</div>
-                    </button>
+                    );
+                })()}
+
+                {/* BOTÓN CENTRAL DE LA GUÍA */}
+                <div style={{ position: "relative", display: "flex", alignItems: "center", justifyContent: "center", width: 250, height: 250, borderRadius: "50%", background: "radial-gradient(circle,rgba(227,190,120,.55) 0%,rgba(227,190,120,.2) 48%,rgba(227,190,120,0) 72%)", flexShrink: 0 }}>
+                    {(aiState === "speaking" || aiState === "listening") && [190, 230, 270].map((sz, k) => (
+                        <div key={k} style={{ position: "absolute", borderRadius: "50%", border: "1.5px solid #c99a3f", width: sz, height: sz, opacity: 0, animation: "ripple 1.6s ease-out infinite", animationDelay: `${k * .3}s`, pointerEvents: "none" }} />
+                    ))}
+                    <div style={{ ...GLASS, borderRadius: "50%", width: 190, height: 190, display: "flex", alignItems: "center", justifyContent: "center" }}>
+                        <button onClick={handleMicBtn} aria-label={btnLbl} style={{ ...GOLD, width: 136, height: 136, borderRadius: "50%", display: "flex", alignItems: "center", justifyContent: "center", transition: "all .25s ease", filter: aiState === "thinking" ? "grayscale(.5)" : "none" }}>
+                            {aiState === "listening" ? <svg width="56" height="56" viewBox="0 0 24 24" fill="currentColor"><rect x="6" y="6" width="12" height="12" rx="2.5" /></svg>
+                                : aiState === "thinking" ? <span style={{ fontSize: "2.4rem" }}>…</span>
+                                    : <svg width="62" height="62" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><rect x="9" y="3" width="6" height="11" rx="3" /><path d="M5 11a7 7 0 0 0 14 0M12 18v3" /></svg>}
+                        </button>
+                    </div>
+                </div>
+                <div style={{ fontFamily: SERIF, fontSize: "1.45rem", fontWeight: 600, textAlign: "center", lineHeight: 1.15, color: "#1f1b14", marginTop: -6 }}>
+                    {aiState === "thinking" ? "Estoy pensando…" : aiState === "speaking" ? "Te estoy hablando… tocá para parar" : aiState === "listening" ? "Te escucho…" : <>Tocá y decime<br />qué necesitás</>}
                 </div>
 
                 {/* MENSAJES */}
-                <div style={{ width: "100%", maxWidth: 360, display: "flex", flexDirection: "column", gap: 8 }}>
-                    {aiState === "thinking" && (
-                        <div style={{ display: "flex", gap: 6, justifyContent: "center", padding: 8 }}>
-                            {[0, 1, 2].map(i => <div key={i} style={{ width: 9, height: 9, borderRadius: "50%", background: "#1B4F8A", animation: "pulse 1.1s ease-in-out infinite", animationDelay: `${i * .18}s` }} />)}
-                        </div>
-                    )}
-                    {userMsg && <div style={S.bubbleUser}><div style={S.bwho}>Vos dijiste</div>{userMsg}</div>}
-                    {aiMsg && <div style={S.bubbleAI}><div style={{ ...S.bwho, color: "#1B4F8A" }}>Martita</div>{aiMsg}</div>}
+                <div style={{ width: "100%", maxWidth: 380, display: "flex", flexDirection: "column", gap: 8 }}>
+                    {userMsg && <div style={{ alignSelf: "flex-end", ...GOLD, padding: "10px 16px", borderRadius: "20px 20px 6px 20px", fontSize: "1rem" }}>{userMsg}</div>}
+                    {aiMsg && <div style={{ ...GLASS, padding: "12px 16px", borderRadius: "20px 20px 20px 6px", fontSize: "1.05rem", lineHeight: 1.35, color: "#1f1b14", fontWeight: 500 }}>{aiMsg}</div>}
                     {ytData && (
-                        <div onClick={() => window.open(ytData.url, "_blank")} style={S.ytCard}>
-                            <div style={{ width: 44, height: 32, borderRadius: 6, background: "#111", display: "flex", alignItems: "center", justifyContent: "center", color: "white", fontSize: "1rem", flexShrink: 0 }}>▶</div>
-                            <div style={{ flex: 1 }}><div style={{ fontWeight: 600, fontSize: ".88rem" }}>{ytData.query}</div><div style={{ fontSize: ".7rem", color: "#9CA3AF", marginTop: 1 }}>Abrir en YouTube</div></div>
-                            <div style={{ background: "#DC2626", color: "white", borderRadius: 6, padding: "5px 10px", fontSize: ".75rem", fontWeight: 600 }}>Ver</div>
+                        <div onClick={() => window.open(ytData.url, "_blank")} style={{ ...GLASS, padding: "10px 14px", display: "flex", alignItems: "center", gap: 12, cursor: "pointer" }}>
+                            <div style={{ width: 44, height: 32, borderRadius: 8, background: "#111", display: "flex", alignItems: "center", justifyContent: "center", color: "white", flexShrink: 0 }}>▶</div>
+                            <div style={{ flex: 1 }}><div style={{ fontWeight: 600, fontSize: ".92rem" }}>{ytData.query}</div><div style={{ fontSize: ".72rem", color: "#6b6354" }}>Abrir en YouTube</div></div>
                         </div>
                     )}
                 </div>
 
+                {/* FRASES DE EJEMPLO */}
+                <div style={{ display: "flex", flexWrap: "wrap", gap: 8, justifyContent: "center", maxWidth: 380 }}>
+                    {["Llamá a mi hija", "Me siento mal", "¿Qué remedio me toca?"].map(f => (
+                        <button key={f} onClick={() => processQ(f)} style={{ ...GLASS, borderRadius: 999, padding: "9px 14px", fontSize: ".85rem", fontWeight: 600, color: "#1f1b14", cursor: "pointer" }}>“{f}”</button>
+                    ))}
+                </div>
+
+                {/* ESTADO PARA LA FAMILIA */}
+                <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10, width: "100%", maxWidth: 380 }}>
+                    <button onClick={() => { setEstado("levantoTs"); setUserMsg("Ya me levanté"); setAiMsg("¡Qué bueno! Les aviso que ya te levantaste."); }} style={{ ...GOLD, height: 52, borderRadius: 26, fontSize: ".95rem" }}>Ya me levanté</button>
+                    <button onClick={() => { setEstado("remedioTs"); setUserMsg("Ya tomé el remedio"); setAiMsg("Perfecto, les aviso que tomaste el remedio."); }} style={{ ...GLASS, height: 52, borderRadius: 26, fontSize: ".95rem", fontWeight: 700, color: "#1f1b14", cursor: "pointer" }}>Ya tomé el remedio</button>
+                </div>
+                <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10, width: "100%", maxWidth: 380 }}>
+                    {[["ejercicios", "Ejercicios"], ["fotos", "Fotos"]].map(([k, l]) => (
+                        <button key={k} onClick={() => setScreen(k)} style={{ ...GLASS, height: 46, borderRadius: 23, fontSize: ".9rem", fontWeight: 600, color: "#1f1b14", cursor: "pointer" }}>{l}</button>
+                    ))}
+                </div>
             </div>
 
-            {/* BOTTOM NAV */}
-            <div style={{ background: T.tabBg || T.primary, borderTop: `2px solid ${T.accent}33`, display: "flex", flexShrink: 0, paddingBottom: "env(safe-area-inset-bottom)" }}>
-                {[
-                    {
-                        s: "pastillas", lbl: "Pastillas", svg: (
-                            <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round">
-                                <path d="M10.5 20H4a2 2 0 0 1-2-2V5c0-1.1.9-2 2-2h3.93a2 2 0 0 1 1.66.9l.82 1.2a2 2 0 0 0 1.66.9H20a2 2 0 0 1 2 2v2" />
-                                <circle cx="17" cy="17" r="5" />
-                                <path d="M17 14v6M14 17h6" />
-                            </svg>
-                        )
-                    },
-                    {
-                        s: "turnos", lbl: "Turnos", svg: (
-                            <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round">
-                                <rect x="3" y="4" width="18" height="18" rx="2" />
-                                <path d="M16 2v4M8 2v4M3 10h18M8 14h.01M12 14h.01M16 14h.01M8 18h.01M12 18h.01" />
-                            </svg>
-                        )
-                    },
-                    {
-                        s: "musica", lbl: "Música", svg: (
-                            <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round">
-                                <path d="M9 18V5l12-2v13" />
-                                <circle cx="6" cy="18" r="3" />
-                                <circle cx="18" cy="16" r="3" />
-                            </svg>
-                        )
-                    },
-                    {
-                        s: "ejercicios", lbl: "Ejercicios", svg: (
-                            <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round">
-                                <circle cx="12" cy="5" r="2" />
-                                <path d="M12 7v5l3 3M12 12l-3 3M7 15h2M15 15h2" />
-                                <path d="M5 20h14" />
-                            </svg>
-                        )
-                    },
-                    {
-                        s: "fotos", lbl: "Fotos", svg: (
-                            <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round">
-                                <rect x="3" y="3" width="18" height="18" rx="2" />
-                                <circle cx="8.5" cy="8.5" r="1.5" />
-                                <path d="M21 15l-5-5L5 21" />
-                            </svg>
-                        )
-                    },
-                    {
-                        s: "__calls__", lbl: "Urgencias", svg: (
-                            <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round">
-                                <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 12 19.79 19.79 0 0 1 1.61 3.5 2 2 0 0 1 3.6 1.32h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L7.91 9a16 16 0 0 0 6 6l1.27-.96a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z" />
-                            </svg>
-                        )
-                    },
-                ].map((item, idx) => {
-                    const isActive = screen === item.s;
-                    const isUrgent = item.s === "__calls__";
-                    return (
-                        <button
-                            key={item.s}
-                            onClick={() => isUrgent ? setShowCalls(true) : setScreen(item.s)}
-                            style={{
-                                flex: 1, display: "flex", flexDirection: "column", alignItems: "center",
-                                justifyContent: "center", gap: 5, border: "none", background: "none",
-                                cursor: "pointer", padding: "12px 2px 10px", fontFamily: "inherit",
-                                color: isUrgent ? C.danger : isActive ? C.primary : C.textMuted,
-                                borderTop: isActive && !isUrgent ? `2px solid ${C.primary}` : "2px solid transparent",
-                            }}
-                        >
-                            {item.svg}
-                            <span style={{ fontSize: ".63rem", fontWeight: isActive ? 700 : 500, letterSpacing: ".01em" }}>
-                                {item.lbl}
-                            </span>
-                        </button>
-                    );
-                })}
-            </div>
+            {/* BARRA INFERIOR VIDRIADA con botón central de la guía */}
+            {(() => {
+                const ic = (d) => <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">{d}</svg>;
+                const items = [
+                    { s: "pastillas", lbl: "Pastillas", svg: ic(<><path d="M10.5 20.5a5 5 0 0 1-7-7l9-9a5 5 0 0 1 7 7z" /><path d="M8.5 8.5l7 7" /></>) },
+                    { s: "turnos", lbl: "Turnos", svg: ic(<><rect x="3.5" y="5" width="17" height="15" rx="3" /><path d="M8 3v4M16 3v4M3.5 10h17" /></>) },
+                    null,
+                    { s: "musica", lbl: "Música", svg: ic(<><path d="M9 18V5l12-2v13" /><circle cx="6" cy="18" r="3" /><circle cx="18" cy="16" r="3" /></>) },
+                    { s: "__calls__", lbl: "Llamar", svg: ic(<path d="M5 4h4l2 5-2.5 1.5a11 11 0 0 0 5 5L15 13l5 2v4a2 2 0 0 1-2 2A16 16 0 0 1 3 6a2 2 0 0 1 2-2z" />) },
+                ];
+                return (
+                    <div style={{ ...GLASS, position: "absolute", left: 14, right: 14, bottom: "calc(18px + env(safe-area-inset-bottom))", height: 78, borderRadius: 39, display: "flex", alignItems: "center", justifyContent: "space-between", padding: "0 8px", zIndex: 5 }}>
+                        {items.map((it) => it ? (
+                            <button key={it.s} onClick={() => it.s === "__calls__" ? setShowCalls(true) : setScreen(it.s)} style={{ flex: 1, display: "flex", flexDirection: "column", alignItems: "center", gap: 3, border: "none", background: "none", cursor: "pointer", padding: "6px 0", color: it.s === "__calls__" ? C.danger : "#1f1b14", opacity: .85, fontFamily: "inherit" }}>
+                                {it.svg}<span style={{ fontSize: ".68rem", fontWeight: 600 }}>{it.lbl}</span>
+                            </button>
+                        ) : (
+                            <div key="mid" style={{ width: 88, flex: "none", position: "relative", height: "100%" }}>
+                                <button onClick={handleMicBtn} aria-label="Hablar con la guía" style={{ ...GOLD, position: "absolute", left: "50%", top: -34, marginLeft: -42, width: 84, height: 84, borderRadius: "50%", display: "flex", alignItems: "center", justifyContent: "center", boxShadow: "0 0 0 7px rgba(255,255,255,.55), 0 0 0 8px rgba(255,255,255,.9), 0 18px 30px -10px rgba(201,154,63,.95), inset 0 1px 0 rgba(255,255,255,.85)" }}>
+                                    <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.9" strokeLinecap="round" strokeLinejoin="round"><rect x="9" y="3" width="6" height="11" rx="3" /><path d="M5 11a7 7 0 0 0 14 0M12 18v3" /></svg>
+                                </button>
+                                <span style={{ position: "absolute", left: 0, right: 0, bottom: 7, textAlign: "center", fontSize: ".68rem", fontWeight: 800, color: "#8a6420" }}>Hablar</span>
+                            </div>
+                        ))}
+                    </div>
+                );
+            })()}
 
         </div>
     );
@@ -2068,6 +2071,8 @@ function PanelHija({ hija, contactos, setContactos, meds, setMeds, turnos, setTu
 
     // ── ESTADO PRINCIPAL ──
     const [tab, setTab] = useState("resumen");
+    const [alertasFam] = useFirebaseState("alertas", []);
+    const [estadoFam] = useFirebaseState("estado", {});
     const [time, setTime] = useState(getTime().timeStr);
     const [alertaDismiss, setAlertaDismiss] = useState(false);
     const [showAddMed, setShowAddMed] = useState(false);
@@ -2232,7 +2237,7 @@ function PanelHija({ hija, contactos, setContactos, meds, setMeds, turnos, setTu
         if (!newTurnoNombre || !newTurnoFecha) return;
         const d = new Date(newTurnoFecha + "T12:00:00");
         const months = ["Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"];
-        setTurnos(prev => [...prev, { id: Date.now(), nombre: newTurnoNombre, fecha: `${d.getDate()} de ${months[d.getMonth()]}`, hora: newTurnoHora, nota: newTurnoDirec || "", img: "https://images.unsplash.com/photo-1576091160550-2173dba999ef?w=120&q=80" }]);
+        setTurnos(prev => [...prev, { id: Date.now(), nombre: newTurnoNombre, fecha: `${d.getDate()} de ${months[d.getMonth()]}`, hora: newTurnoHora, iso: newTurnoFecha, nota: newTurnoDirec || "", img: "https://images.unsplash.com/photo-1576091160550-2173dba999ef?w=120&q=80" }]);
         setNewTurnoNombre(""); setNewTurnoFecha(""); setNewTurnoHora("10:00"); setNewTurnoDirec(""); setShowAddTurno(false);
     }
     function updateContacto(id, field, val) {
@@ -2435,6 +2440,49 @@ function PanelHija({ hija, contactos, setContactos, meds, setMeds, turnos, setTu
             {/* ── RESUMEN ── */}
             {tab === "resumen" && (
                 <div style={S.scrollBody}>
+
+                    {/* ALERTA DE AYUDA (últimas 6 h) */}
+                    {(() => {
+                        const al = (Array.isArray(alertasFam) ? alertasFam : []).find(x => x.ts && Date.now() - x.ts < 6 * 3600 * 1000);
+                        if (!al) return null;
+                        const tel = (contactos.find(c => c.tel) || {}).tel;
+                        return (
+                            <div style={{ background: "linear-gradient(135deg,#7a1f18,#b3392d)", color: "white", borderRadius: 16, padding: 16, marginBottom: 12, boxShadow: "0 10px 30px -10px rgba(190,52,44,.7)" }}>
+                                <div style={{ fontSize: ".7rem", fontWeight: 800, letterSpacing: ".14em", textTransform: "uppercase", opacity: .85 }}>Pidió ayuda · {horaDe(al.ts)}</div>
+                                <div style={{ fontFamily: SERIF, fontSize: "1.35rem", fontWeight: 600, marginTop: 4, lineHeight: 1.2 }}>{al.texto}</div>
+                                <div style={{ display: "flex", gap: 8, marginTop: 12 }}>
+                                    {tel && <a href={`tel:${tel}`} style={{ flex: 1, background: "white", color: "#7a1f18", borderRadius: 12, padding: 12, textAlign: "center", fontWeight: 800 }}>Llamarla</a>}
+                                    <a href="tel:911" style={{ flex: 1, background: "rgba(255,255,255,.18)", border: "1px solid rgba(255,255,255,.5)", borderRadius: 12, padding: 12, textAlign: "center", fontWeight: 800 }}>Emergencias 911</a>
+                                </div>
+                            </div>
+                        );
+                    })()}
+
+                    {/* ESTADO DE HOY: se levantó / tomó el remedio */}
+                    <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 8, marginBottom: 12 }}>
+                        {[["levantoTs", "Se levantó"], ["remedioTs", "Tomó el remedio"]].map(([k, l]) => {
+                            const ok = esHoy((estadoFam || {})[k]);
+                            return (
+                                <div key={k} style={{ background: ok ? "#ECFDF5" : "#F9FAFB", border: `1px solid ${ok ? "#A7F3D0" : "#E5E7EB"}`, borderRadius: 12, padding: "10px 12px" }}>
+                                    <div style={{ fontSize: ".7rem", fontWeight: 700, color: ok ? "#047857" : "#9CA3AF", textTransform: "uppercase", letterSpacing: ".06em" }}>{l}</div>
+                                    <div style={{ fontSize: "1rem", fontWeight: 700, color: ok ? "#065F46" : "#9CA3AF", marginTop: 2 }}>{ok ? `Sí · ${horaDe(estadoFam[k])}` : "Todavía no"}</div>
+                                </div>
+                            );
+                        })}
+                    </div>
+
+                    {/* TURNO PRÓXIMO (aviso 2 días antes) */}
+                    {(() => {
+                        const tc = turnoCercano(turnos);
+                        if (!tc) return null;
+                        return (
+                            <div onClick={() => setTab("turnos")} style={{ background: "#FFFBEB", border: "1.5px solid #F3D88F", borderRadius: 12, padding: "12px 14px", marginBottom: 12, cursor: "pointer" }}>
+                                <div style={{ fontSize: ".7rem", fontWeight: 800, color: "#8a6420", textTransform: "uppercase", letterSpacing: ".1em" }}>Turno próximo · {cuandoTxt(diasHasta(tc.iso))}</div>
+                                <div style={{ fontWeight: 700, marginTop: 2 }}>{tc.nombre}</div>
+                                <div style={{ fontSize: ".85rem", color: "#6b5a3a" }}>{tc.fecha} · {tc.hora}{tc.nota ? ` · ${tc.nota}` : ""}</div>
+                            </div>
+                        );
+                    })()}
 
                     {/* SEMAFORO DIARIO */}
                     {(() => {
