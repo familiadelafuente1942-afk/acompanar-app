@@ -503,8 +503,8 @@ function saveConfig(cfg) {
 
 // -- ESTADO GLOBAL --
 const INIT_CONTACTOS = [
-    { id: 1, nombre: "Valeria", rel: "Hija", tel: "", color: "#1B4F8A", avatar: "https://images.unsplash.com/photo-1531746020798-e6953c6e8e04?w=160&q=80" },
-    { id: 2, nombre: "Romina", rel: "Hija", tel: "", color: "#1B4F8A", avatar: "https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=160&q=80" },
+    { id: 1, nombre: "Hijo 1", rel: "Hijo/a", tel: "", color: "#1B4F8A", avatar: "https://images.unsplash.com/photo-1531746020798-e6953c6e8e04?w=160&q=80" },
+    { id: 2, nombre: "Hijo 2", rel: "Hijo/a", tel: "", color: "#1B4F8A", avatar: "https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=160&q=80" },
 ];
 
 const INIT_MEDS = [
@@ -520,26 +520,11 @@ const INIT_TURNOS = [
 
 const INIT_PERFIL = {
     historia: "",
-    personasQueridas: [
-        { id: 1, nombre: "Roberto", relacion: "Esposo (fallecido 2019)", descripcion: "El amor de su vida. Lo perdió tras una larga enfermedad. Tema muy sensible — dejar que ella lo traiga si quiere, escuchar con mucho amor.", foto: "", sensible: true },
-        { id: 2, nombre: "Valeria", relacion: "Hija mayor", descripcion: "La llama todos los días. Es su sostén principal. Siente mucho orgullo de ella.", foto: "", sensible: false },
-        { id: 3, nombre: "Romina", relacion: "Hija", descripcion: "Vive más lejos. La extraña mucho aunque no lo dice siempre.", foto: "", sensible: false },
-        { id: 4, nombre: "Sofía y Tomás", relacion: "Nietos (hijos de Valeria)", descripcion: "Los ama con todo. Vienen a almorzar algunos domingos. Cuando habla de ellos se le ilumina la cara.", foto: "", sensible: false },
-    ],
-    alegrias: ["Su jardín en la terraza", "Cocinar para la familia", "David Bisbal y la música romántica", "Telenovelas", "Documentales de naturaleza", "Mate con amigas"],
-    sensibles: ["La muerte de Roberto — no preguntar directamente, dejar que ella lo traiga", "La distancia de Romina le duele aunque no lo muestre", "No le gusta hablar de política", "Le molesta que la traten como «viejita» — es una mujer muy activa"],
-    recuerdos: [
-        { id: 1, anio: "1975", emoji: "💒", texto: "Su casamiento con Roberto en Rosario. Bailaron toda la noche. Le encanta que le pregunten cómo fue la fiesta." },
-        { id: 2, anio: "1985", emoji: "🏖️", texto: "Primer viaje familiar a Mar del Plata con sus hijas. Recuerda que Valeria se asustó con las olas y Roberto la cargó en brazos." },
-        { id: 3, anio: "1990", emoji: "👩‍🏫", texto: "Premio a la maestra del año en su escuela. Recibió flores de todos sus alumnos. Dice que fue el mejor día de su vida laboral." },
-        { id: 4, anio: "2020", emoji: "🌱", texto: "Armó el jardín de la terraza después de perder a Roberto. Plantar le ayudó a sanar. Tiene tomates, albahaca y rosas." },
-    ],
-    fotos: [
-        { id: 1, url: "https://images.unsplash.com/photo-1511895426328-dc8714191011?w=400&q=80", titulo: "Familia en Mar del Plata", anio: "1985", subidaPor: "Valeria", posicion: "center center" },
-        { id: 2, url: "https://images.unsplash.com/photo-1529156069898-49953e39b3ac?w=400&q=80", titulo: "Cumpleaños de Sofía", anio: "2018", subidaPor: "Romina", posicion: "center center" },
-        { id: 3, url: "https://images.unsplash.com/photo-1474552226712-ac0f0961a954?w=400&q=80", titulo: "El jardín de la terraza", anio: "2022", subidaPor: "Valeria", posicion: "center center" },
-        { id: 4, url: "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=400&q=80", titulo: "Tomás y Sofía", anio: "2023", subidaPor: "Romina", posicion: "center center" },
-    ],
+    personasQueridas: [],
+    alegrias: [],
+    sensibles: [],
+    recuerdos: [],
+    fotos: [],
 };
 
 const ACTIVIDAD = [
@@ -609,7 +594,7 @@ PRINCIPIOS HUMANISTAS Y EXISTENCIALES
 ═══════════════════════════════
 - El comportamiento de mamá tiene sentido desde su historia y su manera de ver el mundo — nunca lo juzgás
 - Cuando aparecen temas existenciales (soledad, el paso del tiempo, extrañar personas que ya no están, el sentido del día a día) los acogés con presencia, no con soluciones
-- Si mamá menciona a Roberto o la pérdida: escuchás, acompañás, permitís que ella traiga el tema a su ritmo. Nunca forzás ni cerrás ese espacio
+- Si mamá menciona a un ser querido que perdió o la pérdida: escuchás, acompañás, permitís que ella traiga el tema a su ritmo. Nunca forzás ni cerrás ese espacio
 - La soledad de mamá no se resuelve con información — se acompaña con presencia auténtica
 - Recordás que mamá es una mujer con historia, logros y dignidad — nunca la tratás como "viejita" ni con sobreprotección
 - Respetar su autonomía: nunca decidís por ella, siempre la invitás a elegir
@@ -622,7 +607,7 @@ ALIANZA TERAPÉUTICA Y CONFIANZA
 - Si te cuenta algo importante, lo registrás emocionalmente: "la semana pasada me contaste que te dolía la rodilla — ¿cómo siguió?"
 - Calidez + asertividad: sos afectuosa pero también podés decir verdades con amor
 - Honestidad: no prometés lo que no podés cumplir, no fingís saber lo que no sabés
-- Si algo te preocupa de mamá, lo decís directamente pero con cuidado: "esto que me contás me preocupa un poquito, ¿puedo llamar a Valeria?"
+- Si algo te preocupa de mamá, lo decís directamente pero con cuidado: "esto que me contás me preocupa un poquito, ¿puedo llamar a tu hijo/a?"
 
 ═══════════════════════════════
 ESTILO DE COMUNICACIÓN
@@ -647,7 +632,7 @@ REGULACIÓN EMOCIONAL
 COMANDOS DE ACCIÓN URGENTE
 ═══════════════════════════════
 - Caída, dolor en el pecho, dificultad para respirar, pérdida de conocimiento, emergencia física grave → respondé exactamente: EMERGENCIA: 911
-- Se siente muy mal, pide ayuda urgente, está asustada → respondé exactamente: LLAMAR: ${contactos[0]?.nombre || "Valeria"}
+- Se siente muy mal, pide ayuda urgente, está asustada → respondé exactamente: LLAMAR: ${contactos[0]?.nombre || "Hijo 1"}
 - Pide música o video → primera línea: YOUTUBE: [búsqueda]
 
 ═══════════════════════════════
@@ -702,8 +687,8 @@ PRÓXIMOS TURNOS: ${turnoList}`;
 
 function fallback(text, contactos) {
     const t = text.toLowerCase();
-    const h1 = contactos[0]?.nombre || "Valeria";
-    const h2 = contactos[1]?.nombre || "Romina";
+    const h1 = contactos[0]?.nombre || "Hijo 1";
+    const h2 = contactos[1]?.nombre || "Hijo 2";
 
     // Emergencias físicas → 911
     if (t.includes("pecho") || t.includes("no puedo respirar") || t.includes("desmay") ||
@@ -945,6 +930,13 @@ function Bienvenida({ onAbuelo, onHijos }) {
 // -- APP --
 export default function App() {
     const [contactos, setContactos] = useFirebaseState("contactos", INIT_CONTACTOS);
+    // Nombres viejos guardados en la base: pasan a "Hijo 1" / "Hijo 2"
+    useEffect(() => {
+        const viejos = { "Valeria": "Hijo 1", "Romina": "Hijo 2" };
+        if (Array.isArray(contactos) && contactos.some(c => viejos[c.nombre] || c.rel === "Hija")) {
+            setContactos(prev => prev.map(c => ({ ...c, nombre: viejos[c.nombre] || c.nombre, rel: c.rel === "Hija" ? "Hijo/a" : c.rel })));
+        }
+    }, [contactos]);
     const [meds, setMeds] = useFirebaseState("meds", INIT_MEDS);
     const [turnos, setTurnos] = useFirebaseState("turnos", INIT_TURNOS);
     const [perfil, setPerfil] = useFirebaseState("perfil", INIT_PERFIL);
@@ -2021,7 +2013,7 @@ function SubScreenMayor({ screen, onBack, meds, turnos, processQ, perfil }) {
                     }}>
                         <div style={{ fontSize: "3rem", marginBottom: 12 }}><Em e="📷" s={24} /></div>
                         <div style={{ fontSize: "1rem", fontWeight: 600, marginBottom: 6 }}>Todavía no hay fotos</div>
-                        <div style={{ fontSize: ".85rem" }}>Valeria o Romina pueden subir fotos desde su panel</div>
+                        <div style={{ fontSize: ".85rem" }}>Los hijos pueden subir fotos desde su panel</div>
                         <button onClick={onBack} style={{ ...S.bigGreenBtn, marginTop: 24 }}>← Volver a Martita</button>
                     </div>
                 ) : fullscreen ? (
@@ -2884,7 +2876,7 @@ function PanelHija({ hija, contactos, setContactos, meds, setMeds, turnos, setTu
                         <div style={S.overlay} onClick={() => setShowAddPersona(false)}>
                             <div style={S.modal} onClick={e => e.stopPropagation()}>
                                 <div style={S.modalTitle}><Em e="👤" s={17} /> Agregar persona querida</div>
-                                <div style={S.fg}><label style={S.lbl}>Nombre *</label><input style={S.inp} value={newPNombre} onChange={e => setNewPNombre(e.target.value)} placeholder="Ej: Roberto" /></div>
+                                <div style={S.fg}><label style={S.lbl}>Nombre *</label><input style={S.inp} value={newPNombre} onChange={e => setNewPNombre(e.target.value)} placeholder="Ej: Nombre" /></div>
                                 <div style={S.fg}><label style={S.lbl}>Relación</label><input style={S.inp} value={newPRelacion} onChange={e => setNewPRelacion(e.target.value)} placeholder="Ej: Esposo, Nieto..." /></div>
                                 <div style={S.fg}><label style={S.lbl}>Descripción para Martita</label><textarea style={{ ...S.inp, resize: "none", minHeight: 80 }} value={newPDesc} onChange={e => setNewPDesc(e.target.value)} placeholder="Cómo es la relación..." /></div>
                                 <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 14 }}>
@@ -2954,7 +2946,7 @@ function PanelHija({ hija, contactos, setContactos, meds, setMeds, turnos, setTu
                     ))}
                     <div style={{ ...S.cardBox, background: C.bg, border: `1px dashed ${C.border}` }}>
                         <div style={{ fontSize: ".83rem", fontWeight: 600, color: C.textSoft, lineHeight: 1.6 }}>
-                            <Em e="💡" s={17} /> Cuando mamá diga "me siento mal", Martita llama a {contactos[0]?.nombre || "Valeria"} automáticamente.
+                            <Em e="💡" s={17} /> Cuando mamá diga "me siento mal", Martita llama a {contactos[0]?.nombre || "Hijo 1"} automáticamente.
                         </div>
                     </div>
                 </div>
@@ -3184,7 +3176,7 @@ function PanelHija({ hija, contactos, setContactos, meds, setMeds, turnos, setTu
                         <div style={S.fg}>
                             <label style={S.lbl}>Título</label>
                             <input style={S.inp} value={fotoTituloInput} onChange={e => setFotoTituloInput(e.target.value)}
-                                placeholder="Ej: Cumpleaños de Sofía" />
+                                placeholder="Ej: Cumpleaños de la familia" />
                         </div>
                         <button onClick={() => {
                             if (!fotoUrlInput) return;
@@ -3643,7 +3635,7 @@ function ConfigPanelApp({ T: _Tbase, F, themeConfig, contactos, setContactos, on
                                                 background: currentColor, padding: "11px 14px",
                                                 display: "flex", gap: 6, alignItems: "center"
                                             }}>
-                                                {[userName || "Mamá", "Valeria", "Romina"].map((n, i) => (
+                                                {[userName || "Mamá", "Hijo 1", "Hijo 2"].map((n, i) => (
                                                     <div key={i} style={{
                                                         flex: 1, textAlign: "center", fontSize: ".7rem",
                                                         fontWeight: i === 0 ? 700 : 500,
