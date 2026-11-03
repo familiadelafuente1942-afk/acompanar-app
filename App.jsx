@@ -1701,7 +1701,7 @@ function PanelMayor({ contactos, meds, turnos, perfil, themeConfig }) {
                         </div>
 
                         {/* 911 */}
-                        <a href="tel:911" style={{ display: "flex", alignItems: "center", gap: 14, background: C.dangerL, border: `1.5px solid #FECACA`, borderRadius: 10, padding: "14px 16px", marginBottom: 12, textDecoration: "none" }}>
+                        <a href="tel:911" style={{ display: "flex", alignItems: "center", gap: 14, background: C.dangerL, border: `1.5px solid rgba(255,90,70,.45)`, borderRadius: 10, padding: "14px 16px", marginBottom: 12, textDecoration: "none" }}>
                             <div style={{ width: 46, height: 46, borderRadius: 10, background: C.danger, display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
                                 <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                                     <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 12 19.79 19.79 0 0 1 1.61 3.5 2 2 0 0 1 3.6 1.32h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L7.91 9a16 16 0 0 0 6 6l1.27-.96a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z" />
@@ -2589,9 +2589,9 @@ function PanelHija({ hija, contactos, setContactos, meds, setMeds, turnos, setTu
                         const hayWarning = timeline.some(a => a.tipo === "warn") || pendientes > 0;
                         const estado = hayAlerta || sinMovimiento ? "rojo" : hayWarning ? "amarillo" : "verde";
                         const cfg = {
-                            verde: { bg: "rgba(74,222,128,.12)", border: "#86EFAC", icon: "🟢", titulo: "Todo bien", sub: "Mamá tuvo un día tranquilo y normal", color: "#4ade80" },
+                            verde: { bg: "rgba(74,222,128,.12)", border: "rgba(74,222,128,.45)", icon: "🟢", titulo: "Todo bien", sub: "Mamá tuvo un día tranquilo y normal", color: "#4ade80" },
                             amarillo: { bg: "rgba(251,191,36,.12)", border: "rgba(251,191,36,.45)", icon: "🟡", titulo: "Algo para revisar", sub: pendientes > 0 ? `Faltó tomar ${pendientes} medicación${pendientes > 1 ? "es" : ""}` : ACTIVIDAD.find(a => a.tipo === "warn")?.texto || "Revisá el historial", color: "#fbbf24" },
-                            rojo: { bg: "rgba(255,90,70,.14)", border: "#FCA5A5", icon: "🔴", titulo: "Atención necesaria", sub: ACTIVIDAD.find(a => a.tipo === "alert")?.texto || "Sin actividad registrada hoy", color: "#ff7b6b" },
+                            rojo: { bg: "rgba(255,90,70,.14)", border: "rgba(255,90,70,.5)", icon: "🔴", titulo: "Atención necesaria", sub: ACTIVIDAD.find(a => a.tipo === "alert")?.texto || "Sin actividad registrada hoy", color: "#ff7b6b" },
                         }[estado];
                         return (
                             <div style={{
@@ -2640,14 +2640,14 @@ function PanelHija({ hija, contactos, setContactos, meds, setMeds, turnos, setTu
                     })()}
 
                     {pendientes > 0 && !alertaDismiss && (
-                        <div style={{ background: "#FDECEA", border: "1.5px solid rgba(192,57,43,.2)", borderRadius: 8, padding: "14px", marginBottom: 14, display: "flex", gap: 12 }}>
+                        <div style={{ background: "rgba(255,90,70,.14)", border: "1.5px solid rgba(192,57,43,.2)", borderRadius: 8, padding: "14px", marginBottom: 14, display: "flex", gap: 12 }}>
                             <div style={{ fontSize: "1.3rem", flexShrink: 0 }}><Em e="💊" s={24} /></div>
                             <div style={{ flex: 1 }}>
-                                <div style={{ fontSize: ".9rem", fontWeight: 700, color: "#b3392d" }}>{pendientes} medicación{pendientes > 1 ? "es" : ""} pendiente{pendientes > 1 ? "s" : ""}</div>
+                                <div style={{ fontSize: ".9rem", fontWeight: 700, color: "#ff9a8f" }}>{pendientes} medicación{pendientes > 1 ? "es" : ""} pendiente{pendientes > 1 ? "s" : ""}</div>
                                 <div style={{ fontSize: ".78rem", color: "rgba(244,241,234,.62)", fontWeight: 600, marginTop: 3 }}>{meds.filter(m => !m.tomada).map(m => `${m.nombre} (${m.hora}hs)`).join(" · ")}</div>
                                 <div style={{ display: "flex", gap: 8, marginTop: 10, flexWrap: "wrap" }}>
                                     <a href={`tel:${contactos[0]?.tel || ""}`} style={{ padding: "8px 14px", background: "#b3392d", color: "white", borderRadius: 10, fontSize: ".8rem", fontWeight: 700 }}><Em e="📞" s={17} c="currentColor" /> Llamar a mamá</a>
-                                    <button onClick={() => setAlertaDismiss(true)} style={{ padding: "8px 14px", background: "rgba(255,255,255,.07)", color: "#b3392d", border: "1.5px solid rgba(192,57,43,.25)", borderRadius: 10, fontSize: ".8rem", fontWeight: 700, cursor: "pointer", fontFamily: "inherit" }}>Entendido</button>
+                                    <button onClick={() => setAlertaDismiss(true)} style={{ padding: "8px 14px", background: "rgba(255,255,255,.07)", color: "#ff9a8f", border: "1.5px solid rgba(192,57,43,.25)", borderRadius: 10, fontSize: ".8rem", fontWeight: 700, cursor: "pointer", fontFamily: "inherit" }}>Entendido</button>
                                 </div>
                             </div>
                         </div>
@@ -2767,7 +2767,7 @@ function PanelHija({ hija, contactos, setContactos, meds, setMeds, turnos, setTu
                     <div style={{ fontSize: ".68rem", fontWeight: 700, color: C.textMuted, textTransform: "uppercase", letterSpacing: ".1em", marginBottom: 8 }}>Personas queridas</div>
                     <div style={{ display: "flex", flexDirection: "column", gap: 8, marginBottom: 14 }}>
                         {perfil.personasQueridas.map(p => (
-                            <div key={p.id} style={{ background: "rgba(255,255,255,.07)", borderRadius: 8, border: `1px solid ${p.sensible ? "#FED7AA" : C.border}`, overflow: "hidden" }}>
+                            <div key={p.id} style={{ background: "rgba(255,255,255,.07)", borderRadius: 8, border: `1px solid ${p.sensible ? "rgba(251,191,36,.4)" : C.border}`, overflow: "hidden" }}>
                                 <div style={{ display: "flex", alignItems: "center", gap: 12, padding: "12px 14px" }}>
                                     <div style={{ width: 40, height: 40, borderRadius: "50%", background: p.sensible ? "rgba(251,191,36,.12)" : "rgba(231,195,122,.12)", display: "flex", alignItems: "center", justifyContent: "center", fontSize: "1.2rem", flexShrink: 0 }}>
                                         <Em e={p.relacion.toLowerCase().includes("nieto") ? "👶" : p.relacion.toLowerCase().includes("hij") ? "👧" : p.relacion.toLowerCase().includes("esposo") ? "💑" : "👤"} s={22} />
@@ -2963,7 +2963,7 @@ function PanelHija({ hija, contactos, setContactos, meds, setMeds, turnos, setTu
                                 </div>
                             </div>
                             {d.expanded && (
-                                <div style={{ borderTop: `1px solid ${C.border}`, padding: "14px", background: "#FAFAFA" }}>
+                                <div style={{ borderTop: `1px solid ${C.border}`, padding: "14px", background: "rgba(255,255,255,.05)" }}>
                                     <div style={{ fontSize: ".82rem", color: C.textMed, marginBottom: 12, lineHeight: 1.5 }}>{d.desc}</div>
                                     <div style={{ display: "flex", flexDirection: "column", gap: 10, marginBottom: 14 }}>
                                         <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
