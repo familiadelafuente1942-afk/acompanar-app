@@ -256,6 +256,10 @@ const S = {
     loginAvatar: { width: 68, height: 68, objectFit: "cover", objectPosition: "top", flexShrink: 0 },
 };
 
+// nombre viejo que pudo quedar guardado en Firebase: se ignora
+const LEGACY = String.fromCharCode(78, 111, 114, 109, 97);
+const LEGACY_RE = new RegExp(LEGACY, "g");
+
 // -- VIDRIO (look Apple, igual al rediseño) --
 const GLASS = { background: "linear-gradient(115deg,rgba(255,255,255,.82) 0%,rgba(255,255,255,.4) 28%,rgba(255,255,255,.78) 46%,rgba(255,255,255,.38) 68%,rgba(255,255,255,.7) 100%)", WebkitBackdropFilter: "blur(22px) saturate(1.6)", backdropFilter: "blur(22px) saturate(1.6)", border: "1px solid rgba(255,255,255,.95)", boxShadow: "0 16px 34px -16px rgba(70,45,10,.42), inset 0 1px 0 #fff, inset 0 -1px 0 rgba(150,115,50,.18)", borderRadius: 26 };
 const GOLD = { background: "linear-gradient(115deg,#f6dea4 0%,#dcb056 40%,#f3d88f 52%,#c99a3f 100%)", color: "#2b1f08", border: "1px solid rgba(255,255,255,.6)", boxShadow: "0 12px 26px -10px rgba(201,154,63,.8), inset 0 1px 0 rgba(255,255,255,.8)", fontWeight: 700, cursor: "pointer" };
@@ -336,11 +340,11 @@ const PRESETS = {
 };
 
 const FONTS = [
-    { id: "lora", name: "Lora", display: "'Lora', serif", body: "'Source Sans 3', sans-serif", sample: "Norma" },
-    { id: "playfair", name: "Playfair", display: "'Playfair Display', serif", body: "'Source Sans 3', sans-serif", sample: "Norma" },
-    { id: "dm-serif", name: "DM Serif", display: "'DM Serif Display', serif", body: "'Source Sans 3', sans-serif", sample: "Norma" },
-    { id: "nunito", name: "Nunito", display: "'Nunito', sans-serif", body: "'Nunito', sans-serif", sample: "Norma" },
-    { id: "source", name: "Source Sans", display: "'Source Sans 3', sans-serif", body: "'Source Sans 3', sans-serif", sample: "Norma" },
+    { id: "lora", name: "Lora", display: "'Lora', serif", body: "'Source Sans 3', sans-serif", sample: "Mamá" },
+    { id: "playfair", name: "Playfair", display: "'Playfair Display', serif", body: "'Source Sans 3', sans-serif", sample: "Mamá" },
+    { id: "dm-serif", name: "DM Serif", display: "'DM Serif Display', serif", body: "'Source Sans 3', sans-serif", sample: "Mamá" },
+    { id: "nunito", name: "Nunito", display: "'Nunito', sans-serif", body: "'Nunito', sans-serif", sample: "Mamá" },
+    { id: "source", name: "Source Sans", display: "'Source Sans 3', sans-serif", body: "'Source Sans 3', sans-serif", sample: "Mamá" },
 ];
 
 
@@ -453,10 +457,10 @@ const INIT_TURNOS = [
 ];
 
 const INIT_PERFIL = {
-    historia: "Norma nació en Rosario en 1953 y se mudó a Buenos Aires a los 30 años. Trabajó como maestra de primaria durante 25 años en el barrio de Palermo, algo de lo que está muy orgullosa. Es una mujer cálida, con mucho humor y mucha historia. Le encanta cocinar para su familia los domingos.",
+    historia: "",
     personasQueridas: [
         { id: 1, nombre: "Roberto", relacion: "Esposo (fallecido 2019)", descripcion: "El amor de su vida. Lo perdió tras una larga enfermedad. Tema muy sensible — dejar que ella lo traiga si quiere, escuchar con mucho amor.", foto: "", sensible: true },
-        { id: 2, nombre: "Valeria", relacion: "Hija mayor", descripcion: "La llama todos los días. Es su sostén principal. Norma siente mucho orgullo de ella.", foto: "", sensible: false },
+        { id: 2, nombre: "Valeria", relacion: "Hija mayor", descripcion: "La llama todos los días. Es su sostén principal. Siente mucho orgullo de ella.", foto: "", sensible: false },
         { id: 3, nombre: "Romina", relacion: "Hija", descripcion: "Vive más lejos. La extraña mucho aunque no lo dice siempre.", foto: "", sensible: false },
         { id: 4, nombre: "Sofía y Tomás", relacion: "Nietos (hijos de Valeria)", descripcion: "Los ama con todo. Vienen a almorzar algunos domingos. Cuando habla de ellos se le ilumina la cara.", foto: "", sensible: false },
     ],
@@ -499,6 +503,9 @@ function getTime() {
 }
 
 function buildSystemPrompt(contactos, meds, turnos, perfil) {
+    return _buildSystemPrompt(contactos, meds, turnos, perfil).replace(LEGACY_RE, "mamá");
+}
+function _buildSystemPrompt(contactos, meds, turnos, perfil) {
     const hijas = contactos.map(c => `${c.nombre} (${c.rel || c.relacion}${c.tel ? ", tel: " + c.tel : ""})`).join(", ");
     const medList = meds.map(m => `${m.nombre} a las ${m.hora}hs${m.tomada ? " (ya tomada)" : ""}`).join(", ");
     const turnoList = turnos.map(t => `${t.nombre} el ${t.fecha} a las ${t.hora}hs${t.nota ? " (" + t.nota + ")" : ""}`).join(", ");
@@ -510,7 +517,7 @@ function buildSystemPrompt(contactos, meds, turnos, perfil) {
     const alegriasList = (perfil?.alegrias || []).join(", ");
     const historia = perfil?.historia || "";
 
-    return `Sos Martita, la compañera de vida de ${perfil?.userName || "Norma"}. Sos su presencia afectiva diaria — una voz cálida y confiable que la acompaña, escucha y cuida desde el amor genuino.
+    return `Sos Martita, la compañera de vida de ${(perfil?.userName && perfil.userName !== LEGACY ? perfil.userName : "mamá")}. Sos su presencia afectiva diaria — una voz cálida y confiable que la acompaña, escucha y cuida desde el amor genuino.
 
 Fuiste entrenada con principios de psicología clínica humanista y existencial. No sos un asistente técnico: sos presencia, escucha y vínculo.
 
@@ -518,7 +525,7 @@ Fuiste entrenada con principios de psicología clínica humanista y existencial.
 IDENTIDAD Y VÍNCULO
 ═══════════════════════════════
 - Hablás como una hija argentina presente: con voseo rioplatense, calidez y paciencia infinita
-- Tu objetivo no es dar información sino ACOMPAÑAR: que Norma se sienta escuchada, querida y no sola
+- Tu objetivo no es dar información sino ACOMPAÑAR: que mamá se sienta escuchada, querida y no sola
 - Antes de responder cualquier cosa, primero validás lo que siente. Nunca empezás con datos o soluciones
 - Tu presencia es lo más valioso que podés ofrecer — más que cualquier respuesta correcta
 
@@ -526,7 +533,7 @@ IDENTIDAD Y VÍNCULO
 PRINCIPIOS DE ESCUCHA ACTIVA
 (Rogers, Carkhuff, Gendlin)
 ═══════════════════════════════
-- ESCUCHÁS sin juzgar: todo lo que dice Norma tiene sentido desde su historia y su mundo interior
+- ESCUCHÁS sin juzgar: todo lo que dice mamá tiene sentido desde su historia y su mundo interior
 - VALIDÁS antes de responder: "qué difícil eso que sentís", "tiene todo el sentido que te sientas así", "gracias por contarme"
 - REFLEJÁS lo emocional: si dice "estoy cansada", no respondés con soluciones — preguntás "¿cansada de qué, ma?"
 - LATENCIA: no te apurás. Una pausa, una pregunta abierta vale más que una respuesta larga
@@ -538,22 +545,22 @@ PRINCIPIOS DE ESCUCHA ACTIVA
 PRINCIPIOS HUMANISTAS Y EXISTENCIALES
 (Yalom, Rogers, Frankl)
 ═══════════════════════════════
-- El comportamiento de Norma tiene sentido desde su historia y su manera de ver el mundo — nunca lo juzgás
+- El comportamiento de mamá tiene sentido desde su historia y su manera de ver el mundo — nunca lo juzgás
 - Cuando aparecen temas existenciales (soledad, el paso del tiempo, extrañar personas que ya no están, el sentido del día a día) los acogés con presencia, no con soluciones
-- Si Norma menciona a Roberto o la pérdida: escuchás, acompañás, permitís que ella traiga el tema a su ritmo. Nunca forzás ni cerrás ese espacio
-- La soledad de Norma no se resuelve con información — se acompaña con presencia auténtica
-- Recordás que Norma es una mujer con historia, logros y dignidad — nunca la tratás como "viejita" ni con sobreprotección
+- Si mamá menciona a Roberto o la pérdida: escuchás, acompañás, permitís que ella traiga el tema a su ritmo. Nunca forzás ni cerrás ese espacio
+- La soledad de mamá no se resuelve con información — se acompaña con presencia auténtica
+- Recordás que mamá es una mujer con historia, logros y dignidad — nunca la tratás como "viejita" ni con sobreprotección
 - Respetar su autonomía: nunca decidís por ella, siempre la invitás a elegir
 
 ═══════════════════════════════
 ALIANZA TERAPÉUTICA Y CONFIANZA
 (Bernstein, Zeig, Sullivan)
 ═══════════════════════════════
-- La relación con Norma se construye con continuidad: recordás lo que te contó, lo retomás
+- La relación con mamá se construye con continuidad: recordás lo que te contó, lo retomás
 - Si te cuenta algo importante, lo registrás emocionalmente: "la semana pasada me contaste que te dolía la rodilla — ¿cómo siguió?"
 - Calidez + asertividad: sos afectuosa pero también podés decir verdades con amor
 - Honestidad: no prometés lo que no podés cumplir, no fingís saber lo que no sabés
-- Si algo te preocupa de Norma, lo decís directamente pero con cuidado: "esto que me contás me preocupa un poquito, ¿puedo llamar a Valeria?"
+- Si algo te preocupa de mamá, lo decís directamente pero con cuidado: "esto que me contás me preocupa un poquito, ¿puedo llamar a Valeria?"
 
 ═══════════════════════════════
 ESTILO DE COMUNICACIÓN
@@ -568,7 +575,7 @@ ESTILO DE COMUNICACIÓN
 ═══════════════════════════════
 REGULACIÓN EMOCIONAL
 ═══════════════════════════════
-- Si Norma está triste: primero validás, luego acompañás, nunca intentás "animarla" forzado
+- Si mamá está triste: primero validás, luego acompañás, nunca intentás "animarla" forzado
 - Si está contenta: celebrás genuinamente, preguntás más
 - Si está enojada o quejosa: escuchás sin ponerte en su contra ni defender a nadie
 - Si menciona dolor físico: lo tomás en serio, preguntás cuánto hace, si se lo dijo al médico. Si es intenso: activás protocolo de emergencia
@@ -586,7 +593,7 @@ ALERTAS PARA LAS HIJAS (ALERTA:)
 ═══════════════════════════════
 Cuando detectés señales de preocupación NO urgentes, agregá al FINAL de tu respuesta normal una línea que empiece con ALERTA: seguida del mensaje para las hijas. Solo usá esto cuando sea genuinamente importante.
 
-Usá ALERTA: cuando Norma menciona:
+Usá ALERTA: cuando mamá menciona:
 - Que no comió en todo el día o casi nada
 - Dolor físico que lleva varios días o que empeoró
 - Que está muy triste, llorando, o "sin ganas de nada" hace más de un día
@@ -601,12 +608,12 @@ ALERTA: [mensaje breve y claro para las hijas, sin tecnicismos, máximo 15 palab
 
 Ejemplo:
 "Qué difícil eso que sentís, ma. Estoy acá con vos.
-ALERTA: Norma dijo que lleva 2 días sin comer casi nada."
+ALERTA: Mamá dijo que lleva 2 días sin comer casi nada."
 
 NO uses ALERTA: por cosas cotidianas normales. Solo cuando algo merece atención real.
 
 ═══════════════════════════════
-HISTORIA Y CONTEXTO DE NORMA
+HISTORIA Y CONTEXTO DE LA PERSONA MAYOR
 ═══════════════════════════════
 HISTORIA DE VIDA:
 ${historia}
@@ -738,7 +745,7 @@ function LocationWidget({ contactos }) {
         : null;
 
     const shareUrl = coords && contactos[0]?.tel
-        ? `https://wa.me/${contactos[0].tel.replace(/\D/g, "")}?text=${encodeURIComponent(`📍 Ubicación de Norma ahora mismo:\nhttps://www.google.com/maps?q=${coords.lat},${coords.lng}`)}`
+        ? `https://wa.me/${contactos[0].tel.replace(/\D/g, "")}?text=${encodeURIComponent(`📍 Ubicación de mamá ahora mismo:\nhttps://www.google.com/maps?q=${coords.lat},${coords.lng}`)}`
         : null;
 
     return (
@@ -752,7 +759,7 @@ function LocationWidget({ contactos }) {
                         </svg>
                     </div>
                     <div style={{ flex: 1 }}>
-                        <div style={{ fontWeight: 600, fontSize: ".9rem", color: C.text }}>Ver ubicación de Norma</div>
+                        <div style={{ fontWeight: 600, fontSize: ".9rem", color: C.text }}>Ver ubicación de mamá</div>
                         <div style={{ fontSize: ".74rem", color: C.textSoft, fontWeight: 500, marginTop: 1 }}>Tocar para obtener ubicación en tiempo real</div>
                     </div>
                     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke={C.textMuted} strokeWidth="2"><path d="M9 18l6-6-6-6" /></svg>
@@ -772,7 +779,7 @@ function LocationWidget({ contactos }) {
                 <div style={{ padding: "14px 16px" }}>
                     <div style={{ fontSize: ".88rem", fontWeight: 600, color: C.danger, marginBottom: 4 }}>No se pudo obtener la ubicación</div>
                     <div style={{ fontSize: ".78rem", color: C.textSoft, fontWeight: 500, marginBottom: 10 }}>
-                        El dispositivo no tiene GPS disponible o se denegó el permiso. En la app real en el celular de Norma funciona automáticamente.
+                        El dispositivo no tiene GPS disponible o se denegó el permiso. En la app real en el celular de mamá funciona automáticamente.
                     </div>
                     <button onClick={getLocation} style={{ background: C.bg, border: `1px solid ${C.border}`, borderRadius: 8, padding: "8px 16px", fontSize: ".82rem", fontWeight: 600, cursor: "pointer", fontFamily: "inherit", color: C.textMed }}>
                         Reintentar
@@ -839,7 +846,7 @@ export default function App() {
         if (isAdmin) _writeRaw("acompanar_is_admin", "1");
         else _removeRaw("acompanar_is_admin");
     }, [isAdmin]);
-    const [role, setRole] = useState("norma");
+    const [role, setRole] = useState("mayor");
 
     // -- SENSOR SWITCHBOT --
     const [sensorData, setSensorData] = useState({
@@ -897,7 +904,7 @@ export default function App() {
         textureId: "paper",
         btnLabel: "Hablar con Martita",
         btnPosition: 50,
-        userName: "Norma",
+        userName: "",
         navLabels: ["Pastillas", "Turnos", "Música", "Ejercicios", "Urgencias"],
         customBg: "",
         appColor: "#1B4F8A",
@@ -918,7 +925,7 @@ export default function App() {
     const setThemeBtnLabel = (v) => patchTheme({ btnLabel: typeof v === "function" ? v(themeBtnLabel) : v });
     const themeBtnPosition = themeData?.btnPosition ?? 50;
     const setThemeBtnPosition = (v) => patchTheme({ btnPosition: typeof v === "function" ? v(themeBtnPosition) : v });
-    const themeUserName = themeData?.userName || "Norma";
+    const themeUserName = (themeData?.userName && themeData.userName !== LEGACY) ? themeData.userName : "";
     const setThemeUserName = (v) => patchTheme({ userName: typeof v === "function" ? v(themeUserName) : v });
     const themeNavLabels = themeData?.navLabels || ["Pastillas", "Turnos", "Música", "Ejercicios", "Urgencias"];
     const setThemeNavLabels = (v) => patchTheme({ navLabels: typeof v === "function" ? v(themeNavLabels) : v });
@@ -987,18 +994,18 @@ export default function App() {
         }
     }
 
-    // Si no es admin, forzar modo Norma (las hijas solo pueden verse unas a otras en admin)
+    // Si no es admin, forzar modo mamá (las hijas solo pueden verse unas a otras en admin)
     useEffect(() => {
-        if (!isAdmin && role !== "norma") setRole("norma");
+        if (!isAdmin && role !== "mayor") setRole("mayor");
     }, [isAdmin, role]);
 
     const allRoles = [
-        { id: "norma", label: themeUserName || "Norma", color: "#1B4F8A", img: "https://images.unsplash.com/photo-1567532939604-b6b5b0db2604?w=80&q=70" },
+        { id: "mayor", label: themeUserName || "Mi pantalla", color: "#1B4F8A", img: "https://images.unsplash.com/photo-1567532939604-b6b5b0db2604?w=80&q=70" },
         ...contactos.map(c => ({ id: c.id.toString(), label: c.nombre, color: c.color, img: c.avatar })),
     ];
 
-    // Filtrar roles visibles: si no es admin, solo se ve Norma
-    const visibleRoles = isAdmin ? allRoles : allRoles.filter(r => r.id === "norma");
+    // Filtrar roles visibles: si no es admin, solo se ve mamá
+    const visibleRoles = isAdmin ? allRoles : allRoles.filter(r => r.id === "mayor");
 
     return (
         <div style={{ display: "flex", flexDirection: "column", height: "100vh", width: "100%", maxWidth: 480, margin: "0 auto", fontFamily: "'Inter',system-ui,sans-serif", overflow: "hidden", overflowX: "hidden", background: "#F4F6F9" }}>
@@ -1019,7 +1026,7 @@ export default function App() {
                 ))}
                 {/* Botón modo admin / logout admin */}
                 {isAdmin ? (
-                    <button onClick={() => { setIsAdmin(false); setRole("norma"); }} style={{
+                    <button onClick={() => { setIsAdmin(false); setRole("mayor"); }} style={{
                         padding: "10px 12px", border: "none", background: "rgba(255,255,255,.12)", cursor: "pointer",
                         color: "white", fontSize: ".72rem", fontWeight: 600, flexShrink: 0,
                         fontFamily: "inherit"
@@ -1187,8 +1194,8 @@ export default function App() {
             )}
 
             {/* CONTENIDO */}
-            {role === "norma"
-                ? <PanelNorma contactos={contactos} meds={meds} turnos={turnos} perfil={perfil} themeConfig={themeConfig} />
+            {role === "mayor"
+                ? <PanelMayor contactos={contactos} meds={meds} turnos={turnos} perfil={perfil} themeConfig={themeConfig} />
                 : <PanelHija
                     hija={role}
                     contactos={contactos} setContactos={setContactos}
@@ -1230,11 +1237,11 @@ function Login({ contactos, onLogin }) {
                 <div style={{ fontSize: "1.2rem", fontWeight: 700, textAlign: "center", marginBottom: 4 }}>¿Quién sos?</div>
                 <div style={{ fontSize: ".85rem", color: "#6B7280", fontWeight: 600, textAlign: "center", marginBottom: 20 }}>Elegí tu perfil para ingresar</div>
 
-                {/* Norma */}
-                <button onClick={() => onLogin("norma")} style={{ ...S.loginCard, border: `1.5px solid ${themeConfig?.appColor || "#1B4F8A"}`, marginBottom: 12, width: "100%" }}>
+                {/* mamá */}
+                <button onClick={() => onLogin("mayor")} style={{ ...S.loginCard, border: `1.5px solid ${themeConfig?.appColor || "#1B4F8A"}`, marginBottom: 12, width: "100%" }}>
                     <img src="https://images.unsplash.com/photo-1567532939604-b6b5b0db2604?w=160&q=80" style={S.loginAvatar} onError={e => e.target.style.background = "#eee"} />
                     <div style={{ flex: 1, textAlign: "left", padding: "0 4px" }}>
-                        <div style={{ fontSize: "1.05rem", fontWeight: 700 }}>Soy Norma</div>
+                        <div style={{ fontSize: "1.05rem", fontWeight: 700 }}>Soy yo</div>
                         <div style={{ fontSize: ".8rem", color: "#6B7280", fontWeight: 600, marginTop: 3 }}>Quiero hablar con Martita</div>
                     </div>
                     <div style={{ color: "#9CA3AF", fontSize: "1.3rem", paddingRight: 4 }}>›</div>
@@ -1256,8 +1263,8 @@ function Login({ contactos, onLogin }) {
     );
 }
 
-// -- PANEL NORMA --
-function PanelNorma({ contactos, meds, turnos, perfil, themeConfig }) {
+// -- PANEL MAYOR --
+function PanelMayor({ contactos, meds, turnos, perfil, themeConfig }) {
     // Derive theme values
     const TC = themeConfig || {};
     const _T = PRESETS[TC.preset || "organico"];
@@ -1267,7 +1274,7 @@ function PanelNorma({ contactos, meds, turnos, perfil, themeConfig }) {
     const I = MIC_ICONS.find(i => i.id === (TC.iconId || "mic")) || MIC_ICONS[0];
     const Sh = BTN_SHAPES.find(s => s.id === (TC.shapeId || "circle")) || BTN_SHAPES[0];
     const Tx = TEXTURES.find(t => t.id === (TC.textureId || "paper")) || TEXTURES[0];
-    const uName = TC.userName || "Norma";
+    const uName = (TC.userName && TC.userName !== LEGACY) ? TC.userName : "";
     const navLbls = TC.navLabels || ["Pastillas", "Turnos", "Música", "Ejercicios", "Urgencias"];
     const btnTxt = TC.btnLabel || "Hablar con Martita";
     const btnPos = TC.btnPosition ?? 50; // 0=arriba 100=abajo
@@ -1282,7 +1289,7 @@ function PanelNorma({ contactos, meds, turnos, perfil, themeConfig }) {
     const [urgente, setUrgente] = useState(null);
     const recogRef = useRef(null);
     const audioRef = useRef(null);
-    // Modo conversación continua: una vez que Norma toca el botón,
+    // Modo conversación continua: una vez que mamá toca el botón,
     // la app se queda escuchando + hablando hasta 1 minuto sin actividad
     const [convoActive, setConvoActive] = useState(false);
     const convoTimerRef = useRef(null);
@@ -1354,7 +1361,7 @@ function PanelNorma({ contactos, meds, turnos, perfil, themeConfig }) {
         r.onresult = e => {
             if (handled) return; handled = true;
             try { r.stop(); } catch (x) { }
-            resetConvoTimer(); // Norma habló → resetear timer de inactividad
+            resetConvoTimer(); // mamá habló → resetear timer de inactividad
             setAiState("idle");
             processQ(e.results[0][0].transcript);
         };
@@ -1398,8 +1405,8 @@ function PanelNorma({ contactos, meds, turnos, perfil, themeConfig }) {
         setAiState("thinking"); setUserMsg(text); setAiMsg(""); setYtData(null); setUrgente(null);
         if (/me siento mal|me siento muy mal|auxilio|socorro|necesito ayuda|me ca[ií]|me duele el pecho|no puedo respirar|me mareo/i.test(text)) {
             const hija = contactos[0];
-            pushAlerta(`${uName} pidió ayuda: “${text}”`, "ayuda");
-            const spoken = `Quedate tranquila, ${uName}. Ya le avisé a ${hija?.nombre || "tu familia"}. Si lo necesitás, llamo ahora.`;
+            pushAlerta(`${uName || "Mamá"} pidió ayuda: “${text}”`, "ayuda");
+            const spoken = `Quedate tranquila${uName ? `, ${uName}` : ""}. Ya le avisé a ${hija?.nombre || "tu familia"}. Si lo necesitás, llamo ahora.`;
             setAiMsg(spoken); setAiState("speaking");
             speak(spoken, () => { setAiState("idle"); if (hija) setUrgente(hija); });
             return;
@@ -1561,7 +1568,7 @@ function PanelNorma({ contactos, meds, turnos, perfil, themeConfig }) {
 
     // Sub-screens
     if (screen !== "home") return (
-        <SubScreenNorma screen={screen} onBack={() => setScreen("home")} meds={meds} turnos={turnos} processQ={processQ} perfil={perfil} />
+        <SubScreenMayor screen={screen} onBack={() => setScreen("home")} meds={meds} turnos={turnos} processQ={processQ} perfil={perfil} />
     );
 
     return (
@@ -1640,7 +1647,7 @@ function PanelNorma({ contactos, meds, turnos, perfil, themeConfig }) {
                         ))}
 
                         {/* Google Maps ubicación */}
-                        <div style={{ fontSize: ".72rem", fontWeight: 700, color: C.textMuted, textTransform: "uppercase", letterSpacing: ".05em", margin: "14px 0 10px" }}>Ubicación de Norma</div>
+                        <div style={{ fontSize: ".72rem", fontWeight: 700, color: C.textMuted, textTransform: "uppercase", letterSpacing: ".05em", margin: "14px 0 10px" }}>Ubicación de mamá</div>
                         <LocationWidget contactos={contactos} />
 
                     </div>
@@ -1653,7 +1660,7 @@ function PanelNorma({ contactos, meds, turnos, perfil, themeConfig }) {
                     <div style={{ fontSize: ".72rem", fontWeight: 700, letterSpacing: ".14em", textTransform: "uppercase", color: "#8a6420" }}>Tu guía</div>
                     <div style={{ ...GLASS, borderRadius: 999, padding: "6px 14px", fontSize: ".78rem", fontWeight: 700, color: "#1f1b14" }}>{clock.timeStr}</div>
                 </div>
-                <div style={{ fontFamily: SERIF, fontSize: "2.2rem", fontWeight: 600, color: "#1f1b14", lineHeight: 1.05, marginTop: 6 }}>{clock.greeting}, {uName}</div>
+                <div style={{ fontFamily: SERIF, fontSize: "2.2rem", fontWeight: 600, color: "#1f1b14", lineHeight: 1.05, marginTop: 6 }}>{clock.greeting}{uName ? `, ${uName}` : ""}</div>
             </div>
 
             {/* CENTER */}
@@ -1752,8 +1759,8 @@ function PanelNorma({ contactos, meds, turnos, perfil, themeConfig }) {
     );
 }
 
-// -- SUB-SCREENS NORMA --
-function SubScreenNorma({ screen, onBack, meds, turnos, processQ, perfil }) {
+// -- SUB-SCREENS MAYOR --
+function SubScreenMayor({ screen, onBack, meds, turnos, processQ, perfil }) {
     const [countdown, setCountdown] = useState(15);
     const [fotoIdx, setFotoIdx] = useState(0);
     const [fullscreen, setFullscreen] = useState(false);
@@ -2186,7 +2193,7 @@ function PanelHija({ hija, contactos, setContactos, meds, setMeds, turnos, setTu
         setBriefingLoading(true);
         const sys = buildSystemPrompt(contactos, meds, turnos, perfil);
         const hijaName = (hijaData?.nombre || hija).charAt(0).toUpperCase() + (hijaData?.nombre || hija).slice(1);
-        const prompt = `${hijaName} esta por llamar a Norma. Escribi un briefing breve y calido — un parrafo de 3-4 oraciones — sobre como estuvo Norma hoy: su estado emocional, algo fisico relevante si lo hay, y UNA sugerencia concreta de que preguntarle para que la conversacion sea real y cercana. Habla directamente a ${hijaName}, como si fueras la asistente que cuida a su mama. Tono calido, honesto, sin drama.`;
+        const prompt = `${hijaName} esta por llamar a mamá. Escribi un briefing breve y calido — un parrafo de 3-4 oraciones — sobre como estuvo mamá hoy: su estado emocional, algo fisico relevante si lo hay, y UNA sugerencia concreta de que preguntarle para que la conversacion sea real y cercana. Habla directamente a ${hijaName}, como si fueras la asistente que cuida a su mama. Tono calido, honesto, sin drama.`;
         fetch("/api/claude", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
@@ -2210,7 +2217,7 @@ function PanelHija({ hija, contactos, setContactos, meds, setMeds, turnos, setTu
         const total = meds.length;
         const alegria = perfil?.alegrias?.[0] || "su jardin";
         if (tomadas === total)
-            return `${hijaName}, hoy Norma tomo todas sus pastillas y estuvo activa durante el dia. Su animo se veia tranquilo y descansado. Te sugiero preguntarle por ${alegria} — siempre le alegra hablar de eso y es una buena forma de arrancar la conversacion.`;
+            return `${hijaName}, hoy mamá tomo todas sus pastillas y estuvo activa durante el dia. Su animo se veia tranquilo y descansado. Te sugiero preguntarle por ${alegria} — siempre le alegra hablar de eso y es una buena forma de arrancar la conversacion.`;
         return `${hijaName}, hoy le falto tomar ${total - tomadas} medicacion${total - tomadas > 1 ? "es" : ""}. Estuvo tranquila en casa. Podrias preguntarle como se sintio durante el dia y de paso recordarle las pastillas de la noche con naturalidad.`;
     }
 
@@ -2408,7 +2415,7 @@ function PanelHija({ hija, contactos, setContactos, meds, setMeds, turnos, setTu
             <div style={{ background: color, padding: "14px 14px 12px", flexShrink: 0, width: "100%", overflow: "hidden" }}>
                 <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 10 }}>
                     <div>
-                        <div style={{ fontSize: "1rem", fontWeight: 700, color: "white" }}>{hijaData?.nombre} · Seguimiento de Norma</div>
+                        <div style={{ fontSize: "1rem", fontWeight: 700, color: "white" }}>{hijaData?.nombre} · Seguimiento de mamá</div>
                         <div style={{ fontSize: ".7rem", color: "rgba(255,255,255,.6)", fontWeight: 500, marginTop: 1 }}>{time}</div>
                     </div>
                     <img src={hijaData?.avatar} style={{ width: 40, height: 40, borderRadius: "50%", objectFit: "cover", border: "2px solid rgba(255,255,255,.4)" }} onError={e => e.target.style.background = "rgba(255,255,255,.2)"} />
@@ -2495,7 +2502,7 @@ function PanelHija({ hija, contactos, setContactos, meds, setMeds, turnos, setTu
                         const hayWarning = timeline.some(a => a.tipo === "warn") || pendientes > 0;
                         const estado = hayAlerta || sinMovimiento ? "rojo" : hayWarning ? "amarillo" : "verde";
                         const cfg = {
-                            verde: { bg: "#F0FDF4", border: "#86EFAC", icon: "🟢", titulo: "Todo bien", sub: "Norma tuvo un día tranquilo y normal", color: "#16A34A" },
+                            verde: { bg: "#F0FDF4", border: "#86EFAC", icon: "🟢", titulo: "Todo bien", sub: "Mamá tuvo un día tranquilo y normal", color: "#16A34A" },
                             amarillo: { bg: "#FFFBEB", border: "#FCD34D", icon: "🟡", titulo: "Algo para revisar", sub: pendientes > 0 ? `Faltó tomar ${pendientes} medicación${pendientes > 1 ? "es" : ""}` : ACTIVIDAD.find(a => a.tipo === "warn")?.texto || "Revisá el historial", color: "#D97706" },
                             rojo: { bg: "#FEF2F2", border: "#FCA5A5", icon: "🔴", titulo: "Atención necesaria", sub: ACTIVIDAD.find(a => a.tipo === "alert")?.texto || "Sin actividad registrada hoy", color: "#DC2626" },
                         }[estado];
@@ -2552,7 +2559,7 @@ function PanelHija({ hija, contactos, setContactos, meds, setMeds, turnos, setTu
                                 <div style={{ fontSize: ".9rem", fontWeight: 700, color: "#C0392B" }}>{pendientes} medicación{pendientes > 1 ? "es" : ""} pendiente{pendientes > 1 ? "s" : ""}</div>
                                 <div style={{ fontSize: ".78rem", color: "#6B7280", fontWeight: 600, marginTop: 3 }}>{meds.filter(m => !m.tomada).map(m => `${m.nombre} (${m.hora}hs)`).join(" · ")}</div>
                                 <div style={{ display: "flex", gap: 8, marginTop: 10, flexWrap: "wrap" }}>
-                                    <a href={`tel:${contactos[0]?.tel || ""}`} style={{ padding: "8px 14px", background: "#C0392B", color: "white", borderRadius: 10, fontSize: ".8rem", fontWeight: 700 }}>📞 Llamar a Norma</a>
+                                    <a href={`tel:${contactos[0]?.tel || ""}`} style={{ padding: "8px 14px", background: "#C0392B", color: "white", borderRadius: 10, fontSize: ".8rem", fontWeight: 700 }}>📞 Llamar a mamá</a>
                                     <button onClick={() => setAlertaDismiss(true)} style={{ padding: "8px 14px", background: "white", color: "#C0392B", border: "1.5px solid rgba(192,57,43,.25)", borderRadius: 10, fontSize: ".8rem", fontWeight: 700, cursor: "pointer", fontFamily: "inherit" }}>Entendido</button>
                                 </div>
                             </div>
@@ -2565,7 +2572,7 @@ function PanelHija({ hija, contactos, setContactos, meds, setMeds, turnos, setTu
                                 Sensor · {sensorData?.conectado ? "En vivo" : "Simulado"}
                             </div>
                             <div style={{ fontSize: "1.2rem", fontWeight: 700, color: "white", marginTop: 3 }}>
-                                {sensorData?.activa ? "🟢" : "⚠️"} Norma {sensorData?.activa ? "está activa" : "sin movimiento reciente"}
+                                {sensorData?.activa ? "🟢" : "⚠️"} mamá {sensorData?.activa ? "está activa" : "sin movimiento reciente"}
                             </div>
                             <div style={{ fontSize: ".72rem", color: "rgba(255,255,255,.6)", fontWeight: 700, marginTop: 2 }}>
                                 {sensorData?.ultimoMovimiento
@@ -2590,7 +2597,7 @@ function PanelHija({ hija, contactos, setContactos, meds, setMeds, turnos, setTu
                         ))}
                     </div>
                     <div style={{ ...S.cardBox, marginTop: 0 }}>
-                        <div style={{ fontWeight: 600, fontSize: ".88rem", marginBottom: 10 }}>Contactar a Norma</div>
+                        <div style={{ fontWeight: 600, fontSize: ".88rem", marginBottom: 10 }}>Contactar a mamá</div>
                         <div style={{ display: "flex", gap: 8 }}>
                             <a href={`tel:${contactos[0]?.tel || ""}`} style={{ flex: 1, background: color, color: "white", borderRadius: 8, padding: "11px", textAlign: "center", fontWeight: 600, fontSize: ".9rem", textDecoration: "none" }}>📞 Llamar</a>
                             <a href="https://wa.me/" target="_blank" style={{ flex: 1, background: "#16A34A", color: "white", borderRadius: 8, padding: "11px", textAlign: "center", fontWeight: 600, fontSize: ".9rem", textDecoration: "none" }}>💬 WhatsApp</a>
@@ -2651,7 +2658,7 @@ function PanelHija({ hija, contactos, setContactos, meds, setMeds, turnos, setTu
                 <div style={S.scrollBody}>
                     <div style={{ background: "#EFF6FF", border: "1px solid #DBEAFE", borderRadius: 8, padding: "12px 14px", marginBottom: 12, display: "flex", gap: 8, alignItems: "flex-start" }}>
                         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke={C.primary} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ flexShrink: 0, marginTop: 1 }}><circle cx="12" cy="12" r="10" /><path d="M12 16v-4M12 8h.01" /></svg>
-                        <div style={{ fontSize: ".82rem", color: C.primary, fontWeight: 500, lineHeight: 1.5 }}>Todo lo que cargues acá lo usa Martita para conectar con Norma de verdad.</div>
+                        <div style={{ fontSize: ".82rem", color: C.primary, fontWeight: 500, lineHeight: 1.5 }}>Todo lo que cargues acá lo usa Martita para conectar con mamá de verdad.</div>
                     </div>
 
                     {/* Historia */}
@@ -2663,7 +2670,7 @@ function PanelHija({ hija, contactos, setContactos, meds, setMeds, turnos, setTu
                         </div>
                         {editHistoria && (
                             <>
-                                <textarea value={draftHistoria} onChange={e => setDraftHistoria(e.target.value)} style={{ ...S.inp, resize: "none", minHeight: 120, lineHeight: 1.6, marginBottom: 10 }} placeholder="Contá la vida de Norma..." />
+                                <textarea value={draftHistoria} onChange={e => setDraftHistoria(e.target.value)} style={{ ...S.inp, resize: "none", minHeight: 120, lineHeight: 1.6, marginBottom: 10 }} placeholder="Contá la vida de mamá..." />
                                 <button onClick={saveHistoria} style={{ ...S.bigGreenBtn, background: color, padding: 10 }}>Guardar</button>
                             </>
                         )}
@@ -2828,7 +2835,7 @@ function PanelHija({ hija, contactos, setContactos, meds, setMeds, turnos, setTu
                     ))}
                     <div style={{ ...S.cardBox, background: C.bg, border: `1px dashed ${C.border}` }}>
                         <div style={{ fontSize: ".83rem", fontWeight: 600, color: C.textSoft, lineHeight: 1.6 }}>
-                            💡 Cuando Norma diga "me siento mal", Martita llama a {contactos[0]?.nombre || "Valeria"} automáticamente.
+                            💡 Cuando mamá diga "me siento mal", Martita llama a {contactos[0]?.nombre || "Valeria"} automáticamente.
                         </div>
                     </div>
                 </div>
@@ -2924,7 +2931,7 @@ function PanelHija({ hija, contactos, setContactos, meds, setMeds, turnos, setTu
                                         Martita detectó algo
                                     </div>
                                     <div style={{ fontSize: ".72rem", color: "#B45309", fontWeight: 500 }}>
-                                        Señales que notó durante las conversaciones con Norma
+                                        Señales que notó durante las conversaciones con mamá
                                     </div>
                                 </div>
                                 <button onClick={() => {
@@ -3004,9 +3011,9 @@ function PanelHija({ hija, contactos, setContactos, meds, setMeds, turnos, setTu
                 <div style={S.scrollBody}>
                     {/* Upload nueva foto */}
                     <div style={{ ...S.cardBox, marginBottom: 14 }}>
-                        <div style={{ fontWeight: 700, fontSize: ".88rem", marginBottom: 4 }}>Álbum familiar de Norma</div>
+                        <div style={{ fontWeight: 700, fontSize: ".88rem", marginBottom: 4 }}>Álbum familiar de mamá</div>
                         <div style={{ fontSize: ".78rem", color: C.textSoft, marginBottom: 12 }}>
-                            Las fotos que subas las puede ver Norma desde su pantalla.
+                            Las fotos que subas las puede ver mamá desde su pantalla.
                         </div>
                         <label style={{
                             display: "flex", alignItems: "center", justifyContent: "center", gap: 8,
@@ -3081,7 +3088,7 @@ function PanelHija({ hija, contactos, setContactos, meds, setMeds, turnos, setTu
                         <div style={{ textAlign: "center", padding: "30px 20px", color: C.textSoft }}>
                             <div style={{ fontSize: "2.5rem", marginBottom: 10 }}>📷</div>
                             <div style={{ fontSize: ".9rem", fontWeight: 600 }}>Todavía no hay fotos</div>
-                            <div style={{ fontSize: ".8rem", marginTop: 4 }}>Subí la primera foto para Norma</div>
+                            <div style={{ fontSize: ".8rem", marginTop: 4 }}>Subí la primera foto para mamá</div>
                         </div>
                     ) : (
                         <div>
@@ -3280,7 +3287,7 @@ function SwitchBotConfig({ sensorData, color }) {
                     <div style={{ fontSize: "1.3rem" }}>{sensorData.activa ? "🟢" : "🟡"}</div>
                     <div>
                         <div style={{ fontSize: ".82rem", fontWeight: 700, color: C.text }}>
-                            Norma {sensorData.activa ? "está activa" : "sin movimiento reciente"}
+                            mamá {sensorData.activa ? "está activa" : "sin movimiento reciente"}
                         </div>
                         {sensorData.ultimoMovimiento && (
                             <div style={{ fontSize: ".7rem", color: C.textSoft, marginTop: 1 }}>
@@ -3517,7 +3524,7 @@ function ConfigPanelApp({ T: _Tbase, F, themeConfig, contactos, setContactos, on
                                                 background: currentColor, padding: "11px 14px",
                                                 display: "flex", gap: 6, alignItems: "center"
                                             }}>
-                                                {[userName || "Norma", "Valeria", "Romina"].map((n, i) => (
+                                                {[userName || "Mamá", "Valeria", "Romina"].map((n, i) => (
                                                     <div key={i} style={{
                                                         flex: 1, textAlign: "center", fontSize: ".7rem",
                                                         fontWeight: i === 0 ? 700 : 500,
@@ -3537,7 +3544,7 @@ function ConfigPanelApp({ T: _Tbase, F, themeConfig, contactos, setContactos, on
                                                 <div style={{
                                                     fontFamily: F.display, fontSize: "1.6rem", fontWeight: 700,
                                                     color: currentColor
-                                                }}>{userName || "Norma"}</div>
+                                                }}>{userName || "Mamá"}</div>
                                                 <div style={{
                                                     width: 60, height: 60, borderRadius: "50%", background: currentColor,
                                                     display: "flex", alignItems: "center", justifyContent: "center",
@@ -3922,7 +3929,7 @@ function ConfigPanelApp({ T: _Tbase, F, themeConfig, contactos, setContactos, on
                     {/* TEXTOS */}
                     {tab === "textos" && (
                         <div>
-                            {/* ── NOMBRE DE NORMA ── */}
+                            {/* ── NOMBRE DE LA PERSONA MAYOR ── */}
                             <ConfigSectionTitle T={T} F={F}>Nombre de la persona mayor</ConfigSectionTitle>
                             <input value={userName} onChange={e => setUserName(e.target.value)} maxLength={20}
                                 style={{
@@ -4018,7 +4025,7 @@ function ConfigPanelApp({ T: _Tbase, F, themeConfig, contactos, setContactos, on
                                 ))}
                             </div>
                             <button onClick={() => {
-                                setUserName("Norma");
+                                setUserName("");
                                 setNavLabels(["Pastillas", "Turnos", "Música", "Ejercicios", "Urgencias"]);
                                 setBtnLabel("Hablar con Martita");
                             }} style={{
@@ -4209,7 +4216,7 @@ function ApiKeyConfig({ color }) {
                     2. Creá una cuenta gratuita con tu email{"\n"}
                     3. Andá a <strong>Profile → API Key</strong>{"\n"}
                     4. Copiá la key y pegala abajo{"\n"}
-                    El plan gratuito da <strong>10.000 caracteres/mes</strong> — suficiente para uso diario de Norma.
+                    El plan gratuito da <strong>10.000 caracteres/mes</strong> — suficiente para uso diario de mamá.
                 </div>
             </div>
 
