@@ -180,7 +180,8 @@ const css = document.createElement("style");
 css.textContent = `
   @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Playfair+Display:wght@500;600;700&display=swap');
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
-  html, body { width: 100%; max-width: 100%; overflow-x: hidden; font-family: 'Inter', system-ui, sans-serif; background: #F4F6F9; }
+  html, body { width: 100%; max-width: 100%; overflow-x: hidden; font-family: 'Playfair Display', Georgia, serif; background: #0b0e16; color: #F4F1EA; }
+  input, textarea, select { color: #F4F1EA; } input::placeholder, textarea::placeholder { color: rgba(244,241,234,.4); } option { color: #111; }
   a { text-decoration: none; color: inherit; }
   input, textarea, select, button { font-family: inherit; max-width: 100%; }
   img { max-width: 100%; }
@@ -197,30 +198,33 @@ if (!document.head.querySelector("[data-acomp]")) {
 
 // -- PALETA --
 const C = {
-    // Paleta médica
-    primary: "#1B4F8A",   // azul médico
-    primaryDk: "#133A6B",   // azul oscuro
-    accent: "#0EA5E9",   // azul claro acciones
-    danger: "#DC2626",   // rojo alertas
-    dangerL: "#FEF2F2",   // rojo suave fondo
-    success: "#16A34A",   // verde confirmado
-    successL: "#F0FDF4",   // verde suave fondo
-    warn: "#D97706",   // amarillo pendiente
-    warnL: "#FFFBEB",   // amarillo suave fondo
-    bg: "#F4F6F9",   // fondo app
-    surface: "#FFFFFF",   // cards
-    border: "#E5E7EB",   // bordes
-    text: "#111827",   // texto principal
-    textMed: "#374151",   // texto secundario
-    textSoft: "#6B7280",   // texto suave
-    textMuted: "#9CA3AF",   // texto muy suave
+    // Paleta oscura (igual a Mi Asistente): fondo negro azulado, vidrio, dorado
+    primary: "#e7c37a",   // dorado
+    primaryDk: "#c99a3f",   // dorado oscuro
+    accent: "#f3d88f",   // dorado claro
+    danger: "#ff7b6b",   // rojo alertas
+    dangerL: "rgba(255,90,70,.14)",   // rojo suave fondo
+    success: "#4ade80",   // verde confirmado
+    successL: "rgba(74,222,128,.12)",   // verde suave fondo
+    warn: "#fbbf24",   // amarillo pendiente
+    warnL: "rgba(251,191,36,.12)",   // amarillo suave fondo
+    bg: "#0b0e16",   // fondo app
+    surface: "rgba(255,255,255,.07)",   // cards (vidrio)
+    border: "rgba(255,255,255,.14)",   // bordes
+    text: "#F4F1EA",   // texto principal
+    textMed: "rgba(244,241,234,.82)",   // texto secundario
+    textSoft: "rgba(244,241,234,.62)",   // texto suave
+    textMuted: "rgba(244,241,234,.45)",   // texto muy suave
 };
+const BG_DARK = "radial-gradient(120% 50% at 85% 0%,#2e3a58 0%,#151c30 48%,#0a0f1a 100%)";
+const GOLDBG = "linear-gradient(115deg,#f6dea4 0%,#dcb056 45%,#f3d88f 55%,#c99a3f 100%)";
+const HEAD_BG = "linear-gradient(160deg,#1c2130,#0d111b)";
 
 // -- ESTILOS --
 const S = {
     // Overlays
     overlay: { position: "fixed", inset: 0, background: "rgba(0,0,0,.5)", zIndex: 500, display: "flex", alignItems: "flex-end", justifyContent: "center" },
-    modal: { background: C.surface, borderRadius: "12px 12px 0 0", width: "100%", maxWidth: 480, padding: "24px 20px 36px", maxHeight: "88dvh", overflowY: "auto" },
+    modal: { background: "#121722", borderTop: "1px solid rgba(231,195,122,.45)", color: "#F4F1EA", borderRadius: "12px 12px 0 0", width: "100%", maxWidth: 480, padding: "24px 20px 36px", maxHeight: "88dvh", overflowY: "auto" },
     modalTitle: { fontSize: "1.1rem", fontWeight: 700, marginBottom: 16, color: C.text },
     // Cards
     card: { background: C.surface, borderRadius: 10, padding: "11px 14px", display: "flex", alignItems: "center", gap: 12, boxShadow: "0 1px 4px rgba(0,0,0,.07)", border: `1px solid ${C.border}` },
@@ -229,11 +233,11 @@ const S = {
     cardName: { fontSize: ".88rem", fontWeight: 600, color: C.text },
     cardSub: { fontSize: ".72rem", color: C.textSoft, fontWeight: 500, marginTop: 2 },
     // Bubbles
-    bubbleUser: { background: "#EFF6FF", borderRadius: 10, padding: "11px 14px", border: `1px solid #DBEAFE`, fontSize: ".95rem", fontWeight: 500, color: C.text },
+    bubbleUser: { background: "rgba(231,195,122,.12)", borderRadius: 10, padding: "11px 14px", border: `1px solid rgba(231,195,122,.28)`, fontSize: ".95rem", fontWeight: 500, color: C.text },
     bubbleAI: { background: C.surface, borderRadius: 10, padding: "11px 14px", border: `1px solid ${C.border}`, fontSize: ".95rem", fontWeight: 500, color: C.text },
     bwho: { fontSize: ".65rem", fontWeight: 700, textTransform: "uppercase", letterSpacing: ".07em", color: C.textMuted, marginBottom: 4 },
     // YT
-    ytCard: { background: C.surface, borderRadius: 10, padding: "10px 12px", border: `1px solid ${C.border}`, display: "flex", alignItems: "center", gap: 10, borderLeft: "3px solid #DC2626", cursor: "pointer" },
+    ytCard: { background: C.surface, borderRadius: 10, padding: "10px 12px", border: `1px solid ${C.border}`, display: "flex", alignItems: "center", gap: 10, borderLeft: "3px solid #ff7b6b", cursor: "pointer" },
     // Nav
     navBtn: { display: "flex", flexDirection: "column", alignItems: "center", gap: 4, flex: 1, border: "none", background: "none", cursor: "pointer", padding: "4px 0", fontFamily: "inherit" },
     navTile: { width: 50, height: 50, borderRadius: 10, position: "relative", overflow: "hidden", border: `1px solid ${C.border}`, display: "flex", alignItems: "center", justifyContent: "center", background: C.surface },
@@ -244,9 +248,9 @@ const S = {
     backCircle: { background: "rgba(255,255,255,.15)", border: "1px solid rgba(255,255,255,.25)", borderRadius: 6, width: 34, height: 34, color: "white", fontSize: ".95rem", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center" },
     backCircleW: { background: "rgba(255,255,255,.15)", border: "1px solid rgba(255,255,255,.25)", borderRadius: 6, width: 32, height: 32, color: "white", fontSize: ".9rem", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center" },
     // Sub screens
-    subScreen: { display: "flex", flexDirection: "column", height: "100vh", width: "100%", maxWidth: 480, margin: "0 auto", background: C.bg, fontFamily: "'Inter',system-ui,sans-serif", overflow: "hidden" },
+    subScreen: { display: "flex", flexDirection: "column", height: "100vh", width: "100%", maxWidth: 480, margin: "0 auto", background: C.bg, fontFamily: "'Playfair Display',Georgia,serif", overflow: "hidden" },
     scrollBody: { flex: 1, overflowY: "auto", overflowX: "hidden", padding: "14px 14px 24px", width: "100%" },
-    bigGreenBtn: { width: "100%", background: C.primary, color: "white", border: "none", borderRadius: 8, padding: 13, fontFamily: "inherit", fontSize: ".95rem", fontWeight: 600, cursor: "pointer" },
+    bigGreenBtn: { width: "100%", background: GOLDBG, color: "#2b1f08", border: "none", borderRadius: 8, padding: 13, fontFamily: "inherit", fontSize: ".95rem", fontWeight: 600, cursor: "pointer" },
     // Forms
     fg: { marginBottom: 14 },
     lbl: { display: "block", fontSize: ".72rem", fontWeight: 600, color: C.textSoft, marginBottom: 5, textTransform: "uppercase", letterSpacing: ".04em" },
@@ -308,7 +312,7 @@ const EMO = {
     "📅": "calendar", "🎵": "music", "🏃": "run", "🏠": "home", "⭐": "star", "✦": "star", "🌱": "leaf", "🌸": "leaf", "🌺": "leaf", "🌿": "leaf", "🌼": "leaf", "🎂": "gift",
     "👤": "user", "👶": "user", "👧": "user", "👩‍🏫": "book", "💬": "chat", "☀️": "sun", "🌙": "moon", "✨": "spark", "⚠️": "warn", "📡": "sensor", "📺": "tv", "🎬": "film",
     "🔗": "link", "⌚": "sensor", "⬆": "up", "💒": "ring", "💑": "heart", "🤝": "heart", "🏖️": "sun", "✈️": "plane", "👋": "heart", "🙌": "heart", "🤔": "dots", "😊": "heart",
-    "🟢": "dot:#16A34A", "🟡": "dot:#D97706", "🔴": "dot:#DC2626",
+    "🟢": "dot:#4ade80", "🟡": "dot:#fbbf24", "🔴": "dot:#ff7b6b",
 };
 function Ico({ n, s = 20, c, style }) {
     let name = n, col = c || "#c99a3f";
@@ -323,7 +327,7 @@ function Em({ e, s = 20, c, style }) {
 }
 
 // -- VIDRIO (look Apple, igual al rediseño) --
-const GLASS = { background: "linear-gradient(115deg,rgba(255,255,255,.82) 0%,rgba(255,255,255,.4) 28%,rgba(255,255,255,.78) 46%,rgba(255,255,255,.38) 68%,rgba(255,255,255,.7) 100%)", WebkitBackdropFilter: "blur(22px) saturate(1.6)", backdropFilter: "blur(22px) saturate(1.6)", border: "1px solid rgba(255,255,255,.95)", boxShadow: "0 16px 34px -16px rgba(70,45,10,.42), inset 0 1px 0 #fff, inset 0 -1px 0 rgba(150,115,50,.18)", borderRadius: 26 };
+const GLASS = { background: "linear-gradient(115deg,rgba(255,255,255,.17) 0%,rgba(255,255,255,.05) 30%,rgba(255,255,255,.15) 47%,rgba(255,255,255,.05) 70%,rgba(255,255,255,.13) 100%)", WebkitBackdropFilter: "blur(22px) saturate(1.5)", backdropFilter: "blur(22px) saturate(1.5)", border: "1px solid rgba(255,255,255,.2)", boxShadow: "0 16px 34px -16px rgba(0,0,0,.7), inset 0 1px 0 rgba(255,255,255,.22)", borderRadius: 26, color: "#F4F1EA" };
 const GOLD = { background: "linear-gradient(115deg,#f6dea4 0%,#dcb056 40%,#f3d88f 52%,#c99a3f 100%)", color: "#2b1f08", border: "1px solid rgba(255,255,255,.6)", boxShadow: "0 12px 26px -10px rgba(201,154,63,.8), inset 0 1px 0 rgba(255,255,255,.8)", fontWeight: 700, cursor: "pointer" };
 const SERIF = "'Playfair Display', Georgia, serif";
 
@@ -358,47 +362,19 @@ function esHoy(ts) { return !!ts && new Date(ts).toDateString() === new Date().t
 function horaDe(ts) { return new Date(ts).toLocaleTimeString("es-AR", { hour: "2-digit", minute: "2-digit" }); }
 
 // -- PERSONALIZACIÓN --
+const _DARK = {
+    bg: "#0b0e16", surface: "#161b27", border: "rgba(255,255,255,.14)",
+    primary: "#e7c37a", accent: "#c99a3f", text: "#F4F1EA",
+    textSoft: "rgba(244,241,234,.62)", textMuted: "rgba(244,241,234,.45)",
+    tabBg: "#0d111b", navBg: "#0d111b",
+    success: "#4ade80", danger: "#ff7b6b", warn: "#fbbf24",
+};
 const PRESETS = {
-    organico: {
-        name: "Orgánico",
-        bg: "#F2EDE4", surface: "#FFF8F0", border: "#DDD0BE",
-        primary: "#8B5A2B", accent: "#C4954A", text: "#2C1A0E",
-        textSoft: "#8C6A5A", textMuted: "#B89888",
-        tabBg: "#3D2B1F", navBg: "#3D2B1F",
-        success: "#5A8A3C", danger: "#B03030", warn: "#B07030",
-    },
-    bosque: {
-        name: "Bosque",
-        bg: "#EDF2E8", surface: "#F5FAF2", border: "#C8D8BC",
-        primary: "#2D6A3F", accent: "#5A9E6A", text: "#1A2E1E",
-        textSoft: "#5A7A5E", textMuted: "#9AB89E",
-        tabBg: "#1A3A22", navBg: "#1A3A22",
-        success: "#2D6A3F", danger: "#A03030", warn: "#8A7020",
-    },
-    oceano: {
-        name: "Océano",
-        bg: "#EAF0F6", surface: "#F4F8FC", border: "#BDD0E0",
-        primary: "#1A4A7A", accent: "#3A7AB0", text: "#0E1E2C",
-        textSoft: "#4A6A8A", textMuted: "#8AAAC0",
-        tabBg: "#0E2A4A", navBg: "#0E2A4A",
-        success: "#2A6A3A", danger: "#A02020", warn: "#8A5A10",
-    },
-    aurora: {
-        name: "Aurora",
-        bg: "#F6EEF6", surface: "#FDF5FD", border: "#DCC8DC",
-        primary: "#6A2A6A", accent: "#A05AA0", text: "#2A0E2A",
-        textSoft: "#7A4A7A", textMuted: "#B090B0",
-        tabBg: "#3A0E3A", navBg: "#3A0E3A",
-        success: "#3A6A2A", danger: "#A02020", warn: "#8A5A10",
-    },
-    piedra: {
-        name: "Piedra",
-        bg: "#EEEAE6", surface: "#F8F5F2", border: "#D0C8C0",
-        primary: "#4A3A2A", accent: "#7A6A5A", text: "#1E1810",
-        textSoft: "#6A5A4A", textMuted: "#A09080",
-        tabBg: "#2A1E14", navBg: "#2A1E14",
-        success: "#3A5A2A", danger: "#9A2020", warn: "#8A5A10",
-    },
+    organico: { name: "Oscuro dorado", ..._DARK },
+    bosque: { name: "Oscuro dorado", ..._DARK },
+    oceano: { name: "Oscuro dorado", ..._DARK },
+    aurora: { name: "Oscuro dorado", ..._DARK },
+    piedra: { name: "Oscuro dorado", ..._DARK },
 };
 
 const FONTS = [
@@ -503,8 +479,8 @@ function saveConfig(cfg) {
 
 // -- ESTADO GLOBAL --
 const INIT_CONTACTOS = [
-    { id: 1, nombre: "Hijo 1", rel: "Hijo/a", tel: "", color: "#1B4F8A", avatar: "https://images.unsplash.com/photo-1531746020798-e6953c6e8e04?w=160&q=80" },
-    { id: 2, nombre: "Hijo 2", rel: "Hijo/a", tel: "", color: "#1B4F8A", avatar: "https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=160&q=80" },
+    { id: 1, nombre: "Hijo 1", rel: "Hijo/a", tel: "", color: "#e7c37a", avatar: "https://images.unsplash.com/photo-1531746020798-e6953c6e8e04?w=160&q=80" },
+    { id: 2, nombre: "Hijo 2", rel: "Hijo/a", tel: "", color: "#e7c37a", avatar: "https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=160&q=80" },
 ];
 
 const INIT_MEDS = [
@@ -799,7 +775,7 @@ function LocationWidget({ contactos }) {
         <div style={{ background: C.bg, border: `1px solid ${C.border}`, borderRadius: 10, overflow: "hidden" }}>
             {locState === "idle" && (
                 <button onClick={getLocation} style={{ width: "100%", display: "flex", alignItems: "center", gap: 12, padding: "14px 16px", background: "none", border: "none", cursor: "pointer", fontFamily: "inherit", textAlign: "left" }}>
-                    <div style={{ width: 40, height: 40, borderRadius: 8, background: "#EFF6FF", border: `1px solid #DBEAFE`, display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
+                    <div style={{ width: 40, height: 40, borderRadius: 8, background: "rgba(231,195,122,.12)", border: `1px solid rgba(231,195,122,.28)`, display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
                         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke={C.primary} strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
                             <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7z" />
                             <circle cx="12" cy="9" r="2.5" />
@@ -815,7 +791,7 @@ function LocationWidget({ contactos }) {
 
             {locState === "loading" && (
                 <div style={{ display: "flex", alignItems: "center", gap: 12, padding: "14px 16px" }}>
-                    <div style={{ width: 40, height: 40, borderRadius: 8, background: "#EFF6FF", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
+                    <div style={{ width: 40, height: 40, borderRadius: 8, background: "rgba(231,195,122,.12)", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
                         <div style={{ width: 18, height: 18, borderRadius: "50%", border: `2px solid ${C.primary}`, borderTopColor: "transparent", animation: "spin 1s linear infinite" }} />
                     </div>
                     <div style={{ fontSize: ".88rem", color: C.textSoft, fontWeight: 500 }}>Obteniendo ubicación…</div>
@@ -847,7 +823,7 @@ function LocationWidget({ contactos }) {
                     </div>
                     <div style={{ display: "flex", gap: 8 }}>
                         {mapsUrl && (
-                            <a href={mapsUrl} target="_blank" style={{ flex: 1, display: "flex", alignItems: "center", justifyContent: "center", gap: 6, background: C.primary, color: "white", borderRadius: 8, padding: "10px", fontWeight: 600, fontSize: ".85rem" }}>
+                            <a href={mapsUrl} target="_blank" style={{ flex: 1, display: "flex", alignItems: "center", justifyContent: "center", gap: 6, background: GOLDBG, color: "#2b1f08", borderRadius: 8, padding: "10px", fontWeight: 600, fontSize: ".85rem" }}>
                                 <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                                     <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7z" /><circle cx="12" cy="9" r="2.5" />
                                 </svg>
@@ -855,7 +831,7 @@ function LocationWidget({ contactos }) {
                             </a>
                         )}
                         {shareUrl && (
-                            <a href={shareUrl} target="_blank" style={{ flex: 1, display: "flex", alignItems: "center", justifyContent: "center", gap: 6, background: "#16A34A", color: "white", borderRadius: 8, padding: "10px", fontWeight: 600, fontSize: ".85rem" }}>
+                            <a href={shareUrl} target="_blank" style={{ flex: 1, display: "flex", alignItems: "center", justifyContent: "center", gap: 6, background: "#4ade80", color: "white", borderRadius: 8, padding: "10px", fontWeight: 600, fontSize: ".85rem" }}>
                                 <svg width="14" height="14" viewBox="0 0 24 24" fill="white"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z" /></svg>
                                 Compartir
                             </a>
@@ -874,7 +850,7 @@ function LocationWidget({ contactos }) {
 function Toggle({ on, onChange, color }) {
     return (
         <div onClick={() => onChange(!on)} style={{ width: 46, height: 26, borderRadius: 13, background: on ? color : "#DDD", cursor: "pointer", position: "relative", transition: "background .3s", flexShrink: 0 }}>
-            <div style={{ position: "absolute", width: 20, height: 20, borderRadius: "50%", background: "white", top: 3, left: on ? 23 : 3, transition: "left .3s", boxShadow: "0 1px 4px rgba(0,0,0,.2)" }} />
+            <div style={{ position: "absolute", width: 20, height: 20, borderRadius: "50%", background: "rgba(255,255,255,.07)", top: 3, left: on ? 23 : 3, transition: "left .3s", boxShadow: "0 1px 4px rgba(0,0,0,.2)" }} />
         </div>
     );
 }
@@ -888,18 +864,18 @@ function Bienvenida({ onAbuelo, onHijos }) {
         if (pass === ADMIN_PASSWORD) onHijos();
         else { setErr(true); setTimeout(() => setErr(false), 1800); }
     }
-    const card = { ...GLASS, width: "100%", padding: "22px 20px", display: "flex", alignItems: "center", gap: 16, cursor: "pointer", textAlign: "left", fontFamily: "inherit", color: "#1f1b14" };
+    const card = { ...GLASS, width: "100%", padding: "22px 20px", display: "flex", alignItems: "center", gap: 16, cursor: "pointer", textAlign: "left", fontFamily: "inherit", color: "#F4F1EA" };
     const icono = (d) => <div style={{ ...GOLD, width: 64, height: 64, borderRadius: 20, display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}><svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">{d}</svg></div>;
     return (
-        <div style={{ minHeight: "100vh", width: "100%", maxWidth: 480, margin: "0 auto", background: "radial-gradient(120% 55% at 15% 0%,#fff4dc 0%,#f2e9d8 40%,#e4dfd5 100%)", display: "flex", flexDirection: "column", justifyContent: "center", gap: 14, padding: "40px 24px", fontFamily: "'Inter',system-ui,sans-serif" }}>
-            <div style={{ fontSize: ".72rem", fontWeight: 700, letterSpacing: ".14em", textTransform: "uppercase", color: "#8a6420", textAlign: "center" }}>Acompañar</div>
-            <div style={{ fontFamily: SERIF, fontSize: "2.4rem", fontWeight: 600, textAlign: "center", lineHeight: 1.05, color: "#1f1b14", marginBottom: 10 }}>¿Quién sos?</div>
+        <div style={{ minHeight: "100vh", width: "100%", maxWidth: 480, margin: "0 auto", background: BG_DARK, display: "flex", flexDirection: "column", justifyContent: "center", gap: 14, padding: "40px 24px", fontFamily: "'Playfair Display',Georgia,serif" }}>
+            <div style={{ fontSize: ".72rem", fontWeight: 700, letterSpacing: ".14em", textTransform: "uppercase", color: "#e7c37a", textAlign: "center" }}>Acompañar</div>
+            <div style={{ fontFamily: SERIF, fontSize: "2.4rem", fontWeight: 600, textAlign: "center", lineHeight: 1.05, color: "#F4F1EA", marginBottom: 10 }}>¿Quién sos?</div>
 
             <button onClick={onAbuelo} style={card}>
                 {icono(<><rect x="9" y="3" width="6" height="11" rx="3" /><path d="M5 11a7 7 0 0 0 14 0M12 18v3" /></>)}
                 <div style={{ flex: 1 }}>
                     <div style={{ fontFamily: SERIF, fontSize: "1.6rem", fontWeight: 600 }}>Abuelo / Abuela</div>
-                    <div style={{ fontSize: ".95rem", color: "#4a4235", marginTop: 3 }}>Quiero hablar con mi guía</div>
+                    <div style={{ fontSize: ".95rem", color: "rgba(244,241,234,.75)", marginTop: 3 }}>Quiero hablar con mi guía</div>
                 </div>
             </button>
 
@@ -908,15 +884,15 @@ function Bienvenida({ onAbuelo, onHijos }) {
                     {icono(<><circle cx="9" cy="8" r="3.5" /><path d="M2.5 20a6.5 6.5 0 0 1 13 0M16 4.5a3.5 3.5 0 0 1 0 7M18 14a6.5 6.5 0 0 1 3.5 6" /></>)}
                     <div style={{ flex: 1 }}>
                         <div style={{ fontFamily: SERIF, fontSize: "1.6rem", fontWeight: 600 }}>Hijos</div>
-                        <div style={{ fontSize: ".95rem", color: "#4a4235", marginTop: 3 }}>Ver cómo está y cargar turnos</div>
+                        <div style={{ fontSize: ".95rem", color: "rgba(244,241,234,.75)", marginTop: 3 }}>Ver cómo está y cargar turnos</div>
                     </div>
                 </button>
             ) : (
                 <div style={{ ...GLASS, padding: 20, display: "flex", flexDirection: "column", gap: 12 }}>
                     <div style={{ fontFamily: SERIF, fontSize: "1.4rem", fontWeight: 600 }}>Hijos · contraseña familiar</div>
                     <input type="password" autoFocus value={pass} onChange={e => { setPass(e.target.value); setErr(false); }} onKeyDown={e => { if (e.key === "Enter") entrar(); }} placeholder="Contraseña"
-                        style={{ width: "100%", padding: "14px 16px", borderRadius: 14, border: `2px solid ${err ? "#DC2626" : "rgba(201,154,63,.5)"}`, fontSize: "1.05rem", outline: "none", fontFamily: "inherit", background: "rgba(255,255,255,.85)" }} />
-                    {err && <div style={{ color: "#DC2626", fontSize: ".85rem", fontWeight: 600 }}>Contraseña incorrecta</div>}
+                        style={{ width: "100%", padding: "14px 16px", borderRadius: 14, border: `2px solid ${err ? "#ff7b6b" : "rgba(201,154,63,.5)"}`, fontSize: "1.05rem", outline: "none", fontFamily: "inherit", background: "rgba(255,255,255,.85)" }} />
+                    {err && <div style={{ color: "#ff7b6b", fontSize: ".85rem", fontWeight: 600 }}>Contraseña incorrecta</div>}
                     <div style={{ display: "flex", gap: 10 }}>
                         <button onClick={() => { setPidePass(false); setPass(""); }} style={{ ...GLASS, flex: 1, height: 50, borderRadius: 25, fontWeight: 700, cursor: "pointer", fontFamily: "inherit" }}>Volver</button>
                         <button onClick={entrar} style={{ ...GOLD, flex: 1, height: 50, borderRadius: 25, fontSize: "1rem", fontFamily: "inherit" }}>Entrar</button>
@@ -1012,7 +988,7 @@ export default function App() {
         userName: "",
         navLabels: ["Pastillas", "Turnos", "Música", "Ejercicios", "Urgencias"],
         customBg: "",
-        appColor: "#1B4F8A",
+        appColor: "#e7c37a",
     });
     // Helpers para setear un campo individual manteniendo el resto
     const patchTheme = (patch) => setThemeData(prev => ({ ...(prev || {}), ...patch }));
@@ -1036,7 +1012,7 @@ export default function App() {
     const setThemeNavLabels = (v) => patchTheme({ navLabels: typeof v === "function" ? v(themeNavLabels) : v });
     const themeCustomBg = themeData?.customBg || "";
     const setThemeCustomBg = (v) => patchTheme({ customBg: typeof v === "function" ? v(themeCustomBg) : v });
-    const themeAppColor = themeData?.appColor || "#1B4F8A";
+    const themeAppColor = themeData?.appColor || "#e7c37a";
     const setThemeAppColor = (v) => patchTheme({ appColor: typeof v === "function" ? v(themeAppColor) : v });
 
     const [showAppConfig, setShowAppConfig] = useState(false);
@@ -1105,7 +1081,7 @@ export default function App() {
     }, [isAdmin, role]);
 
     const allRoles = [
-        { id: "mayor", label: themeUserName || "Mi pantalla", color: "#1B4F8A", img: "https://images.unsplash.com/photo-1567532939604-b6b5b0db2604?w=80&q=70" },
+        { id: "mayor", label: themeUserName || "Mi pantalla", color: "#e7c37a", img: "https://images.unsplash.com/photo-1567532939604-b6b5b0db2604?w=80&q=70" },
         ...contactos.map(c => ({ id: c.id.toString(), label: c.nombre, color: c.color, img: c.avatar })),
     ];
 
@@ -1119,7 +1095,7 @@ export default function App() {
     }
 
     return (
-        <div style={{ display: "flex", flexDirection: "column", height: "100vh", width: "100%", maxWidth: 480, margin: "0 auto", fontFamily: "'Inter',system-ui,sans-serif", overflow: "hidden", overflowX: "hidden", background: "#F4F6F9" }}>
+        <div style={{ display: "flex", flexDirection: "column", height: "100vh", width: "100%", maxWidth: 480, margin: "0 auto", fontFamily: "'Playfair Display',Georgia,serif", overflow: "hidden", overflowX: "hidden", background: "#0b0e16" }}>
 
             {/* TAB BAR PRINCIPAL — cuadrado, sin avatars */}
             <div style={{ background: "linear-gradient(160deg,#1c2130,#0d111b)", display: "flex", flexShrink: 0, borderBottom: "1px solid rgba(231,195,122,.55)" }}>
@@ -1170,15 +1146,15 @@ export default function App() {
                 }}
                     onClick={() => { setShowAdminModal(false); setAdminPwdInput(""); setAdminPwdError(false); }}>
                     <div style={{
-                        background: "white", borderRadius: 20, padding: "28px 24px 28px",
+                        background: "#121722", border: "1px solid rgba(231,195,122,.45)", borderRadius: 20, padding: "28px 24px 28px",
                         width: "100%", maxWidth: 340, textAlign: "center"
                     }}
                         onClick={e => e.stopPropagation()}>
                         <div style={{ fontSize: "1.8rem", marginBottom: 6 }}><Em e="👨‍👩‍👧" s={24} /></div>
-                        <div style={{ fontSize: "1.15rem", fontWeight: 700, color: "#1B4F8A", marginBottom: 6 }}>
+                        <div style={{ fontSize: "1.15rem", fontWeight: 700, color: "#e7c37a", marginBottom: 6 }}>
                             Modo Administrador
                         </div>
-                        <div style={{ fontSize: ".85rem", color: "#6B7280", marginBottom: 20, lineHeight: 1.4 }}>
+                        <div style={{ fontSize: ".85rem", color: "rgba(244,241,234,.62)", marginBottom: 20, lineHeight: 1.4 }}>
                             Ingresá la contraseña familiar para editar fotos, contactos, medicación y turnos.
                         </div>
                         <input
@@ -1190,20 +1166,20 @@ export default function App() {
                             autoFocus
                             style={{
                                 width: "100%", padding: "12px 14px", borderRadius: 10,
-                                border: `2px solid ${adminPwdError ? "#DC2626" : "#E5E7EB"}`,
+                                border: `2px solid ${adminPwdError ? "#ff7b6b" : "rgba(255,255,255,.14)"}`,
                                 fontSize: "1rem", marginBottom: 14, outline: "none",
                                 fontFamily: "inherit"
                             }}
                         />
                         {adminPwdError && (
-                            <div style={{ fontSize: ".8rem", color: "#DC2626", fontWeight: 600, marginBottom: 10 }}>
+                            <div style={{ fontSize: ".8rem", color: "#ff7b6b", fontWeight: 600, marginBottom: 10 }}>
                                 Contraseña incorrecta
                             </div>
                         )}
                         <button onClick={tryAdminLogin}
                             style={{
                                 width: "100%", padding: "12px", borderRadius: 10,
-                                background: "#1B4F8A", color: "white", border: "none",
+                                background: GOLDBG, color: "#2b1f08", border: "none",
                                 fontSize: "1rem", fontWeight: 600, cursor: "pointer",
                                 fontFamily: "inherit", marginBottom: 8
                             }}>
@@ -1212,7 +1188,7 @@ export default function App() {
                         <button onClick={() => { setShowAdminModal(false); setAdminPwdInput(""); setAdminPwdError(false); }}
                             style={{
                                 width: "100%", padding: "10px", background: "none", border: "none",
-                                color: "#9CA3AF", fontSize: ".9rem", cursor: "pointer",
+                                color: "rgba(244,241,234,.45)", fontSize: ".9rem", cursor: "pointer",
                                 fontFamily: "inherit"
                             }}>
                             Cancelar
@@ -1228,7 +1204,7 @@ export default function App() {
                 }}
                     onClick={() => { setShowPinModal(false); setPinInput(""); }}>
                     <div style={{
-                        background: "white", borderRadius: 20, padding: "28px 24px 32px",
+                        background: "#121722", border: "1px solid rgba(231,195,122,.45)", borderRadius: 20, padding: "28px 24px 32px",
                         width: 300, textAlign: "center",
                         animation: pinShake ? "pinShake .5s ease" : "none"
                     }}
@@ -1238,10 +1214,10 @@ export default function App() {
                         <style>{`@keyframes pinShake{0%,100%{transform:translateX(0)}20%,60%{transform:translateX(-8px)}40%,80%{transform:translateX(8px)}}`}</style>
 
                         <div style={{ fontSize: "1.5rem", marginBottom: 4 }}><Em e="🔒" s={24} /></div>
-                        <div style={{ fontSize: "1.1rem", fontWeight: 700, color: "#1B4F8A", marginBottom: 4 }}>
+                        <div style={{ fontSize: "1.1rem", fontWeight: 700, color: "#e7c37a", marginBottom: 4 }}>
                             Configuración
                         </div>
-                        <div style={{ fontSize: ".8rem", color: "#6B7280", marginBottom: 20 }}>
+                        <div style={{ fontSize: ".8rem", color: "rgba(244,241,234,.62)", marginBottom: 20 }}>
                             Ingresá el PIN para continuar
                         </div>
 
@@ -1251,8 +1227,8 @@ export default function App() {
                                 <div key={i} style={{
                                     width: 14, height: 14, borderRadius: "50%",
                                     background: i < pinInput.length
-                                        ? (pinError ? "#DC2626" : "#1B4F8A")
-                                        : "#E5E7EB",
+                                        ? (pinError ? "#ff7b6b" : "#e7c37a")
+                                        : "rgba(255,255,255,.14)",
                                     transition: "background .15s"
                                 }} />
                             ))}
@@ -1266,9 +1242,9 @@ export default function App() {
                                     if (d === "⌫") { setPinInput(p => p.slice(0, -1)); setPinError(false); return; }
                                     handlePinDigit(d);
                                 }} style={{
-                                    height: 56, borderRadius: 12, border: "1px solid #E5E7EB",
-                                    background: d === "" ? "transparent" : d === "⌫" ? "#FEF2F2" : "#F9FAFB",
-                                    color: d === "⌫" ? "#DC2626" : "#111827",
+                                    height: 56, borderRadius: 12, border: "1px solid rgba(255,255,255,.14)",
+                                    background: d === "" ? "transparent" : d === "⌫" ? "rgba(255,90,70,.14)" : "rgba(255,255,255,.06)",
+                                    color: d === "⌫" ? "#ff7b6b" : "#F4F1EA",
                                     fontSize: d === "⌫" ? "1.1rem" : "1.3rem",
                                     fontWeight: 600, cursor: d === "" ? "default" : "pointer",
                                     fontFamily: "inherit",
@@ -1278,14 +1254,14 @@ export default function App() {
                         </div>
 
                         {pinError && (
-                            <div style={{ marginTop: 14, fontSize: ".8rem", color: "#DC2626", fontWeight: 600 }}>
+                            <div style={{ marginTop: 14, fontSize: ".8rem", color: "#ff7b6b", fontWeight: 600 }}>
                                 PIN incorrecto — intentá de nuevo
                             </div>
                         )}
 
                         <button onClick={() => { setShowPinModal(false); setPinInput(""); }}
                             style={{
-                                marginTop: 16, background: "none", border: "none", color: "#9CA3AF",
+                                marginTop: 16, background: "none", border: "none", color: "rgba(244,241,234,.45)",
                                 fontSize: ".85rem", cursor: "pointer", fontFamily: "inherit"
                             }}>
                             Cancelar
@@ -1326,10 +1302,10 @@ function Login({ contactos, onLogin }) {
     return (
         <div style={{
             display: "flex", flexDirection: "column", height: "100vh", width: "100%", maxWidth: 480, margin: "0 auto",
-            fontFamily: F.body, overflow: "hidden", overflowX: "hidden",
+            fontFamily: SERIF, overflow: "hidden", overflowX: "hidden",
             background: Tx.isPhoto && TC.customBg
                 ? `url(${TC.customBg}) center/cover no-repeat`
-                : Tx.css !== "none" ? `${Tx.css}, ${T.bg}` : T.bg,
+                : BG_DARK,
             position: "relative"
         }}>
             {/* Decorative bg blobs */}
@@ -1337,7 +1313,7 @@ function Login({ contactos, onLogin }) {
             <div style={{ position: "absolute", bottom: 80, left: 0, width: 120, height: 120, borderRadius: "50%", background: T.accent, opacity: .05, pointerEvents: "none", zIndex: 0, transform: "translate(-40px,40px)" }} />
             <div style={{ position: "relative", height: 220, flexShrink: 0 }}>
                 <img src="https://images.unsplash.com/photo-1516534775068-ba3e7458af70?w=800&q=80" style={{ width: "100%", height: "100%", objectFit: "cover", filter: "brightness(.5)" }} />
-                <div style={{ position: "absolute", inset: 0, background: "linear-gradient(to bottom,transparent 30%,#F4F6F9 100%)" }} />
+                <div style={{ position: "absolute", inset: 0, background: "linear-gradient(to bottom,transparent 30%,#0b0e16 100%)" }} />
                 <div style={{ position: "absolute", bottom: 20, left: 0, right: 0, textAlign: "center" }}>
                     <div style={{ fontSize: "2.2rem", fontWeight: 700, color: "white", letterSpacing: "-.02em" }}>acompañar</div>
                     <div style={{ fontSize: ".88rem", color: "rgba(255,255,255,.7)", fontWeight: 600, marginTop: 4 }}>Tu asistente personal de vida</div>
@@ -1346,16 +1322,16 @@ function Login({ contactos, onLogin }) {
 
             <div style={{ flex: 1, overflowY: "auto", padding: "8px 24px 32px" }}>
                 <div style={{ fontSize: "1.2rem", fontWeight: 700, textAlign: "center", marginBottom: 4 }}>¿Quién sos?</div>
-                <div style={{ fontSize: ".85rem", color: "#6B7280", fontWeight: 600, textAlign: "center", marginBottom: 20 }}>Elegí tu perfil para ingresar</div>
+                <div style={{ fontSize: ".85rem", color: "rgba(244,241,234,.62)", fontWeight: 600, textAlign: "center", marginBottom: 20 }}>Elegí tu perfil para ingresar</div>
 
                 {/* mamá */}
-                <button onClick={() => onLogin("mayor")} style={{ ...S.loginCard, border: `1.5px solid ${themeConfig?.appColor || "#1B4F8A"}`, marginBottom: 12, width: "100%" }}>
+                <button onClick={() => onLogin("mayor")} style={{ ...S.loginCard, border: `1.5px solid ${themeConfig?.appColor || "#e7c37a"}`, marginBottom: 12, width: "100%" }}>
                     <img src="https://images.unsplash.com/photo-1567532939604-b6b5b0db2604?w=160&q=80" style={S.loginAvatar} onError={e => e.target.style.background = "#eee"} />
                     <div style={{ flex: 1, textAlign: "left", padding: "0 4px" }}>
                         <div style={{ fontSize: "1.05rem", fontWeight: 700 }}>Soy yo</div>
-                        <div style={{ fontSize: ".8rem", color: "#6B7280", fontWeight: 600, marginTop: 3 }}>Quiero hablar con Martita</div>
+                        <div style={{ fontSize: ".8rem", color: "rgba(244,241,234,.62)", fontWeight: 600, marginTop: 3 }}>Quiero hablar con Martita</div>
                     </div>
-                    <div style={{ color: "#9CA3AF", fontSize: "1.3rem", paddingRight: 4 }}>›</div>
+                    <div style={{ color: "rgba(244,241,234,.45)", fontSize: "1.3rem", paddingRight: 4 }}>›</div>
                 </button>
 
                 {/* Hijas */}
@@ -1364,9 +1340,9 @@ function Login({ contactos, onLogin }) {
                         <img src={c.avatar} style={S.loginAvatar} onError={e => e.target.style.background = "#eee"} />
                         <div style={{ flex: 1, textAlign: "left", padding: "0 4px" }}>
                             <div style={{ fontSize: "1.05rem", fontWeight: 700 }}>Soy {c.nombre}</div>
-                            <div style={{ fontSize: ".8rem", color: "#6B7280", fontWeight: 600, marginTop: 3 }}>Hija · Seguimiento de mamá</div>
+                            <div style={{ fontSize: ".8rem", color: "rgba(244,241,234,.62)", fontWeight: 600, marginTop: 3 }}>Hija · Seguimiento de mamá</div>
                         </div>
-                        <div style={{ color: "#9CA3AF", fontSize: "1.3rem", paddingRight: 4 }}>›</div>
+                        <div style={{ color: "rgba(244,241,234,.45)", fontSize: "1.3rem", paddingRight: 4 }}>›</div>
                     </button>
                 ))}
             </div>
@@ -1673,7 +1649,7 @@ function PanelMayor({ contactos, meds, turnos, perfil, themeConfig }) {
         window.speechSynthesis.speak(u);
     }
 
-    const btnBg = aiState === "listening" ? T.primaryDk : aiState === "speaking" ? T.primaryDk : aiState === "thinking" ? "#374151" : T.primary;
+    const btnBg = aiState === "listening" ? T.primaryDk : aiState === "speaking" ? T.primaryDk : aiState === "thinking" ? "rgba(244,241,234,.82)" : T.primary;
     const btnIcon = aiState === "thinking" ? "💭" : aiState === "speaking" ? "🔊" : aiState === "listening" ? "🛑" : I.idle;
     const btnLbl = aiState === "thinking" ? "Pensando…" : aiState === "speaking" ? "Tocá para parar" : aiState === "listening" ? "Escuchando…" : btnTxt;
 
@@ -1685,10 +1661,10 @@ function PanelMayor({ contactos, meds, turnos, perfil, themeConfig }) {
     return (
         <div style={{
             display: "flex", flexDirection: "column", height: "100vh", width: "100%", maxWidth: 480, margin: "0 auto",
-            fontFamily: F.body, overflow: "hidden", overflowX: "hidden",
+            fontFamily: SERIF, overflow: "hidden", overflowX: "hidden",
             background: Tx.isPhoto && TC.customBg
                 ? `url(${TC.customBg}) center/cover no-repeat`
-                : "radial-gradient(120% 55% at 15% 0%,#fff4dc 0%,#f2e9d8 40%,#e4dfd5 100%)",
+                : BG_DARK,
             position: "relative"
         }}>
             {/* Decorative bg blobs */}
@@ -1701,11 +1677,11 @@ function PanelMayor({ contactos, meds, turnos, perfil, themeConfig }) {
                     <div style={S.modal}>
                         <div style={{ fontSize: "2.5rem", marginBottom: 8, textAlign: "center" }}><Em e="📞" s={24} /></div>
                         <div style={{ fontSize: "1.2rem", fontWeight: 700, textAlign: "center", marginBottom: 4 }}>Llamando a {urgente.nombre}</div>
-                        <div style={{ fontSize: ".85rem", color: "#6B7280", fontWeight: 600, textAlign: "center", marginBottom: 20 }}>{urgente.rel}</div>
-                        <a href={`tel:${urgente.tel || ""}`} style={{ display: "block", background: "#1B4F8A", color: "white", borderRadius: 8, padding: 14, textAlign: "center", fontWeight: 700, fontSize: "1rem", marginBottom: 10 }}>
+                        <div style={{ fontSize: ".85rem", color: "rgba(244,241,234,.62)", fontWeight: 600, textAlign: "center", marginBottom: 20 }}>{urgente.rel}</div>
+                        <a href={`tel:${urgente.tel || ""}`} style={{ display: "block", background: GOLDBG, color: "#2b1f08", borderRadius: 8, padding: 14, textAlign: "center", fontWeight: 700, fontSize: "1rem", marginBottom: 10 }}>
                             <Em e="📞" s={17} /> Llamar ahora
                         </a>
-                        <button onClick={() => setUrgente(null)} style={{ width: "100%", background: "#F4F6F9", color: "#6B7280", border: "none", borderRadius: 8, padding: 12, fontSize: "1rem", fontWeight: 700, cursor: "pointer" }}>Cancelar</button>
+                        <button onClick={() => setUrgente(null)} style={{ width: "100%", background: "#0b0e16", color: "rgba(244,241,234,.62)", border: "none", borderRadius: 8, padding: 12, fontSize: "1rem", fontWeight: 700, cursor: "pointer" }}>Cancelar</button>
                     </div>
                 </div>
             )}
@@ -1749,7 +1725,7 @@ function PanelMayor({ contactos, meds, turnos, perfil, themeConfig }) {
                                         {c.tel ? c.tel : <span style={{ color: C.warn }}>Sin número — cargalo en Contactos</span>}
                                     </div>
                                 </div>
-                                <div style={{ width: 38, height: 38, borderRadius: 8, background: C.primary, display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
+                                <div style={{ width: 38, height: 38, borderRadius: 8, background: GOLDBG, display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
                                     <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                                         <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 12 19.79 19.79 0 0 1 1.61 3.5 2 2 0 0 1 3.6 1.32h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L7.91 9a16 16 0 0 0 6 6l1.27-.96a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z" />
                                     </svg>
@@ -1768,10 +1744,10 @@ function PanelMayor({ contactos, meds, turnos, perfil, themeConfig }) {
             {/* TOP */}
             <div style={{ padding: "26px 22px 0", flexShrink: 0, position: "relative", zIndex: 1 }}>
                 <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
-                    <div style={{ fontSize: ".72rem", fontWeight: 700, letterSpacing: ".14em", textTransform: "uppercase", color: "#8a6420" }}>Tu guía</div>
-                    <div style={{ ...GLASS, borderRadius: 999, padding: "6px 14px", fontSize: ".78rem", fontWeight: 700, color: "#1f1b14" }}>{clock.timeStr}</div>
+                    <div style={{ fontSize: ".72rem", fontWeight: 700, letterSpacing: ".14em", textTransform: "uppercase", color: "#e7c37a" }}>Tu guía</div>
+                    <div style={{ ...GLASS, borderRadius: 999, padding: "6px 14px", fontSize: ".78rem", fontWeight: 700, color: "#F4F1EA" }}>{clock.timeStr}</div>
                 </div>
-                <div style={{ fontFamily: SERIF, fontSize: "2.2rem", fontWeight: 600, color: "#1f1b14", lineHeight: 1.05, marginTop: 6 }}>{clock.greeting}{uName ? `, ${uName}` : ""}</div>
+                <div style={{ fontFamily: SERIF, fontSize: "2.2rem", fontWeight: 600, color: "#F4F1EA", lineHeight: 1.05, marginTop: 6 }}>{clock.greeting}{uName ? `, ${uName}` : ""}</div>
             </div>
 
             {/* CENTER */}
@@ -1783,9 +1759,9 @@ function PanelMayor({ contactos, meds, turnos, perfil, themeConfig }) {
                     const d = diasHasta(tc.iso);
                     return (
                         <div onClick={() => setScreen("turnos")} style={{ ...GLASS, width: "100%", maxWidth: 380, padding: "14px 18px", border: "1.5px solid rgba(201,154,63,.7)", cursor: "pointer" }}>
-                            <div style={{ fontSize: ".68rem", fontWeight: 700, letterSpacing: ".14em", textTransform: "uppercase", color: "#8a6420" }}>Recordatorio</div>
-                            <div style={{ fontFamily: SERIF, fontSize: "1.3rem", fontWeight: 600, lineHeight: 1.15, marginTop: 4, color: "#1f1b14" }}>{cuandoTxt(d)} tenés {tc.nombre}</div>
-                            <div style={{ fontSize: ".95rem", marginTop: 3, color: "#4a4235" }}>{tc.fecha} a las {tc.hora}{tc.nota ? ` · ${tc.nota}` : ""}</div>
+                            <div style={{ fontSize: ".68rem", fontWeight: 700, letterSpacing: ".14em", textTransform: "uppercase", color: "#e7c37a" }}>Recordatorio</div>
+                            <div style={{ fontFamily: SERIF, fontSize: "1.3rem", fontWeight: 600, lineHeight: 1.15, marginTop: 4, color: "#F4F1EA" }}>{cuandoTxt(d)} tenés {tc.nombre}</div>
+                            <div style={{ fontSize: ".95rem", marginTop: 3, color: "rgba(244,241,234,.75)" }}>{tc.fecha} a las {tc.hora}{tc.nota ? ` · ${tc.nota}` : ""}</div>
                         </div>
                     );
                 })()}
@@ -1803,18 +1779,18 @@ function PanelMayor({ contactos, meds, turnos, perfil, themeConfig }) {
                         </button>
                     </div>
                 </div>
-                <div style={{ fontFamily: SERIF, fontSize: "1.45rem", fontWeight: 600, textAlign: "center", lineHeight: 1.15, color: "#1f1b14", marginTop: -6 }}>
+                <div style={{ fontFamily: SERIF, fontSize: "1.45rem", fontWeight: 600, textAlign: "center", lineHeight: 1.15, color: "#F4F1EA", marginTop: -6 }}>
                     {aiState === "thinking" ? "Estoy pensando…" : aiState === "speaking" ? "Te estoy hablando… tocá para parar" : aiState === "listening" ? "Te escucho…" : <>Tocá y decime<br />qué necesitás</>}
                 </div>
 
                 {/* MENSAJES */}
                 <div style={{ width: "100%", maxWidth: 380, display: "flex", flexDirection: "column", gap: 8 }}>
                     {userMsg && <div style={{ alignSelf: "flex-end", ...GOLD, padding: "10px 16px", borderRadius: "20px 20px 6px 20px", fontSize: "1rem" }}>{userMsg}</div>}
-                    {aiMsg && <div style={{ ...GLASS, padding: "12px 16px", borderRadius: "20px 20px 20px 6px", fontSize: "1.05rem", lineHeight: 1.35, color: "#1f1b14", fontWeight: 500 }}>{aiMsg}</div>}
+                    {aiMsg && <div style={{ ...GLASS, padding: "12px 16px", borderRadius: "20px 20px 20px 6px", fontSize: "1.05rem", lineHeight: 1.35, color: "#F4F1EA", fontWeight: 500 }}>{aiMsg}</div>}
                     {ytData && (
                         <div onClick={() => window.open(ytData.url, "_blank")} style={{ ...GLASS, padding: "10px 14px", display: "flex", alignItems: "center", gap: 12, cursor: "pointer" }}>
                             <div style={{ width: 44, height: 32, borderRadius: 8, background: "#111", display: "flex", alignItems: "center", justifyContent: "center", color: "white", flexShrink: 0 }}><Em e="▶" s={24} c="currentColor" /></div>
-                            <div style={{ flex: 1 }}><div style={{ fontWeight: 600, fontSize: ".92rem" }}>{ytData.query}</div><div style={{ fontSize: ".72rem", color: "#6b6354" }}>Abrir en YouTube</div></div>
+                            <div style={{ flex: 1 }}><div style={{ fontWeight: 600, fontSize: ".92rem" }}>{ytData.query}</div><div style={{ fontSize: ".72rem", color: "rgba(244,241,234,.62)" }}>Abrir en YouTube</div></div>
                         </div>
                     )}
                 </div>
@@ -1822,18 +1798,18 @@ function PanelMayor({ contactos, meds, turnos, perfil, themeConfig }) {
                 {/* FRASES DE EJEMPLO */}
                 <div style={{ display: "flex", flexWrap: "wrap", gap: 8, justifyContent: "center", maxWidth: 380 }}>
                     {["Llamá a mi hija", "Me siento mal", "¿Qué remedio me toca?"].map(f => (
-                        <button key={f} onClick={() => processQ(f)} style={{ ...GLASS, borderRadius: 999, padding: "9px 14px", fontSize: ".85rem", fontWeight: 600, color: "#1f1b14", cursor: "pointer" }}>“{f}”</button>
+                        <button key={f} onClick={() => processQ(f)} style={{ ...GLASS, borderRadius: 999, padding: "9px 14px", fontSize: ".85rem", fontWeight: 600, color: "#F4F1EA", cursor: "pointer" }}>“{f}”</button>
                     ))}
                 </div>
 
                 {/* ESTADO PARA LA FAMILIA */}
                 <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10, width: "100%", maxWidth: 380 }}>
                     <button onClick={() => { setEstado("levantoTs"); setUserMsg("Ya me levanté"); setAiMsg("¡Qué bueno! Les aviso que ya te levantaste."); }} style={{ ...GOLD, height: 52, borderRadius: 26, fontSize: ".95rem" }}>Ya me levanté</button>
-                    <button onClick={() => { setEstado("remedioTs"); setUserMsg("Ya tomé el remedio"); setAiMsg("Perfecto, les aviso que tomaste el remedio."); }} style={{ ...GLASS, height: 52, borderRadius: 26, fontSize: ".95rem", fontWeight: 700, color: "#1f1b14", cursor: "pointer" }}>Ya tomé el remedio</button>
+                    <button onClick={() => { setEstado("remedioTs"); setUserMsg("Ya tomé el remedio"); setAiMsg("Perfecto, les aviso que tomaste el remedio."); }} style={{ ...GLASS, height: 52, borderRadius: 26, fontSize: ".95rem", fontWeight: 700, color: "#F4F1EA", cursor: "pointer" }}>Ya tomé el remedio</button>
                 </div>
                 <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10, width: "100%", maxWidth: 380 }}>
                     {[["ejercicios", "Ejercicios"], ["fotos", "Fotos"]].map(([k, l]) => (
-                        <button key={k} onClick={() => setScreen(k)} style={{ ...GLASS, height: 46, borderRadius: 23, fontSize: ".9rem", fontWeight: 600, color: "#1f1b14", cursor: "pointer" }}>{l}</button>
+                        <button key={k} onClick={() => setScreen(k)} style={{ ...GLASS, height: 46, borderRadius: 23, fontSize: ".9rem", fontWeight: 600, color: "#F4F1EA", cursor: "pointer" }}>{l}</button>
                     ))}
                 </div>
             </div>
@@ -1851,7 +1827,7 @@ function PanelMayor({ contactos, meds, turnos, perfil, themeConfig }) {
                 return (
                     <div style={{ ...GLASS, position: "absolute", left: 14, right: 14, bottom: "calc(18px + env(safe-area-inset-bottom))", height: 78, borderRadius: 39, display: "flex", alignItems: "center", justifyContent: "space-between", padding: "0 8px", zIndex: 5 }}>
                         {items.map((it) => it ? (
-                            <button key={it.s} onClick={() => it.s === "__calls__" ? setShowCalls(true) : setScreen(it.s)} style={{ flex: 1, display: "flex", flexDirection: "column", alignItems: "center", gap: 3, border: "none", background: "none", cursor: "pointer", padding: "6px 0", color: it.s === "__calls__" ? C.danger : "#1f1b14", opacity: .85, fontFamily: "inherit" }}>
+                            <button key={it.s} onClick={() => it.s === "__calls__" ? setShowCalls(true) : setScreen(it.s)} style={{ flex: 1, display: "flex", flexDirection: "column", alignItems: "center", gap: 3, border: "none", background: "none", cursor: "pointer", padding: "6px 0", color: it.s === "__calls__" ? C.danger : "#F4F1EA", opacity: .85, fontFamily: "inherit" }}>
                                 {it.svg}<span style={{ fontSize: ".68rem", fontWeight: 600 }}>{it.lbl}</span>
                             </button>
                         ) : (
@@ -1859,7 +1835,7 @@ function PanelMayor({ contactos, meds, turnos, perfil, themeConfig }) {
                                 <button onClick={handleMicBtn} aria-label="Hablar con la guía" style={{ ...GOLD, position: "absolute", left: "50%", top: -34, marginLeft: -42, width: 84, height: 84, borderRadius: "50%", display: "flex", alignItems: "center", justifyContent: "center", boxShadow: "0 0 0 7px rgba(255,255,255,.55), 0 0 0 8px rgba(255,255,255,.9), 0 18px 30px -10px rgba(201,154,63,.95), inset 0 1px 0 rgba(255,255,255,.85)" }}>
                                     <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.9" strokeLinecap="round" strokeLinejoin="round"><rect x="9" y="3" width="6" height="11" rx="3" /><path d="M5 11a7 7 0 0 0 14 0M12 18v3" /></svg>
                                 </button>
-                                <span style={{ position: "absolute", left: 0, right: 0, bottom: 7, textAlign: "center", fontSize: ".68rem", fontWeight: 800, color: "#8a6420" }}>Hablar</span>
+                                <span style={{ position: "absolute", left: 0, right: 0, bottom: 7, textAlign: "center", fontSize: ".68rem", fontWeight: 800, color: "#e7c37a" }}>Hablar</span>
                             </div>
                         ))}
                     </div>
@@ -1883,7 +1859,7 @@ function SubScreenMayor({ screen, onBack, meds, turnos, processQ, perfil }) {
     }, [screen]);
 
     const hdr = (title, bg) => (
-        <div style={{ background: bg, flexShrink: 0, width: "100%", overflow: "hidden" }}>
+        <div style={{ background: bg, borderBottom: "1px solid rgba(231,195,122,.45)", flexShrink: 0, width: "100%", overflow: "hidden" }}>
             <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "14px 14px 10px" }}>
                 <div style={{ fontSize: "1rem", fontWeight: 700, color: "white", flex: 1, minWidth: 0, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap", marginRight: 8 }}>{title}</div>
                 <button onClick={onBack} style={S.backCircle}>←</button>
@@ -1892,7 +1868,7 @@ function SubScreenMayor({ screen, onBack, meds, turnos, processQ, perfil }) {
             <div style={{ height: 3, background: "rgba(255,255,255,.2)", width: "100%" }}>
                 <div style={{
                     height: "100%",
-                    background: "rgba(255,255,255,.7)",
+                    background: "#e7c37a",
                     width: `${(countdown / 15) * 100}%`,
                     transition: "width 1s linear",
                     borderRadius: "0 2px 2px 0"
@@ -1911,13 +1887,13 @@ function SubScreenMayor({ screen, onBack, meds, turnos, processQ, perfil }) {
 
     if (screen === "pastillas") return (
         <div style={S.subScreen}>
-            {hdr("Mis pastillas de hoy", "#1B4F8A")}
+            {hdr("Mis pastillas de hoy", HEAD_BG)}
             <div style={S.scrollBody}>
                 {meds.map((m, i) => (
                     <div key={i} style={S.card}>
                         <img src={m.img} style={S.cardImg} onError={e => e.target.style.background = "#eee"} />
                         <div style={{ flex: 1 }}><div style={S.cardName}>{m.nombre}</div><div style={S.cardSub}>{m.desc}</div></div>
-                        <div style={{ background: m.tomada ? "#EFF6FF" : "#FFFBEB", color: m.tomada ? "#1B4F8A" : "#D97706", borderRadius: 8, padding: "5px 12px", fontSize: ".8rem", fontWeight: 700, flexShrink: 0 }}>{m.hora} hs</div>
+                        <div style={{ background: m.tomada ? "rgba(231,195,122,.12)" : "rgba(251,191,36,.12)", color: m.tomada ? "#e7c37a" : "#fbbf24", borderRadius: 8, padding: "5px 12px", fontSize: ".8rem", fontWeight: 700, flexShrink: 0 }}>{m.hora} hs</div>
                     </div>
                 ))}
                 <button onClick={onBack} style={{ ...S.bigGreenBtn, marginTop: 8 }}>← Volver a Martita</button>
@@ -1927,16 +1903,16 @@ function SubScreenMayor({ screen, onBack, meds, turnos, processQ, perfil }) {
 
     if (screen === "turnos") return (
         <div style={S.subScreen}>
-            {hdr("Mis turnos médicos", "#1B4F8A")}
+            {hdr("Mis turnos médicos", HEAD_BG)}
             <div style={S.scrollBody}>
                 {turnos.map((t, i) => (
                     <div key={i} style={S.card}>
                         <img src={t.img} style={S.cardImg} onError={e => e.target.style.background = "#eee"} />
                         <div style={{ flex: 1 }}><div style={S.cardName}>{t.nombre}</div><div style={S.cardSub}>{t.hora} hs{t.nota ? " · " + t.nota : ""}</div></div>
-                        <div style={{ textAlign: "right", flexShrink: 0 }}><div style={{ fontWeight: 700, color: "#1B4F8A", fontSize: ".95rem" }}>{t.fecha}</div></div>
+                        <div style={{ textAlign: "right", flexShrink: 0 }}><div style={{ fontWeight: 700, color: "#e7c37a", fontSize: ".95rem" }}>{t.fecha}</div></div>
                     </div>
                 ))}
-                <button onClick={onBack} style={{ ...S.bigGreenBtn, background: "#1B4F8A", marginTop: 8 }}>← Volver a Martita</button>
+                <button onClick={onBack} style={{ ...S.bigGreenBtn, background: GOLDBG, marginTop: 8 }}>← Volver a Martita</button>
             </div>
         </div>
     );
@@ -1963,7 +1939,7 @@ function SubScreenMayor({ screen, onBack, meds, turnos, processQ, perfil }) {
                         <div style={{ background: "#FF0000", color: "white", borderRadius: 10, padding: "6px 12px", fontSize: ".78rem", fontWeight: 700, flexShrink: 0 }}><Em e="▶" s={17} c="currentColor" /> Ver</div>
                     </div>
                 ))}
-                <button onClick={onBack} style={{ ...S.bigGreenBtn, background: "#1B4F8A", marginTop: 0 }}>← Volver a Martita</button>
+                <button onClick={onBack} style={{ ...S.bigGreenBtn, background: GOLDBG, marginTop: 0 }}>← Volver a Martita</button>
             </div>
         </div>
     );
@@ -1987,7 +1963,7 @@ function SubScreenMayor({ screen, onBack, meds, turnos, processQ, perfil }) {
                     <div key={i} onClick={() => window.open(`https://www.youtube.com/results?search_query=${encodeURIComponent(e.q)}`, "_blank")} style={{ ...S.card, cursor: "pointer", marginBottom: 10 }}>
                         <img src={e.img} style={S.cardImg} onError={er => er.target.style.background = "#eee"} />
                         <div style={{ flex: 1 }}><div style={S.cardName}>{e.name}</div><div style={S.cardSub}>{e.desc}</div></div>
-                        <div style={{ background: "#1B4F8A", color: "white", borderRadius: 10, padding: "6px 12px", fontSize: ".78rem", fontWeight: 700, flexShrink: 0 }}><Em e="▶" s={17} c="currentColor" /> Ver</div>
+                        <div style={{ background: GOLDBG, color: "#2b1f08", borderRadius: 10, padding: "6px 12px", fontSize: ".78rem", fontWeight: 700, flexShrink: 0 }}><Em e="▶" s={17} c="currentColor" /> Ver</div>
                     </div>
                 ))}
                 <button onClick={onBack} style={{ ...S.bigGreenBtn, marginTop: 0 }}>← Volver a Martita</button>
@@ -2004,7 +1980,7 @@ function SubScreenMayor({ screen, onBack, meds, turnos, processQ, perfil }) {
 
         return (
             <div style={S.subScreen}>
-                {!fullscreen && hdr("Mi álbum de fotos", "#1B4F8A")}
+                {!fullscreen && hdr("Mi álbum de fotos", HEAD_BG)}
 
                 {fotos.length === 0 ? (
                     <div style={{
@@ -2164,7 +2140,7 @@ function SubScreenMayor({ screen, onBack, meds, turnos, processQ, perfil }) {
                         <button onClick={() => { setFotoIdx(0); setFullscreen(true); }}
                             style={{
                                 ...S.bigGreenBtn, marginBottom: 10,
-                                background: "#1B4F8A", display: "flex", alignItems: "center",
+                                background: GOLDBG, display: "flex", alignItems: "center",
                                 justifyContent: "center", gap: 8
                             }}>
                             <Em e="▶" s={17} /> Ver todas seguidas
@@ -2339,7 +2315,7 @@ function PanelHija({ hija, contactos, setContactos, meds, setMeds, turnos, setTu
 
     // ── DATOS DERIVADOS ──
     const hijaData = contactos.find(c => c.id.toString() === hija || c.nombre.toLowerCase() === hija) || contactos[0];
-    const color = TC.appColor || hijaData?.color || "#1B4F8A";
+    const color = "#e7c37a";
     const pendientes = meds.filter(m => !m.tomada).length;
 
     // ── FUNCIONES ──
@@ -2396,8 +2372,8 @@ function PanelHija({ hija, contactos, setContactos, meds, setMeds, turnos, setTu
         return (
             <div style={{
                 display: "flex", flexDirection: "column", height: "100vh", width: "100%", maxWidth: 480,
-                margin: "0 auto", fontFamily: F.body, overflow: "hidden",
-                background: `linear-gradient(160deg, ${color} 0%, ${color}CC 50%, #1a1a2e 100%)`
+                margin: "0 auto", fontFamily: SERIF, overflow: "hidden",
+                background: BG_DARK
             }}>
 
                 {/* Tab bar top */}
@@ -2442,7 +2418,7 @@ function PanelHija({ hija, contactos, setContactos, meds, setMeds, turnos, setTu
 
                     {/* Card */}
                     <div style={{
-                        background: "white", borderRadius: 16, padding: "20px",
+                        background: "rgba(255,255,255,.07)", borderRadius: 16, padding: "20px",
                         boxShadow: "0 20px 60px rgba(0,0,0,.25)", marginBottom: 20
                     }}>
 
@@ -2456,26 +2432,26 @@ function PanelHija({ hija, contactos, setContactos, meds, setMeds, turnos, setTu
                                         }} />
                                     ))}
                                 </div>
-                                <div style={{ fontSize: ".85rem", color: "#6B7280", fontWeight: 500 }}>
+                                <div style={{ fontSize: ".85rem", color: "rgba(244,241,234,.62)", fontWeight: 500 }}>
                                     Preparando el resumen de hoy...
                                 </div>
                             </div>
                         ) : (
                             <>
-                                <div style={{ fontSize: ".97rem", color: "#1a1a1a", lineHeight: 1.75, fontWeight: 400 }}>
+                                <div style={{ fontSize: ".97rem", color: "#F4F1EA", lineHeight: 1.75, fontWeight: 400 }}>
                                     {briefingText}
                                 </div>
                                 <div style={{
-                                    marginTop: 14, paddingTop: 12, borderTop: "1px solid #F3F4F6",
+                                    marginTop: 14, paddingTop: 12, borderTop: "1px solid rgba(255,255,255,.08)",
                                     display: "flex", alignItems: "center", gap: 10
                                 }}>
                                     <span style={{ fontSize: "1.1rem" }}><Em e="💊" s={24} /></span>
                                     <div>
-                                        <div style={{ fontSize: ".78rem", fontWeight: 700, color: "#111827" }}>
+                                        <div style={{ fontSize: ".78rem", fontWeight: 700, color: "#F4F1EA" }}>
                                             {meds.filter(m => m.tomada).length}/{meds.length} medicaciones tomadas
                                         </div>
                                         {meds.filter(m => !m.tomada).length > 0 && (
-                                            <div style={{ fontSize: ".72rem", color: "#D97706", marginTop: 1, fontWeight: 600 }}>
+                                            <div style={{ fontSize: ".72rem", color: "#fbbf24", marginTop: 1, fontWeight: 600 }}>
                                                 Falta: {meds.filter(m => !m.tomada).map(m => m.nombre).join(", ")}
                                             </div>
                                         )}
@@ -2490,7 +2466,7 @@ function PanelHija({ hija, contactos, setContactos, meds, setMeds, turnos, setTu
                         onClick={dismissBriefing}
                         style={{
                             display: "flex", alignItems: "center", justifyContent: "center", gap: 10,
-                            background: "white", color: color, borderRadius: 12, padding: "15px",
+                            background: "rgba(255,255,255,.07)", color: color, borderRadius: 12, padding: "15px",
                             textDecoration: "none", fontWeight: 700, fontSize: "1rem", marginBottom: 10,
                             boxShadow: "0 4px 20px rgba(0,0,0,.2)"
                         }}>
@@ -2516,14 +2492,14 @@ function PanelHija({ hija, contactos, setContactos, meds, setMeds, turnos, setTu
     return (
         <div style={{
             display: "flex", flexDirection: "column", height: "100vh", width: "100%", maxWidth: 480, margin: "0 auto",
-            fontFamily: F.body, overflow: "hidden", overflowX: "hidden",
+            fontFamily: SERIF, overflow: "hidden", overflowX: "hidden",
             background: Tx.isPhoto && TC.customBg
                 ? `url(${TC.customBg}) center/cover no-repeat`
-                : Tx.css !== "none" ? `${Tx.css}, ${T.bg}` : T.bg
+                : BG_DARK
         }}>
 
             {/* ── HEADER ── */}
-            <div style={{ background: color, padding: "14px 14px 12px", flexShrink: 0, width: "100%", overflow: "hidden" }}>
+            <div style={{ background: HEAD_BG, borderBottom: "1px solid rgba(231,195,122,.45)", padding: "14px 14px 12px", flexShrink: 0, width: "100%", overflow: "hidden" }}>
                 <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 10 }}>
                     <div>
                         <div style={{ fontSize: "1rem", fontWeight: 700, color: "white" }}>{hijaData?.nombre} · Seguimiento de mamá</div>
@@ -2534,7 +2510,7 @@ function PanelHija({ hija, contactos, setContactos, meds, setMeds, turnos, setTu
                 <div style={{ display: "flex", gap: 6, width: "100%" }}>
                     {[
                         { lbl: "Movimiento", val: "Activa ✓", col: "white" },
-                        { lbl: "Medicación", val: `${meds.filter(m => m.tomada).length}/${meds.length}`, col: pendientes > 0 ? "#FFD580" : "white" },
+                        { lbl: "Medicación", val: `${meds.filter(m => m.tomada).length}/${meds.length}`, col: pendientes > 0 ? "#f3d88f" : "white" },
                         { lbl: "Ánimo", val: "Bien", col: "white" },
                     ].map((s, i) => (
                         <div key={i} style={{ flex: 1, minWidth: 0, background: "rgba(255,255,255,.12)", borderRadius: 8, padding: "7px 8px" }}>
@@ -2546,7 +2522,7 @@ function PanelHija({ hija, contactos, setContactos, meds, setMeds, turnos, setTu
             </div>
 
             {/* ── TAB BAR ── */}
-            <div style={{ display: "flex", background: "white", borderBottom: "1px solid #E5E7EB", flexShrink: 0, overflowX: "auto" }}>
+            <div style={{ display: "flex", background: "rgba(255,255,255,.07)", borderBottom: "1px solid rgba(255,255,255,.14)", flexShrink: 0, overflowX: "auto" }}>
                 {[{ id: "resumen", lbl: "Resumen" }, { id: "medicacion", lbl: "Medicación" }, { id: "turnos", lbl: "Turnos" },
                 { id: "perfil", lbl: "Perfil" }, { id: "contactos", lbl: "Contactos" }, { id: "dispositivos", lbl: "Dispositivos" }, { id: "alertas", lbl: "Alertas" },
                 { id: "fotos", lbl: "Fotos" }
@@ -2569,7 +2545,7 @@ function PanelHija({ hija, contactos, setContactos, meds, setMeds, turnos, setTu
                                 <div style={{ fontSize: ".7rem", fontWeight: 800, letterSpacing: ".14em", textTransform: "uppercase", opacity: .85 }}>Pidió ayuda · {horaDe(al.ts)}</div>
                                 <div style={{ fontFamily: SERIF, fontSize: "1.35rem", fontWeight: 600, marginTop: 4, lineHeight: 1.2 }}>{al.texto}</div>
                                 <div style={{ display: "flex", gap: 8, marginTop: 12 }}>
-                                    {tel && <a href={`tel:${tel}`} style={{ flex: 1, background: "white", color: "#7a1f18", borderRadius: 12, padding: 12, textAlign: "center", fontWeight: 800 }}>Llamarla</a>}
+                                    {tel && <a href={`tel:${tel}`} style={{ flex: 1, background: "rgba(255,255,255,.07)", color: "#7a1f18", borderRadius: 12, padding: 12, textAlign: "center", fontWeight: 800 }}>Llamarla</a>}
                                     <a href="tel:911" style={{ flex: 1, background: "rgba(255,255,255,.18)", border: "1px solid rgba(255,255,255,.5)", borderRadius: 12, padding: 12, textAlign: "center", fontWeight: 800 }}>Emergencias 911</a>
                                 </div>
                             </div>
@@ -2581,9 +2557,9 @@ function PanelHija({ hija, contactos, setContactos, meds, setMeds, turnos, setTu
                         {[["levantoTs", "Se levantó"], ["remedioTs", "Tomó el remedio"]].map(([k, l]) => {
                             const ok = esHoy((estadoFam || {})[k]);
                             return (
-                                <div key={k} style={{ background: ok ? "#ECFDF5" : "#F9FAFB", border: `1px solid ${ok ? "#A7F3D0" : "#E5E7EB"}`, borderRadius: 12, padding: "10px 12px" }}>
-                                    <div style={{ fontSize: ".7rem", fontWeight: 700, color: ok ? "#047857" : "#9CA3AF", textTransform: "uppercase", letterSpacing: ".06em" }}>{l}</div>
-                                    <div style={{ fontSize: "1rem", fontWeight: 700, color: ok ? "#065F46" : "#9CA3AF", marginTop: 2 }}>{ok ? `Sí · ${horaDe(estadoFam[k])}` : "Todavía no"}</div>
+                                <div key={k} style={{ background: ok ? "rgba(74,222,128,.12)" : "rgba(255,255,255,.06)", border: `1px solid ${ok ? "rgba(74,222,128,.4)" : "rgba(255,255,255,.14)"}`, borderRadius: 12, padding: "10px 12px" }}>
+                                    <div style={{ fontSize: ".7rem", fontWeight: 700, color: ok ? "#4ade80" : "rgba(244,241,234,.45)", textTransform: "uppercase", letterSpacing: ".06em" }}>{l}</div>
+                                    <div style={{ fontSize: "1rem", fontWeight: 700, color: ok ? "#F4F1EA" : "rgba(244,241,234,.45)", marginTop: 2 }}>{ok ? `Sí · ${horaDe(estadoFam[k])}` : "Todavía no"}</div>
                                 </div>
                             );
                         })}
@@ -2594,10 +2570,10 @@ function PanelHija({ hija, contactos, setContactos, meds, setMeds, turnos, setTu
                         const tc = turnoCercano(turnos);
                         if (!tc) return null;
                         return (
-                            <div onClick={() => setTab("turnos")} style={{ background: "#FFFBEB", border: "1.5px solid #F3D88F", borderRadius: 12, padding: "12px 14px", marginBottom: 12, cursor: "pointer" }}>
-                                <div style={{ fontSize: ".7rem", fontWeight: 800, color: "#8a6420", textTransform: "uppercase", letterSpacing: ".1em" }}>Turno próximo · {cuandoTxt(diasHasta(tc.iso))}</div>
+                            <div onClick={() => setTab("turnos")} style={{ background: "rgba(251,191,36,.12)", border: "1.5px solid rgba(231,195,122,.5)", borderRadius: 12, padding: "12px 14px", marginBottom: 12, cursor: "pointer" }}>
+                                <div style={{ fontSize: ".7rem", fontWeight: 800, color: "#e7c37a", textTransform: "uppercase", letterSpacing: ".1em" }}>Turno próximo · {cuandoTxt(diasHasta(tc.iso))}</div>
                                 <div style={{ fontWeight: 700, marginTop: 2 }}>{tc.nombre}</div>
-                                <div style={{ fontSize: ".85rem", color: "#6b5a3a" }}>{tc.fecha} · {tc.hora}{tc.nota ? ` · ${tc.nota}` : ""}</div>
+                                <div style={{ fontSize: ".85rem", color: "rgba(244,241,234,.75)" }}>{tc.fecha} · {tc.hora}{tc.nota ? ` · ${tc.nota}` : ""}</div>
                             </div>
                         );
                     })()}
@@ -2613,9 +2589,9 @@ function PanelHija({ hija, contactos, setContactos, meds, setMeds, turnos, setTu
                         const hayWarning = timeline.some(a => a.tipo === "warn") || pendientes > 0;
                         const estado = hayAlerta || sinMovimiento ? "rojo" : hayWarning ? "amarillo" : "verde";
                         const cfg = {
-                            verde: { bg: "#F0FDF4", border: "#86EFAC", icon: "🟢", titulo: "Todo bien", sub: "Mamá tuvo un día tranquilo y normal", color: "#16A34A" },
-                            amarillo: { bg: "#FFFBEB", border: "#FCD34D", icon: "🟡", titulo: "Algo para revisar", sub: pendientes > 0 ? `Faltó tomar ${pendientes} medicación${pendientes > 1 ? "es" : ""}` : ACTIVIDAD.find(a => a.tipo === "warn")?.texto || "Revisá el historial", color: "#D97706" },
-                            rojo: { bg: "#FEF2F2", border: "#FCA5A5", icon: "🔴", titulo: "Atención necesaria", sub: ACTIVIDAD.find(a => a.tipo === "alert")?.texto || "Sin actividad registrada hoy", color: "#DC2626" },
+                            verde: { bg: "rgba(74,222,128,.12)", border: "#86EFAC", icon: "🟢", titulo: "Todo bien", sub: "Mamá tuvo un día tranquilo y normal", color: "#4ade80" },
+                            amarillo: { bg: "rgba(251,191,36,.12)", border: "rgba(251,191,36,.45)", icon: "🟡", titulo: "Algo para revisar", sub: pendientes > 0 ? `Faltó tomar ${pendientes} medicación${pendientes > 1 ? "es" : ""}` : ACTIVIDAD.find(a => a.tipo === "warn")?.texto || "Revisá el historial", color: "#fbbf24" },
+                            rojo: { bg: "rgba(255,90,70,.14)", border: "#FCA5A5", icon: "🔴", titulo: "Atención necesaria", sub: ACTIVIDAD.find(a => a.tipo === "alert")?.texto || "Sin actividad registrada hoy", color: "#ff7b6b" },
                         }[estado];
                         return (
                             <div style={{
@@ -2628,7 +2604,7 @@ function PanelHija({ hija, contactos, setContactos, meds, setMeds, turnos, setTu
                                     <div style={{ fontSize: ".78rem", color: C.textMed, marginTop: 2, fontWeight: 500 }}>{cfg.sub}</div>
                                 </div>
                                 <div style={{
-                                    fontSize: ".7rem", fontWeight: 700, color: cfg.color, background: "white",
+                                    fontSize: ".7rem", fontWeight: 700, color: cfg.color, background: "rgba(255,255,255,.07)",
                                     padding: "4px 10px", borderRadius: 20, border: `1px solid ${cfg.border}`, flexShrink: 0
                                 }}>
                                     {new Date().toLocaleDateString("es-AR", { weekday: "short", day: "numeric" })}
@@ -2646,7 +2622,7 @@ function PanelHija({ hija, contactos, setContactos, meds, setMeds, turnos, setTu
                         if (patrones.length === 0) return null;
                         return (
                             <div style={{
-                                background: "white", borderRadius: 10, border: `1px solid ${C.border}`,
+                                background: "rgba(255,255,255,.07)", borderRadius: 10, border: `1px solid ${C.border}`,
                                 padding: "12px 14px", marginBottom: 14
                             }}>
                                 <div style={{
@@ -2667,11 +2643,11 @@ function PanelHija({ hija, contactos, setContactos, meds, setMeds, turnos, setTu
                         <div style={{ background: "#FDECEA", border: "1.5px solid rgba(192,57,43,.2)", borderRadius: 8, padding: "14px", marginBottom: 14, display: "flex", gap: 12 }}>
                             <div style={{ fontSize: "1.3rem", flexShrink: 0 }}><Em e="💊" s={24} /></div>
                             <div style={{ flex: 1 }}>
-                                <div style={{ fontSize: ".9rem", fontWeight: 700, color: "#C0392B" }}>{pendientes} medicación{pendientes > 1 ? "es" : ""} pendiente{pendientes > 1 ? "s" : ""}</div>
-                                <div style={{ fontSize: ".78rem", color: "#6B7280", fontWeight: 600, marginTop: 3 }}>{meds.filter(m => !m.tomada).map(m => `${m.nombre} (${m.hora}hs)`).join(" · ")}</div>
+                                <div style={{ fontSize: ".9rem", fontWeight: 700, color: "#b3392d" }}>{pendientes} medicación{pendientes > 1 ? "es" : ""} pendiente{pendientes > 1 ? "s" : ""}</div>
+                                <div style={{ fontSize: ".78rem", color: "rgba(244,241,234,.62)", fontWeight: 600, marginTop: 3 }}>{meds.filter(m => !m.tomada).map(m => `${m.nombre} (${m.hora}hs)`).join(" · ")}</div>
                                 <div style={{ display: "flex", gap: 8, marginTop: 10, flexWrap: "wrap" }}>
-                                    <a href={`tel:${contactos[0]?.tel || ""}`} style={{ padding: "8px 14px", background: "#C0392B", color: "white", borderRadius: 10, fontSize: ".8rem", fontWeight: 700 }}><Em e="📞" s={17} c="currentColor" /> Llamar a mamá</a>
-                                    <button onClick={() => setAlertaDismiss(true)} style={{ padding: "8px 14px", background: "white", color: "#C0392B", border: "1.5px solid rgba(192,57,43,.25)", borderRadius: 10, fontSize: ".8rem", fontWeight: 700, cursor: "pointer", fontFamily: "inherit" }}>Entendido</button>
+                                    <a href={`tel:${contactos[0]?.tel || ""}`} style={{ padding: "8px 14px", background: "#b3392d", color: "white", borderRadius: 10, fontSize: ".8rem", fontWeight: 700 }}><Em e="📞" s={17} c="currentColor" /> Llamar a mamá</a>
+                                    <button onClick={() => setAlertaDismiss(true)} style={{ padding: "8px 14px", background: "rgba(255,255,255,.07)", color: "#b3392d", border: "1.5px solid rgba(192,57,43,.25)", borderRadius: 10, fontSize: ".8rem", fontWeight: 700, cursor: "pointer", fontFamily: "inherit" }}>Entendido</button>
                                 </div>
                             </div>
                         </div>
@@ -2710,8 +2686,8 @@ function PanelHija({ hija, contactos, setContactos, meds, setMeds, turnos, setTu
                     <div style={{ ...S.cardBox, marginTop: 0 }}>
                         <div style={{ fontWeight: 600, fontSize: ".88rem", marginBottom: 10 }}>Contactar a mamá</div>
                         <div style={{ display: "flex", gap: 8 }}>
-                            <a href={`tel:${contactos[0]?.tel || ""}`} style={{ flex: 1, background: color, color: "white", borderRadius: 8, padding: "11px", textAlign: "center", fontWeight: 600, fontSize: ".9rem", textDecoration: "none" }}><Em e="📞" s={17} c="currentColor" /> Llamar</a>
-                            <a href="https://wa.me/" target="_blank" style={{ flex: 1, background: "#16A34A", color: "white", borderRadius: 8, padding: "11px", textAlign: "center", fontWeight: 600, fontSize: ".9rem", textDecoration: "none" }}><Em e="💬" s={17} c="currentColor" /> WhatsApp</a>
+                            <a href={`tel:${contactos[0]?.tel || ""}`} style={{ flex: 1, background: GOLDBG, color: "#2b1f08", borderRadius: 8, padding: "11px", textAlign: "center", fontWeight: 600, fontSize: ".9rem", textDecoration: "none" }}><Em e="📞" s={17} c="currentColor" /> Llamar</a>
+                            <a href="https://wa.me/" target="_blank" style={{ flex: 1, background: "#4ade80", color: "white", borderRadius: 8, padding: "11px", textAlign: "center", fontWeight: 600, fontSize: ".9rem", textDecoration: "none" }}><Em e="💬" s={17} c="currentColor" /> WhatsApp</a>
                         </div>
                     </div>
                 </div>
@@ -2723,17 +2699,17 @@ function PanelHija({ hija, contactos, setContactos, meds, setMeds, turnos, setTu
                     <div style={S.cardBox}>
                         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 12 }}>
                             <div style={{ fontWeight: 700, fontSize: ".88rem" }}>Medicación de hoy</div>
-                            <button onClick={() => setShowAddMed(true)} style={{ background: color, color: "white", border: "none", borderRadius: 8, padding: "5px 14px", fontSize: ".78rem", fontWeight: 700, cursor: "pointer", fontFamily: "inherit" }}>+ Agregar</button>
+                            <button onClick={() => setShowAddMed(true)} style={{ background: GOLDBG, color: "#2b1f08", border: "none", borderRadius: 8, padding: "5px 14px", fontSize: ".78rem", fontWeight: 700, cursor: "pointer", fontFamily: "inherit" }}>+ Agregar</button>
                         </div>
                         {meds.map((m, i) => (
-                            <div key={m.id} style={{ display: "flex", alignItems: "center", gap: 12, padding: "10px 0", borderBottom: i < meds.length - 1 ? "1px solid #F3F4F6" : "none" }}>
+                            <div key={m.id} style={{ display: "flex", alignItems: "center", gap: 12, padding: "10px 0", borderBottom: i < meds.length - 1 ? "1px solid rgba(255,255,255,.08)" : "none" }}>
                                 <img src={m.img} style={{ width: 44, height: 44, borderRadius: 10, objectFit: "cover", flexShrink: 0 }} onError={e => e.target.style.background = "#eee"} />
                                 <div style={{ flex: 1 }}>
                                     <div style={{ fontSize: ".88rem", fontWeight: 700, textDecoration: m.tomada ? "line-through" : "none", opacity: m.tomada ? .65 : 1 }}>{m.nombre}</div>
-                                    <div style={{ fontSize: ".72rem", color: "#6B7280", fontWeight: 600, marginTop: 2 }}>{m.hora}hs{m.desc ? " · " + m.desc : ""}</div>
+                                    <div style={{ fontSize: ".72rem", color: "rgba(244,241,234,.62)", fontWeight: 600, marginTop: 2 }}>{m.hora}hs{m.desc ? " · " + m.desc : ""}</div>
                                 </div>
-                                <button onClick={() => toggleMed(i)} style={{ width: 30, height: 30, borderRadius: 8, border: "none", cursor: "pointer", background: m.tomada ? color : "#E5E7EB", color: m.tomada ? "white" : "#6B7280", fontWeight: 700, fontFamily: "inherit", flexShrink: 0 }}>{m.tomada ? "✓" : "○"}</button>
-                                <div style={{ background: m.tomada ? "#EFF6FF" : "#FFFBEB", color: m.tomada ? color : "#D97706", borderRadius: 8, padding: "4px 10px", fontSize: ".7rem", fontWeight: 700, flexShrink: 0 }}>{m.tomada ? "Tomada" : "Pendiente"}</div>
+                                <button onClick={() => toggleMed(i)} style={{ width: 30, height: 30, borderRadius: 8, border: "none", cursor: "pointer", background: m.tomada ? color : "rgba(255,255,255,.14)", color: m.tomada ? "white" : "rgba(244,241,234,.62)", fontWeight: 700, fontFamily: "inherit", flexShrink: 0 }}>{m.tomada ? "✓" : "○"}</button>
+                                <div style={{ background: m.tomada ? "rgba(231,195,122,.12)" : "rgba(251,191,36,.12)", color: m.tomada ? color : "#fbbf24", borderRadius: 8, padding: "4px 10px", fontSize: ".7rem", fontWeight: 700, flexShrink: 0 }}>{m.tomada ? "Tomada" : "Pendiente"}</div>
                             </div>
                         ))}
                     </div>
@@ -2746,14 +2722,14 @@ function PanelHija({ hija, contactos, setContactos, meds, setMeds, turnos, setTu
                     <div style={S.cardBox}>
                         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 12 }}>
                             <div style={{ fontWeight: 700, fontSize: ".88rem" }}>Próximos turnos</div>
-                            <button onClick={() => setShowAddTurno(true)} style={{ background: color, color: "white", border: "none", borderRadius: 8, padding: "5px 14px", fontSize: ".78rem", fontWeight: 700, cursor: "pointer", fontFamily: "inherit" }}>+ Agregar</button>
+                            <button onClick={() => setShowAddTurno(true)} style={{ background: GOLDBG, color: "#2b1f08", border: "none", borderRadius: 8, padding: "5px 14px", fontSize: ".78rem", fontWeight: 700, cursor: "pointer", fontFamily: "inherit" }}>+ Agregar</button>
                         </div>
                         {turnos.map((t, i) => (
-                            <div key={t.id} style={{ display: "flex", alignItems: "center", gap: 12, padding: "10px 0", borderBottom: i < turnos.length - 1 ? "1px solid #F3F4F6" : "none" }}>
+                            <div key={t.id} style={{ display: "flex", alignItems: "center", gap: 12, padding: "10px 0", borderBottom: i < turnos.length - 1 ? "1px solid rgba(255,255,255,.08)" : "none" }}>
                                 <img src={t.img} style={{ width: 44, height: 44, borderRadius: 10, objectFit: "cover", flexShrink: 0 }} onError={e => e.target.style.background = "#eee"} />
                                 <div style={{ flex: 1 }}>
                                     <div style={{ fontSize: ".88rem", fontWeight: 700 }}>{t.nombre}</div>
-                                    <div style={{ fontSize: ".72rem", color: "#6B7280", fontWeight: 600, marginTop: 2 }}>{t.hora}hs{t.nota ? " · " + t.nota : ""}</div>
+                                    <div style={{ fontSize: ".72rem", color: "rgba(244,241,234,.62)", fontWeight: 600, marginTop: 2 }}>{t.hora}hs{t.nota ? " · " + t.nota : ""}</div>
                                 </div>
                                 <div style={{ textAlign: "right", flexShrink: 0 }}>
                                     <div style={{ fontWeight: 700, color: color, fontSize: ".9rem" }}>{t.fecha}</div>
@@ -2767,7 +2743,7 @@ function PanelHija({ hija, contactos, setContactos, meds, setMeds, turnos, setTu
             {/* ── PERFIL ── */}
             {tab === "perfil" && (
                 <div style={S.scrollBody}>
-                    <div style={{ background: "#EFF6FF", border: "1px solid #DBEAFE", borderRadius: 8, padding: "12px 14px", marginBottom: 12, display: "flex", gap: 8, alignItems: "flex-start" }}>
+                    <div style={{ background: "rgba(231,195,122,.12)", border: "1px solid rgba(231,195,122,.28)", borderRadius: 8, padding: "12px 14px", marginBottom: 12, display: "flex", gap: 8, alignItems: "flex-start" }}>
                         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke={C.primary} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ flexShrink: 0, marginTop: 1 }}><circle cx="12" cy="12" r="10" /><path d="M12 16v-4M12 8h.01" /></svg>
                         <div style={{ fontSize: ".82rem", color: C.primary, fontWeight: 500, lineHeight: 1.5 }}>Todo lo que cargues acá lo usa Martita para conectar con mamá de verdad.</div>
                     </div>
@@ -2782,7 +2758,7 @@ function PanelHija({ hija, contactos, setContactos, meds, setMeds, turnos, setTu
                         {editHistoria && (
                             <>
                                 <textarea value={draftHistoria} onChange={e => setDraftHistoria(e.target.value)} style={{ ...S.inp, resize: "none", minHeight: 120, lineHeight: 1.6, marginBottom: 10 }} placeholder="Contá la vida de mamá..." />
-                                <button onClick={saveHistoria} style={{ ...S.bigGreenBtn, background: color, padding: 10 }}>Guardar</button>
+                                <button onClick={saveHistoria} style={{ ...S.bigGreenBtn, background: GOLDBG, padding: 10 }}>Guardar</button>
                             </>
                         )}
                     </div>
@@ -2791,15 +2767,15 @@ function PanelHija({ hija, contactos, setContactos, meds, setMeds, turnos, setTu
                     <div style={{ fontSize: ".68rem", fontWeight: 700, color: C.textMuted, textTransform: "uppercase", letterSpacing: ".1em", marginBottom: 8 }}>Personas queridas</div>
                     <div style={{ display: "flex", flexDirection: "column", gap: 8, marginBottom: 14 }}>
                         {perfil.personasQueridas.map(p => (
-                            <div key={p.id} style={{ background: "white", borderRadius: 8, border: `1px solid ${p.sensible ? "#FED7AA" : C.border}`, overflow: "hidden" }}>
+                            <div key={p.id} style={{ background: "rgba(255,255,255,.07)", borderRadius: 8, border: `1px solid ${p.sensible ? "#FED7AA" : C.border}`, overflow: "hidden" }}>
                                 <div style={{ display: "flex", alignItems: "center", gap: 12, padding: "12px 14px" }}>
-                                    <div style={{ width: 40, height: 40, borderRadius: "50%", background: p.sensible ? "#FFF7ED" : "#EFF6FF", display: "flex", alignItems: "center", justifyContent: "center", fontSize: "1.2rem", flexShrink: 0 }}>
+                                    <div style={{ width: 40, height: 40, borderRadius: "50%", background: p.sensible ? "rgba(251,191,36,.12)" : "rgba(231,195,122,.12)", display: "flex", alignItems: "center", justifyContent: "center", fontSize: "1.2rem", flexShrink: 0 }}>
                                         <Em e={p.relacion.toLowerCase().includes("nieto") ? "👶" : p.relacion.toLowerCase().includes("hij") ? "👧" : p.relacion.toLowerCase().includes("esposo") ? "💑" : "👤"} s={22} />
                                     </div>
                                     <div style={{ flex: 1, minWidth: 0 }}>
                                         <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
                                             <div style={{ fontSize: ".92rem", fontWeight: 600, color: C.text }}>{p.nombre}</div>
-                                            {p.sensible && <span style={{ background: "#FFF7ED", color: "#C2410C", fontSize: ".6rem", fontWeight: 700, padding: "2px 6px", borderRadius: 10 }}>Sensible</span>}
+                                            {p.sensible && <span style={{ background: "rgba(251,191,36,.12)", color: "#C2410C", fontSize: ".6rem", fontWeight: 700, padding: "2px 6px", borderRadius: 10 }}>Sensible</span>}
                                         </div>
                                         <div style={{ fontSize: ".74rem", color: C.textSoft, marginTop: 1 }}>{p.relacion}</div>
                                         <div style={{ fontSize: ".78rem", color: C.textMed, marginTop: 4, lineHeight: 1.4 }}>{p.descripcion}</div>
@@ -2808,7 +2784,7 @@ function PanelHija({ hija, contactos, setContactos, meds, setMeds, turnos, setTu
                                 </div>
                             </div>
                         ))}
-                        <button onClick={() => setShowAddPersona(true)} style={{ background: "white", border: `1.5px dashed ${C.border}`, borderRadius: 8, padding: "12px", display: "flex", alignItems: "center", justifyContent: "center", gap: 8, cursor: "pointer", fontSize: ".85rem", fontWeight: 600, color: C.textSoft, fontFamily: "inherit" }}>+ Agregar persona querida</button>
+                        <button onClick={() => setShowAddPersona(true)} style={{ background: "rgba(255,255,255,.07)", border: `1.5px dashed ${C.border}`, borderRadius: 8, padding: "12px", display: "flex", alignItems: "center", justifyContent: "center", gap: 8, cursor: "pointer", fontSize: ".85rem", fontWeight: 600, color: C.textSoft, fontFamily: "inherit" }}>+ Agregar persona querida</button>
                     </div>
 
                     {/* Alegrías */}
@@ -2818,7 +2794,7 @@ function PanelHija({ hija, contactos, setContactos, meds, setMeds, turnos, setTu
                             {!editAlegrias && (
                                 <div style={{ display: "flex", flexWrap: "wrap", gap: 6, flex: 1 }}>
                                     {perfil.alegrias.map((a, i) => (
-                                        <span key={i} style={{ background: "#EFF6FF", color: C.primary, borderRadius: 6, padding: "4px 10px", fontSize: ".82rem", fontWeight: 500 }}>{a}</span>
+                                        <span key={i} style={{ background: "rgba(231,195,122,.12)", color: C.primary, borderRadius: 6, padding: "4px 10px", fontSize: ".82rem", fontWeight: 500 }}>{a}</span>
                                     ))}
                                 </div>
                             )}
@@ -2827,7 +2803,7 @@ function PanelHija({ hija, contactos, setContactos, meds, setMeds, turnos, setTu
                         {editAlegrias && (
                             <>
                                 <textarea value={draftAlegrias} onChange={e => setDraftAlegrias(e.target.value)} style={{ ...S.inp, resize: "none", minHeight: 100, lineHeight: 1.8, marginBottom: 10, marginTop: 8 }} placeholder={"Una por línea"} />
-                                <button onClick={saveAlegrias} style={{ ...S.bigGreenBtn, background: color, padding: 10 }}>Guardar</button>
+                                <button onClick={saveAlegrias} style={{ ...S.bigGreenBtn, background: GOLDBG, padding: 10 }}>Guardar</button>
                             </>
                         )}
                     </div>
@@ -2851,7 +2827,7 @@ function PanelHija({ hija, contactos, setContactos, meds, setMeds, turnos, setTu
                         {editSensibles && (
                             <>
                                 <textarea value={draftSensibles} onChange={e => setDraftSensibles(e.target.value)} style={{ ...S.inp, resize: "none", minHeight: 100, lineHeight: 1.8, marginBottom: 10, marginTop: 8 }} placeholder={"Uno por línea"} />
-                                <button onClick={saveSensibles} style={{ ...S.bigGreenBtn, background: color, padding: 10 }}>Guardar</button>
+                                <button onClick={saveSensibles} style={{ ...S.bigGreenBtn, background: GOLDBG, padding: 10 }}>Guardar</button>
                             </>
                         )}
                     </div>
@@ -2860,15 +2836,15 @@ function PanelHija({ hija, contactos, setContactos, meds, setMeds, turnos, setTu
                     <div style={{ fontSize: ".68rem", fontWeight: 700, color: C.textMuted, textTransform: "uppercase", letterSpacing: ".1em", marginBottom: 8 }}>Recuerdos</div>
                     <div style={{ display: "flex", flexDirection: "column", gap: 8, marginBottom: 14 }}>
                         {perfil.recuerdos.map(r => (
-                            <div key={r.id} style={{ background: "white", borderRadius: 8, border: `1px solid ${C.border}`, padding: "12px 14px", display: "flex", gap: 12, alignItems: "flex-start" }}>
-                                <div style={{ width: 40, height: 40, borderRadius: 8, background: "#F9FAFB", border: `1px solid ${C.border}`, display: "flex", alignItems: "center", justifyContent: "center", fontSize: "1.4rem", flexShrink: 0 }}><Em e={r.emoji} s={22} /></div>
+                            <div key={r.id} style={{ background: "rgba(255,255,255,.07)", borderRadius: 8, border: `1px solid ${C.border}`, padding: "12px 14px", display: "flex", gap: 12, alignItems: "flex-start" }}>
+                                <div style={{ width: 40, height: 40, borderRadius: 8, background: "rgba(255,255,255,.06)", border: `1px solid ${C.border}`, display: "flex", alignItems: "center", justifyContent: "center", fontSize: "1.4rem", flexShrink: 0 }}><Em e={r.emoji} s={22} /></div>
                                 <div style={{ flex: 1 }}>
-                                    {r.anio && <div style={{ fontSize: ".7rem", fontWeight: 700, color: C.primary, background: "#EFF6FF", borderRadius: 4, padding: "2px 6px", display: "inline-block", marginBottom: 4 }}>{r.anio}</div>}
+                                    {r.anio && <div style={{ fontSize: ".7rem", fontWeight: 700, color: C.primary, background: "rgba(231,195,122,.12)", borderRadius: 4, padding: "2px 6px", display: "inline-block", marginBottom: 4 }}>{r.anio}</div>}
                                     <div style={{ fontSize: ".85rem", fontWeight: 500, color: C.text, lineHeight: 1.5 }}>{r.texto}</div>
                                 </div>
                             </div>
                         ))}
-                        <button onClick={() => setShowAddRecuerdo(true)} style={{ background: "white", border: `1.5px dashed ${C.border}`, borderRadius: 8, padding: "12px", display: "flex", alignItems: "center", justifyContent: "center", gap: 8, cursor: "pointer", fontSize: ".85rem", fontWeight: 600, color: C.textSoft, fontFamily: "inherit" }}>+ Agregar recuerdo</button>
+                        <button onClick={() => setShowAddRecuerdo(true)} style={{ background: "rgba(255,255,255,.07)", border: `1.5px dashed ${C.border}`, borderRadius: 8, padding: "12px", display: "flex", alignItems: "center", justifyContent: "center", gap: 8, cursor: "pointer", fontSize: ".85rem", fontWeight: 600, color: C.textSoft, fontFamily: "inherit" }}>+ Agregar recuerdo</button>
                     </div>
 
                     {/* Modal agregar persona */}
@@ -2883,7 +2859,7 @@ function PanelHija({ hija, contactos, setContactos, meds, setMeds, turnos, setTu
                                     <div><div style={{ fontSize: ".88rem", fontWeight: 600 }}>Tema sensible</div><div style={{ fontSize: ".72rem", color: C.textSoft }}>Martita manejará con cuidado</div></div>
                                     <Toggle on={newPSensible} onChange={setNewPSensible} color={color} />
                                 </div>
-                                <button onClick={addPersona} style={{ ...S.bigGreenBtn, background: color }}>Agregar</button>
+                                <button onClick={addPersona} style={{ ...S.bigGreenBtn, background: GOLDBG }}>Agregar</button>
                                 <button onClick={() => setShowAddPersona(false)} style={{ width: "100%", background: "none", border: "none", color: C.textSoft, fontWeight: 600, cursor: "pointer", padding: 10, fontFamily: "inherit", fontSize: ".9rem" }}>Cancelar</button>
                             </div>
                         </div>
@@ -2903,7 +2879,7 @@ function PanelHija({ hija, contactos, setContactos, meds, setMeds, turnos, setTu
                                     </div>
                                 </div>
                                 <div style={S.fg}><label style={S.lbl}>El recuerdo *</label><textarea style={{ ...S.inp, resize: "none", minHeight: 100 }} value={newRTexto} onChange={e => setNewRTexto(e.target.value)} placeholder="Describí el momento..." /></div>
-                                <button onClick={addRecuerdo} style={{ ...S.bigGreenBtn, background: color }}>Guardar</button>
+                                <button onClick={addRecuerdo} style={{ ...S.bigGreenBtn, background: GOLDBG }}>Guardar</button>
                                 <button onClick={() => setShowAddRecuerdo(false)} style={{ width: "100%", background: "none", border: "none", color: C.textSoft, fontWeight: 600, cursor: "pointer", padding: 10, fontFamily: "inherit", fontSize: ".9rem" }}>Cancelar</button>
                             </div>
                         </div>
@@ -2914,7 +2890,7 @@ function PanelHija({ hija, contactos, setContactos, meds, setMeds, turnos, setTu
             {/* ── CONTACTOS ── */}
             {tab === "contactos" && (
                 <div style={S.scrollBody}>
-                    <div style={{ background: "#EFF6FF", borderRadius: 8, padding: "12px 14px", marginBottom: 14, fontSize: ".82rem", color: C.primary, fontWeight: 500 }}>
+                    <div style={{ background: "rgba(231,195,122,.12)", borderRadius: 8, padding: "12px 14px", marginBottom: 14, fontSize: ".82rem", color: C.primary, fontWeight: 500 }}>
                         <Em e="📞" s={17} /> Cargá los teléfonos para que Martita pueda llamarlos en emergencias.
                     </div>
                     {contactos.map(c => (
@@ -2938,7 +2914,7 @@ function PanelHija({ hija, contactos, setContactos, meds, setMeds, turnos, setTu
                                 />
                             </div>
                             {contactVals[c.id] && (
-                                <a href={`tel:${contactVals[c.id]}`} style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: 8, background: color, color: "white", borderRadius: 8, padding: "10px", textDecoration: "none", fontWeight: 600, fontSize: ".9rem" }}>
+                                <a href={`tel:${contactVals[c.id]}`} style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: 8, background: GOLDBG, color: "#2b1f08", borderRadius: 8, padding: "10px", textDecoration: "none", fontWeight: 600, fontSize: ".9rem" }}>
                                     <Em e="📞" s={17} /> Probar llamada a {c.nombre}
                                 </a>
                             )}
@@ -2956,23 +2932,23 @@ function PanelHija({ hija, contactos, setContactos, meds, setMeds, turnos, setTu
             {tab === "dispositivos" && (
                 <div style={S.scrollBody}>
                     <div style={{ display: "flex", gap: 10, marginBottom: 14 }}>
-                        <div style={{ flex: 1, background: "white", borderRadius: 8, padding: "12px 14px", border: `1px solid ${C.border}` }}>
+                        <div style={{ flex: 1, background: "rgba(255,255,255,.07)", borderRadius: 8, padding: "12px 14px", border: `1px solid ${C.border}` }}>
                             <div style={{ fontSize: "1.5rem", fontWeight: 700, color: C.primary }}>{devs.filter(d => d.estado === "conectado").length}</div>
                             <div style={{ fontSize: ".72rem", color: C.textSoft, marginTop: 2 }}>Conectados</div>
                         </div>
-                        <div style={{ flex: 1, background: "white", borderRadius: 8, padding: "12px 14px", border: `1px solid ${C.border}` }}>
+                        <div style={{ flex: 1, background: "rgba(255,255,255,.07)", borderRadius: 8, padding: "12px 14px", border: `1px solid ${C.border}` }}>
                             <div style={{ fontSize: "1.5rem", fontWeight: 700, color: C.textMuted }}>{devs.filter(d => d.estado !== "conectado").length}</div>
                             <div style={{ fontSize: ".72rem", color: C.textSoft, marginTop: 2 }}>Sin conectar</div>
                         </div>
-                        <div style={{ flex: 1, background: "white", borderRadius: 8, padding: "12px 14px", border: `1px solid ${C.border}` }}>
+                        <div style={{ flex: 1, background: "rgba(255,255,255,.07)", borderRadius: 8, padding: "12px 14px", border: `1px solid ${C.border}` }}>
                             <div style={{ fontSize: "1.5rem", fontWeight: 700, color: C.success }}>{devs.filter(d => d.alertas).length}</div>
                             <div style={{ fontSize: ".72rem", color: C.textSoft, marginTop: 2 }}>Con alertas</div>
                         </div>
                     </div>
                     {devs.map(d => (
-                        <div key={d.id} style={{ background: "white", borderRadius: 8, border: `1px solid ${d.estado === "conectado" ? C.border : C.border}`, marginBottom: 8, overflow: "hidden" }}>
+                        <div key={d.id} style={{ background: "rgba(255,255,255,.07)", borderRadius: 8, border: `1px solid ${d.estado === "conectado" ? C.border : C.border}`, marginBottom: 8, overflow: "hidden" }}>
                             <div style={{ display: "flex", alignItems: "center", gap: 12, padding: "13px 14px", cursor: "pointer" }} onClick={() => toggleDev(d.id)}>
-                                <div style={{ width: 40, height: 40, borderRadius: 8, background: d.estado === "conectado" ? "#EFF6FF" : "#F9FAFB", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0, border: `1px solid ${C.border}`, fontSize: "1.2rem" }}>
+                                <div style={{ width: 40, height: 40, borderRadius: 8, background: d.estado === "conectado" ? "rgba(231,195,122,.12)" : "rgba(255,255,255,.06)", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0, border: `1px solid ${C.border}`, fontSize: "1.2rem" }}>
                                     <Em e={d.id === "sensor" ? "📡" : d.id === "camara" ? "📷" : d.id === "smarttv" ? "📺" : d.id === "applewatch" ? "⌚" : d.id === "appletv" ? "🎬" : d.id === "alexa" ? "🔊" : "🏠"} s={22} />
                                 </div>
                                 <div style={{ flex: 1, minWidth: 0 }}>
@@ -2980,7 +2956,7 @@ function PanelHija({ hija, contactos, setContactos, meds, setMeds, turnos, setTu
                                     <div style={{ fontSize: ".72rem", color: C.textSoft, marginTop: 2, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{d.marca}</div>
                                 </div>
                                 <div style={{ display: "flex", alignItems: "center", gap: 8, flexShrink: 0 }}>
-                                    <div style={{ background: d.estado === "conectado" ? "#F0FDF4" : "#FEF2F2", color: d.estado === "conectado" ? C.success : C.danger, borderRadius: 20, padding: "3px 10px", fontSize: ".68rem", fontWeight: 600 }}>
+                                    <div style={{ background: d.estado === "conectado" ? "rgba(74,222,128,.12)" : "rgba(255,90,70,.14)", color: d.estado === "conectado" ? C.success : C.danger, borderRadius: 20, padding: "3px 10px", fontSize: ".68rem", fontWeight: 600 }}>
                                         {d.estado === "conectado" ? "Conectado" : "Sin conectar"}
                                     </div>
                                     <div style={{ color: C.textMuted, fontSize: ".9rem" }}>{d.expanded ? "▲" : "▼"}</div>
@@ -3011,7 +2987,7 @@ function PanelHija({ hija, contactos, setContactos, meds, setMeds, turnos, setTu
                                     <div style={{ fontSize: ".72rem", fontWeight: 700, color: C.textMuted, textTransform: "uppercase", letterSpacing: ".06em", marginBottom: 8, marginTop: 8 }}>Pasos de configuración</div>
                                     {d.pasos.map((paso, i) => (
                                         <div key={i} style={{ display: "flex", gap: 10, marginBottom: 8 }}>
-                                            <div style={{ width: 22, height: 22, borderRadius: "50%", background: C.primary, color: "white", display: "flex", alignItems: "center", justifyContent: "center", fontSize: ".72rem", fontWeight: 700, flexShrink: 0 }}>{i + 1}</div>
+                                            <div style={{ width: 22, height: 22, borderRadius: "50%", background: GOLDBG, color: "#2b1f08", display: "flex", alignItems: "center", justifyContent: "center", fontSize: ".72rem", fontWeight: 700, flexShrink: 0 }}>{i + 1}</div>
                                             <div style={{ fontSize: ".82rem", color: C.textMed, lineHeight: 1.5 }}>{paso}</div>
                                         </div>
                                     ))}
@@ -3032,16 +3008,16 @@ function PanelHija({ hija, contactos, setContactos, meds, setMeds, turnos, setTu
                     {/* ALERTAS DE MARTITA — señales sutiles detectadas en conversación */}
                     {martitaAlertas.length > 0 && (
                         <div style={{
-                            background: "#FFF7ED", border: "2px solid #FCD34D", borderRadius: 12,
+                            background: "rgba(251,191,36,.12)", border: "2px solid rgba(251,191,36,.45)", borderRadius: 12,
                             padding: "14px 16px", marginBottom: 14
                         }}>
                             <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 12 }}>
                                 <div style={{ fontSize: "1.2rem" }}><Em e="🤝" s={24} /></div>
                                 <div>
-                                    <div style={{ fontSize: ".92rem", fontWeight: 700, color: "#92400E" }}>
+                                    <div style={{ fontSize: ".92rem", fontWeight: 700, color: "#fbbf24" }}>
                                         Martita detectó algo
                                     </div>
-                                    <div style={{ fontSize: ".72rem", color: "#B45309", fontWeight: 500 }}>
+                                    <div style={{ fontSize: ".72rem", color: "#fbbf24", fontWeight: 500 }}>
                                         Señales que notó durante las conversaciones con mamá
                                     </div>
                                 </div>
@@ -3050,7 +3026,7 @@ function PanelHija({ hija, contactos, setContactos, meds, setMeds, turnos, setTu
                                     try { _removeRaw("martita_alertas"); } catch (e) { }
                                 }} style={{
                                     marginLeft: "auto", background: "none", border: "none",
-                                    color: "#B45309", cursor: "pointer", fontSize: ".75rem", fontWeight: 600,
+                                    color: "#fbbf24", cursor: "pointer", fontSize: ".75rem", fontWeight: 600,
                                     fontFamily: "inherit"
                                 }}>
                                     Limpiar
@@ -3059,7 +3035,7 @@ function PanelHija({ hija, contactos, setContactos, meds, setMeds, turnos, setTu
                             {martitaAlertas.slice(0, 5).map((a, i) => (
                                 <div key={a.id} style={{
                                     display: "flex", gap: 10, padding: "8px 0",
-                                    borderBottom: i < Math.min(martitaAlertas.length, 5) - 1 ? "1px solid #FDE68A" : "none",
+                                    borderBottom: i < Math.min(martitaAlertas.length, 5) - 1 ? "1px solid rgba(251,191,36,.4)" : "none",
                                     alignItems: "flex-start"
                                 }}>
                                     <div style={{
@@ -3068,17 +3044,17 @@ function PanelHija({ hija, contactos, setContactos, meds, setMeds, turnos, setTu
                                     }} />
                                     <div style={{ flex: 1 }}>
                                         <div style={{
-                                            fontSize: ".85rem", fontWeight: 600, color: "#78350F",
+                                            fontSize: ".85rem", fontWeight: 600, color: "#fbbf24",
                                             lineHeight: 1.4
                                         }}>{a.texto}</div>
-                                        <div style={{ fontSize: ".7rem", color: "#B45309", marginTop: 2 }}>
+                                        <div style={{ fontSize: ".7rem", color: "#fbbf24", marginTop: 2 }}>
                                             {a.fecha} · {a.hora} hs
                                         </div>
                                     </div>
                                 </div>
                             ))}
                             {martitaAlertas.length > 5 && (
-                                <div style={{ fontSize: ".72rem", color: "#B45309", marginTop: 8, fontWeight: 600, textAlign: "center" }}>
+                                <div style={{ fontSize: ".72rem", color: "#fbbf24", marginTop: 8, fontWeight: 600, textAlign: "center" }}>
                                     +{martitaAlertas.length - 5} alertas anteriores
                                 </div>
                             )}
@@ -3092,10 +3068,10 @@ function PanelHija({ hija, contactos, setContactos, meds, setMeds, turnos, setTu
                             { titulo: "No contesta llamadas", sub: "Alerta si no atiende 2 llamadas seguidas" },
                             { titulo: "Reporte diario de Martita", sub: "Resumen completo a las 21:00 hs" },
                         ].map((t, i) => (
-                            <div key={i} style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "12px 0", borderBottom: i < 3 ? "1px solid #F3F4F6" : "none" }}>
+                            <div key={i} style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "12px 0", borderBottom: i < 3 ? "1px solid rgba(255,255,255,.08)" : "none" }}>
                                 <div style={{ flex: 1, paddingRight: 12 }}>
                                     <div style={{ fontSize: ".88rem", fontWeight: 700 }}>{t.titulo}</div>
-                                    <div style={{ fontSize: ".72rem", color: "#6B7280", fontWeight: 600, marginTop: 2 }}>{t.sub}</div>
+                                    <div style={{ fontSize: ".72rem", color: "rgba(244,241,234,.62)", fontWeight: 600, marginTop: 2 }}>{t.sub}</div>
                                 </div>
                                 <Toggle on={alertToggles[i]} onChange={v => setAlertToggles(prev => prev.map((x, j) => j === i ? v : x))} color={color} />
                             </div>
@@ -3104,11 +3080,11 @@ function PanelHija({ hija, contactos, setContactos, meds, setMeds, turnos, setTu
                     <div style={S.cardBox}>
                         <div style={{ fontWeight: 700, fontSize: ".88rem", marginBottom: 12 }}>Historial de hoy</div>
                         {ACTIVIDAD.map((a, i) => (
-                            <div key={i} style={{ display: "flex", alignItems: "flex-start", gap: 10, padding: "8px 0", borderBottom: i < ACTIVIDAD.length - 1 ? "1px solid #F3F4F6" : "none" }}>
+                            <div key={i} style={{ display: "flex", alignItems: "flex-start", gap: 10, padding: "8px 0", borderBottom: i < ACTIVIDAD.length - 1 ? "1px solid rgba(255,255,255,.08)" : "none" }}>
                                 <div style={{ width: 9, height: 9, borderRadius: "50%", background: a.tipo === "ok" ? C.success : a.tipo === "warn" ? C.warn : C.danger, flexShrink: 0, marginTop: 4 }} />
                                 <div style={{ flex: 1 }}>
                                     <div style={{ fontSize: ".85rem", fontWeight: 700 }}>{a.texto}</div>
-                                    <div style={{ fontSize: ".7rem", color: "#6B7280", marginTop: 1 }}>{a.hora} hs</div>
+                                    <div style={{ fontSize: ".7rem", color: "rgba(244,241,234,.62)", marginTop: 1 }}>{a.hora} hs</div>
                                 </div>
                             </div>
                         ))}
@@ -3128,7 +3104,7 @@ function PanelHija({ hija, contactos, setContactos, meds, setMeds, turnos, setTu
                         </div>
                         <label style={{
                             display: "flex", alignItems: "center", justifyContent: "center", gap: 8,
-                            background: color, color: "white", borderRadius: 10, padding: "13px",
+                            background: GOLDBG, color: "#2b1f08", borderRadius: 10, padding: "13px",
                             cursor: "pointer", fontWeight: 700, fontSize: ".95rem"
                         }}>
                             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" /><circle cx="8.5" cy="8.5" r="1.5" /><path d="M21 15l-5-5L5 21" /></svg>
@@ -3189,7 +3165,7 @@ function PanelHija({ hija, contactos, setContactos, meds, setMeds, turnos, setTu
                             };
                             setPerfil(p => ({ ...p, fotos: [nueva, ...(p.fotos || [])] }));
                             setFotoUrlInput(""); setFotoTituloInput("");
-                        }} style={{ ...S.bigGreenBtn, background: color, padding: 10 }}>
+                        }} style={{ ...S.bigGreenBtn, background: GOLDBG, padding: 10 }}>
                             Agregar foto
                         </button>
                     </div>
@@ -3212,18 +3188,18 @@ function PanelHija({ hija, contactos, setContactos, meds, setMeds, turnos, setTu
                             {perfil.fotos.map((f, i) => (
                                 <div key={f.id} style={{
                                     marginBottom: 14, borderRadius: 12, overflow: "hidden",
-                                    border: `1px solid ${C.border}`, background: "white",
+                                    border: `1px solid ${C.border}`, background: "rgba(255,255,255,.07)",
                                     boxShadow: "0 2px 12px rgba(0,0,0,.07)"
                                 }}>
 
                                     {/* Foto con posicion aplicada */}
-                                    <div style={{ position: "relative", height: 200, overflow: "hidden", background: "#f3f4f6" }}>
+                                    <div style={{ position: "relative", height: 200, overflow: "hidden", background: "rgba(255,255,255,.08)" }}>
                                         <img src={f.url}
                                             style={{
                                                 width: "100%", height: "100%", objectFit: "cover",
                                                 objectPosition: f.posicion || "center center", display: "block"
                                             }}
-                                            onError={e => { e.target.style.background = "#f3f4f6"; e.target.style.display = "none"; }} />
+                                            onError={e => { e.target.style.background = "rgba(255,255,255,.08)"; e.target.style.display = "none"; }} />
                                     </div>
 
                                     <div style={{ padding: "10px 14px" }}>
@@ -3236,7 +3212,7 @@ function PanelHija({ hija, contactos, setContactos, meds, setMeds, turnos, setTu
                                             </div>
                                             <button onClick={() => setPerfil(p => ({ ...p, fotos: p.fotos.filter(x => x.id !== f.id) }))}
                                                 style={{
-                                                    background: "#FEF2F2", border: "none", color: C.danger, borderRadius: 8,
+                                                    background: "rgba(255,90,70,.14)", border: "none", color: C.danger, borderRadius: 8,
                                                     padding: "6px 10px", cursor: "pointer", fontSize: ".8rem", fontWeight: 700, fontFamily: "inherit"
                                                 }}>
                                                 Eliminar
@@ -3297,7 +3273,7 @@ function PanelHija({ hija, contactos, setContactos, meds, setMeds, turnos, setTu
                             <div style={S.fg}><label style={S.lbl}>Hora</label><input style={S.inp} type="time" value={newMedHora} onChange={e => setNewMedHora(e.target.value)} /></div>
                             <div style={S.fg}><label style={S.lbl}>Descripción</label><input style={S.inp} value={newMedDesc} onChange={e => setNewMedDesc(e.target.value)} placeholder="Ej: 1 comp." /></div>
                         </div>
-                        <button onClick={addMed} style={{ ...S.bigGreenBtn, background: color }}>Guardar</button>
+                        <button onClick={addMed} style={{ ...S.bigGreenBtn, background: GOLDBG }}>Guardar</button>
                         <button onClick={() => setShowAddMed(false)} style={{ width: "100%", background: "none", border: "none", color: C.textSoft, fontWeight: 600, cursor: "pointer", padding: 10, fontFamily: "inherit", fontSize: ".9rem" }}>Cancelar</button>
                     </div>
                 </div>
@@ -3314,7 +3290,7 @@ function PanelHija({ hija, contactos, setContactos, meds, setMeds, turnos, setTu
                             <div style={S.fg}><label style={S.lbl}>Hora</label><input style={S.inp} type="time" value={newTurnoHora} onChange={e => setNewTurnoHora(e.target.value)} /></div>
                         </div>
                         <div style={S.fg}><label style={S.lbl}>Instrucciones</label><input style={S.inp} value={newTurnoDirec} onChange={e => setNewTurnoDirec(e.target.value)} placeholder="Ej: Ir en ayunas" /></div>
-                        <button onClick={addTurno} style={{ ...S.bigGreenBtn, background: color }}>Guardar</button>
+                        <button onClick={addTurno} style={{ ...S.bigGreenBtn, background: GOLDBG }}>Guardar</button>
                         <button onClick={() => setShowAddTurno(false)} style={{ width: "100%", background: "none", border: "none", color: C.textSoft, fontWeight: 600, cursor: "pointer", padding: 10, fontFamily: "inherit", fontSize: ".9rem" }}>Cancelar</button>
                     </div>
                 </div>
@@ -3371,7 +3347,7 @@ function SwitchBotConfig({ sensorData, color }) {
     }
 
     return (
-        <div style={{ background: "#EFF6FF", borderRadius: 10, padding: "14px", marginBottom: 14, border: "1px solid #DBEAFE" }}>
+        <div style={{ background: "rgba(231,195,122,.12)", borderRadius: 10, padding: "14px", marginBottom: 14, border: "1px solid rgba(231,195,122,.28)" }}>
             <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 10 }}>
                 <div>
                     <div style={{ fontSize: ".88rem", fontWeight: 700, color: C.primary }}>
@@ -3392,7 +3368,7 @@ function SwitchBotConfig({ sensorData, color }) {
             {/* Estado actual si está conectado */}
             {sensorData?.conectado && (
                 <div style={{
-                    background: "white", borderRadius: 8, padding: "10px 12px", marginBottom: 10,
+                    background: "rgba(255,255,255,.07)", borderRadius: 8, padding: "10px 12px", marginBottom: 10,
                     display: "flex", gap: 10, alignItems: "center"
                 }}>
                     <div style={{ fontSize: "1.3rem" }}><Em e={sensorData.activa ? "🟢" : "🟡"} s={22} /></div>
@@ -3420,7 +3396,7 @@ function SwitchBotConfig({ sensorData, color }) {
 
             {showHelp && (
                 <div style={{
-                    background: "white", borderRadius: 8, padding: "12px", marginBottom: 10,
+                    background: "rgba(255,255,255,.07)", borderRadius: 8, padding: "12px", marginBottom: 10,
                     fontSize: ".78rem", color: C.textMed, lineHeight: 1.7
                 }}>
                     <div style={{ fontWeight: 700, color: C.text, marginBottom: 6 }}>Pasos en 5 minutos:</div>
@@ -3428,7 +3404,7 @@ function SwitchBotConfig({ sensorData, color }) {
                     <div><b>2.</b> Configurá el sensor y el Hub Mini</div>
                     <div><b>3.</b> En la app → Perfil → Preferencias → Token de API → <b>Copiar Token</b></div>
                     <div><b>4.</b> En la app → tu sensor → pegá el nombre o ID del dispositivo</div>
-                    <div style={{ marginTop: 8, padding: "8px", background: "#FFF7ED", borderRadius: 6, color: "#92400E", fontWeight: 500 }}>
+                    <div style={{ marginTop: 8, padding: "8px", background: "rgba(251,191,36,.12)", borderRadius: 6, color: "#fbbf24", fontWeight: 500 }}>
                         <Em e="💡" s={17} /> El Token es una cadena larga tipo "eyJ0eXAi...". El Device ID es algo como "ABCDE12345".
                     </div>
                 </div>
@@ -3468,7 +3444,7 @@ function SwitchBotConfig({ sensorData, color }) {
                 </button>
                 <button onClick={testConnection} disabled={testing}
                     style={{
-                        flex: 1, background: "white", border: `1px solid ${C.border}`, color: C.textMed,
+                        flex: 1, background: "rgba(255,255,255,.07)", border: `1px solid ${C.border}`, color: C.textMed,
                         borderRadius: 8, padding: "10px", fontFamily: "inherit",
                         fontSize: ".85rem", fontWeight: 600, cursor: "pointer"
                     }}>
@@ -3524,7 +3500,7 @@ function ConfigPanelApp({ T: _Tbase, F, themeConfig, contactos, setContactos, on
         const x = v => Math.round(v * 255).toString(16).padStart(2, '0');
         return `#${x(f(0))}${x(f(8))}${x(f(4))}`;
     }
-    const initColor = themeConfig.appColor || "#1B4F8A";
+    const initColor = themeConfig.appColor || "#e7c37a";
     const [colorHsl, setColorHsl] = useState(() => hexToHslFn(initColor));
     const [colorHex, setColorHex] = useState(initColor);
     function applyColorHsl(h, s, l) { const c = hslToHexFn(h, s, l); setColorHsl([h, s, l]); setColorHex(c); themeConfig.setAppColor(c); }
@@ -3577,14 +3553,14 @@ function ConfigPanelApp({ T: _Tbase, F, themeConfig, contactos, setContactos, on
         <div style={{ position: "fixed", inset: 0, zIndex: 500, display: "flex", alignItems: "flex-end", justifyContent: "center", background: "rgba(0,0,0,.5)" }}
             onClick={onClose}>
             <div style={{
-                background: T.surface, width: "100%", maxWidth: 480, borderRadius: "20px 20px 0 0",
+                background: "#121722", width: "100%", maxWidth: 480, borderRadius: "20px 20px 0 0",
                 maxHeight: "90dvh", overflowY: "auto",
                 animation: "slideUp .3s ease"
             }} onClick={e => e.stopPropagation()}>
 
                 {/* Header */}
                 <div style={{
-                    position: "sticky", top: 0, background: T.surface,
+                    position: "sticky", top: 0, background: "#121722",
                     borderBottom: `1px solid ${T.border}`, padding: "16px 18px 0", zIndex: 10
                 }}>
                     <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 12 }}>
@@ -3751,7 +3727,7 @@ function ConfigPanelApp({ T: _Tbase, F, themeConfig, contactos, setContactos, on
                                                 boxShadow: `0 2px 8px ${currentColor}44`
                                             }} />
                                             <input value={colorHex} onChange={e => applyColorHex(e.target.value)}
-                                                placeholder="#1B4F8A"
+                                                placeholder="#e7c37a"
                                                 style={{
                                                     ...S.inp, fontFamily: "monospace", fontSize: "1rem",
                                                     letterSpacing: ".06em", flex: 1
@@ -3766,7 +3742,7 @@ function ConfigPanelApp({ T: _Tbase, F, themeConfig, contactos, setContactos, on
                                             Colores rápidos
                                         </div>
                                         <div style={{ display: "flex", flexWrap: "wrap", gap: 7, marginBottom: 16 }}>
-                                            {["#1B4F8A", "#0F3D6B", "#1565C0", "#0288D1", "#00838F",
+                                            {["#e7c37a", "#0F3D6B", "#1565C0", "#0288D1", "#00838F",
                                                 "#2E7D32", "#558B2F", "#6A1B9A", "#AD1457", "#C62828",
                                                 "#E65100", "#F57F17", "#4E342E", "#37474F", "#212121",
                                                 "#455A64", "#BF360C", "#880E4F"].map(col => (
@@ -3783,7 +3759,7 @@ function ConfigPanelApp({ T: _Tbase, F, themeConfig, contactos, setContactos, on
                                         </div>
 
                                         <button onClick={() => {
-                                            applyColorHex("#1B4F8A");
+                                            applyColorHex("#e7c37a");
                                         }} style={{
                                             background: "none", border: `1px solid ${T.border}`, borderRadius: 8,
                                             padding: "8px 16px", fontSize: ".8rem", fontWeight: 600,
@@ -4006,7 +3982,7 @@ function ConfigPanelApp({ T: _Tbase, F, themeConfig, contactos, setContactos, on
                                     )}
                                     <label style={{
                                         display: "flex", alignItems: "center", justifyContent: "center", gap: 8,
-                                        background: T.primary, color: "white", borderRadius: 10, padding: "12px",
+                                        background: GOLDBG, color: "#2b1f08", borderRadius: 10, padding: "12px",
                                         cursor: "pointer", fontWeight: 600, fontSize: ".85rem"
                                     }}>
                                         <Em e="📷" s={17} /> Elegir foto del dispositivo
@@ -4081,7 +4057,7 @@ function ConfigPanelApp({ T: _Tbase, F, themeConfig, contactos, setContactos, on
                                         {(contactos || []).length > 1 && (
                                             <button onClick={() => setContactos(prev => prev.filter(x => x.id !== c.id))}
                                                 style={{
-                                                    background: "#FEF2F2", border: "none", color: C.danger,
+                                                    background: "rgba(255,90,70,.14)", border: "none", color: C.danger,
                                                     borderRadius: 8, padding: "6px 10px", cursor: "pointer",
                                                     fontSize: ".8rem", fontWeight: 700, fontFamily: "inherit", flexShrink: 0
                                                 }}>
@@ -4161,7 +4137,7 @@ function ConfigPanelApp({ T: _Tbase, F, themeConfig, contactos, setContactos, on
                                         {pinStep === "idle" && (
                                             <button onClick={() => { setPinStep("new1"); setPinNew1(""); setPinNew2(""); setPinMsg(""); }}
                                                 style={{
-                                                    background: T.primary, color: "white", border: "none", borderRadius: 8,
+                                                    background: GOLDBG, color: "#2b1f08", border: "none", borderRadius: 8,
                                                     padding: "8px 14px", fontSize: ".8rem", fontWeight: 600, cursor: "pointer", fontFamily: "inherit"
                                                 }}>
                                                 Cambiar
@@ -4190,8 +4166,8 @@ function ConfigPanelApp({ T: _Tbase, F, themeConfig, contactos, setContactos, on
                                                         handlePinChange(d, pinStep === "new1" ? 1 : 2);
                                                     }} style={{
                                                         height: 46, borderRadius: 10, border: `1px solid ${T.border}`,
-                                                        background: d === "" ? "transparent" : d === "⌫" ? "#FEF2F2" : T.bg,
-                                                        color: d === "⌫" ? "#DC2626" : T.text,
+                                                        background: d === "" ? "transparent" : d === "⌫" ? "rgba(255,90,70,.14)" : T.bg,
+                                                        color: d === "⌫" ? "#ff7b6b" : T.text,
                                                         fontSize: d === "⌫" ? "1rem" : "1.15rem", fontWeight: 600,
                                                         cursor: d === "" ? "default" : "pointer", fontFamily: "inherit",
                                                         opacity: d === "" ? 0 : 1
@@ -4211,7 +4187,7 @@ function ConfigPanelApp({ T: _Tbase, F, themeConfig, contactos, setContactos, on
                                     {pinMsg && (
                                         <div style={{
                                             marginTop: 10, fontSize: ".8rem", fontWeight: 600, textAlign: "center",
-                                            color: pinMsg.startsWith("✓") ? T.success : "#DC2626"
+                                            color: pinMsg.startsWith("✓") ? T.success : "#ff7b6b"
                                         }}>
                                             {pinMsg}
                                         </div>
@@ -4233,7 +4209,7 @@ function ConfigSectionTitle({ T, F, children }) {
         <div style={{
             fontSize: ".68rem", fontWeight: 700, color: T.textMuted,
             textTransform: "uppercase", letterSpacing: ".1em", marginBottom: 8, marginTop: 4,
-            fontFamily: F.body
+            fontFamily: SERIF
         }}>
             {children}
         </div>
@@ -4298,7 +4274,7 @@ function ApiKeyConfig({ color }) {
     return (
         <div style={{ ...S.cardBox, marginTop: 0 }}>
             <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 12 }}>
-                <div style={{ width: 36, height: 36, borderRadius: 8, background: "#EFF6FF", border: `1px solid #DBEAFE`, display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
+                <div style={{ width: 36, height: 36, borderRadius: 8, background: "rgba(231,195,122,.12)", border: `1px solid rgba(231,195,122,.28)`, display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
                     <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke={C.primary} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                         <path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z" />
                         <path d="M19 10v2a7 7 0 0 1-14 0v-2M12 19v4M8 23h8" />
@@ -4318,11 +4294,11 @@ function ApiKeyConfig({ color }) {
             </div>
 
             {/* Instrucciones */}
-            <div style={{ background: "#FFFBEB", border: "1px solid #FDE68A", borderRadius: 8, padding: "12px 14px", marginBottom: 14 }}>
-                <div style={{ fontSize: ".82rem", fontWeight: 700, color: "#92400E", marginBottom: 6 }}>
+            <div style={{ background: "rgba(251,191,36,.12)", border: "1px solid rgba(251,191,36,.4)", borderRadius: 8, padding: "12px 14px", marginBottom: 14 }}>
+                <div style={{ fontSize: ".82rem", fontWeight: 700, color: "#fbbf24", marginBottom: 6 }}>
                     Cómo conseguir la API key gratis
                 </div>
-                <div style={{ fontSize: ".78rem", color: "#78350F", fontWeight: 500, lineHeight: 1.7 }}>
+                <div style={{ fontSize: ".78rem", color: "#fbbf24", fontWeight: 500, lineHeight: 1.7 }}>
                     1. Entrá a <strong>elevenlabs.io</strong>{"\n"}
                     2. Creá una cuenta gratuita con tu email{"\n"}
                     3. Andá a <strong>Profile → API Key</strong>{"\n"}
